@@ -1,0 +1,11 @@
+version: 2
+# The repository ships no Python package; the only versioned dependencies are
+# the GitHub Actions used by the CI and release workflows.
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ci"
