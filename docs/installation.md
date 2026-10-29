@@ -28,7 +28,8 @@ CPU family and is refused by the device.
 
 The package manager unpacks the service under
 `/shares/Volume_1/Nas_Prog/hsync`, links the web UI under
-`/var/www/apps/hsync`, and starts the service once.
+`/var/www/apps/hsync`, and activates the service. If the page then shows
+**stopped**, press **Start**.
 
 ## 3. Open the web UI
 

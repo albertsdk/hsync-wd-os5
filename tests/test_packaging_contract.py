@@ -144,6 +144,41 @@ def test_unrelated_version_is_refused() -> None:
 
 
 @requires_siblings
+def test_missing_bin_aborts_with_an_explicit_diagnostic(tmp_path: Path) -> None:
+    """A silent mksapkg must surface the intended error, not a bare exit code.
+
+    With ``set -e`` + ``pipefail`` an unmatched glob in the artifact lookup
+    would abort the script (exit 2, no message) before the ``log_error`` below
+    it could run; this pins the diagnostic.
+    """
+    binary = tmp_path / "hsync"
+    binary.mkdir()
+    (binary / "hsync").write_text("", encoding="utf-8")
+    stage_base = tmp_path / "stage"
+    out_dir = tmp_path / "out"
+    stage_base.mkdir()
+    out_dir.mkdir()
+
+    result = _bash(
+        "source ./compile.sh; _run_mksapkg() { :; }; "
+        f"_wdos5_package_model MyCloudEX2Ultra {binary} 1.0.11 "
+        f"{stage_base} {out_dir} /tmp/fake-mksapkg"
+    )
+    assert result.returncode == 1, (result.returncode, result.stderr)
+    assert "did not produce a .bin" in result.stderr
+
+
+@requires_siblings
+def test_malformed_bundle_fails_with_an_explicit_diagnostic(tmp_path: Path) -> None:
+    """A bundle without the entry point must not surface as a bare chmod error."""
+    binary = tmp_path / "hsync"
+    binary.mkdir()
+    result = _bash(f"source ./compile.sh; _install_binary {tmp_path / 'stage'} {binary}")
+    assert result.returncode == 1
+    assert "Frozen engine missing" in result.stderr
+
+
+@requires_siblings
 def test_suffix_on_the_engine_version_is_allowed() -> None:
     result = _bash(
         'source ./compile.sh; version="$(get_version)-alpha.1"; '

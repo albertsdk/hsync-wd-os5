@@ -63,7 +63,7 @@ jobs:
 
       - name: Install test tooling
         working-directory: hsync-wd-os5
-        run: python -m pip install pytest ruff
+        run: python -m pip install pytest ruff==0.17.2
 
       - name: Shell syntax
         working-directory: hsync-wd-os5

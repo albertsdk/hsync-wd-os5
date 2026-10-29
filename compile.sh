@@ -518,6 +518,10 @@ _stage_package_tree() {
 # Args: stage_dir  binary_dir
 _install_binary() {
     local stage_dir="$1" binary_dir="$2"
+    if [[ ! -f "${binary_dir}/${APP_NAME}" ]]; then
+        log_error "Frozen engine missing at ${binary_dir}/${APP_NAME}"
+        exit 1
+    fi
     mkdir -p "${stage_dir}/bin"
     cp -a "${binary_dir}" "${stage_dir}/bin/"
     chmod 0755 "${stage_dir}/bin/${APP_NAME}/${APP_NAME}"
@@ -545,8 +549,10 @@ _wdos5_package_model() {
     rm -f "${stage_parent}/${model}_${APP_NAME}_"*.bin*
     _run_mksapkg "${stage_abs}" "${model}" "${mksapkg}"
 
+    # `|| true`: with `set -e` + `pipefail` an unmatched glob would abort the
+    # script before the explicit diagnostic below could run.
     local produced bin_name
-    produced="$(ls -t "${stage_parent}/${model}_${APP_NAME}_"*.bin* 2>/dev/null | head -1)"
+    produced="$(ls -t "${stage_parent}/${model}_${APP_NAME}_"*.bin* 2>/dev/null | head -1 || true)"
     if [[ -z "${produced}" || ! -f "${produced}" ]]; then
         log_error "mksapkg-OS5 did not produce a .bin for ${model}"
         exit 1
