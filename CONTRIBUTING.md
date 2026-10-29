@@ -60,6 +60,21 @@ may be added. Output:
 
 The source `Apkg/` tree is never mutated: staging happens in `build/`.
 
+## Release
+
+The release workflow (`.github/workflows/release.yml`) publishes the `.bin`
+installers and always packages an **explicit engine ref**:
+
+- **tag push** `vX.Y.Z` — the engine comes from the matching `hsync-client` tag
+  `vX.Y.Z`; the job fails when that tag is missing or its version differs from
+  the tag.
+- **workflow_dispatch** — the `client_ref` input selects the engine ref (tag or
+  branch, default `main`); `version_suffix` appends a suffix such as `-dev`
+  (allowed only on top of the engine version).
+
+Both jobs check out `hsync-client` and `hsync-common` with
+`secrets.HSYNC_COMMON_PAT` because those repositories are private.
+
 ## Changing the web UI or the launcher
 
 Any change to a CLI flag, an `HSYNC_*` variable or a user-facing default must

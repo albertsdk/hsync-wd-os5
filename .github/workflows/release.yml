@@ -5,8 +5,10 @@ name: Release
 # sibling hsync-client checkout, so every build pins a client ref.
 #
 # Two triggers:
-# 1. vX.Y.Z tag pushed  →  create a formal Release. The tag must equal the
-#                          hsync-client version: the packaged version is the
+# 1. vX.Y.Z tag pushed  →  create a formal Release. The engine is taken from
+#                          the matching hsync-client tag vX.Y.Z (pin the
+#                          version you are packaging), and the tag must equal
+#                          that client version: the packaged version is the
 #                          bundled engine version, never an independent one.
 # 2. workflow_dispatch  →  build artifacts (optionally create a Release),
 #                          optionally from a different client ref/suffix.
@@ -16,7 +18,7 @@ on:
   workflow_dispatch:
     inputs:
       client_ref:
-        description: "hsync-client git ref to package (default: main)"
+        description: "hsync-client ref to package: tag (e.g. v1.0.11) or branch"
         type: string
         default: "main"
       create_release:
@@ -44,7 +46,9 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: albertsdk/hsync-client
-          ref: ${{ inputs.client_ref || 'main' }}
+          # On a tag push this is the matching hsync-client tag (vX.Y.Z);
+          # on a dispatch it is the client_ref input (tag or branch).
+          ref: ${{ github.event_name == 'push' && github.ref_name || inputs.client_ref }}
           path: hsync-client
           token: ${{ secrets.HSYNC_COMMON_PAT }}
       - uses: actions/checkout@v7
@@ -81,7 +85,9 @@ jobs:
       - uses: actions/checkout@v7
         with:
           repository: albertsdk/hsync-client
-          ref: ${{ inputs.client_ref || 'main' }}
+          # On a tag push this is the matching hsync-client tag (vX.Y.Z);
+          # on a dispatch it is the client_ref input (tag or branch).
+          ref: ${{ github.event_name == 'push' && github.ref_name || inputs.client_ref }}
           path: hsync-client
           token: ${{ secrets.HSYNC_COMMON_PAT }}
       - uses: actions/checkout@v7

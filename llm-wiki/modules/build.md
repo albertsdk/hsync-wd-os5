@@ -51,6 +51,15 @@ PyInstaller bootloader).
 - Docker images are built locally and never published
   (`hsync-wdos5-builder:*`, `hsync-wdos5-mksapkg:bullseye`).
 
+## Release pipeline (`.github/workflows/release.yml`)
+
+`gate` (ruff, shell syntax, tests) → `packages` (all models) → `release`
+(`.bin` + `SHA256SUMS` attached to the release). The engine ref is explicit:
+the matching `hsync-client` tag on a tag push, the `client_ref` input on a
+dispatch. The version is read from that checkout and
+`compile.sh::_verify_embedded_version` enforces the coupling, so a `.bin` can
+never advertise a version its engine does not report.
+
 ## Tests guarding this module
 
 `tests/test_packaging_contract.py` asserts the option surface, the default
