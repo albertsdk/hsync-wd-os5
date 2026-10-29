@@ -24,7 +24,7 @@ jobs:
         python-version: ["3.12", "3.13", "3.14"]
     steps:
       - name: Checkout hsync-wd-os5
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           path: hsync-wd-os5
 
@@ -33,7 +33,7 @@ jobs:
       # is the bundled engine version. Both repositories are private, so the
       # default GITHUB_TOKEN cannot read them: use the PAT secret.
       - name: Checkout hsync-client
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: albertsdk/hsync-client
           ref: main
@@ -41,7 +41,7 @@ jobs:
           token: ${{ secrets.HSYNC_COMMON_PAT }}
 
       - name: Checkout hsync-common
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: albertsdk/hsync-common
           ref: main
@@ -53,7 +53,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends php-cli
 
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python-version }}
 
@@ -63,7 +63,7 @@ jobs:
 
       - name: Install test tooling
         working-directory: hsync-wd-os5
-        run: python -m pip install pytest ruff==0.17.2
+        run: python -m pip install pytest ruff==0.17.3
 
       - name: Shell syntax
         working-directory: hsync-wd-os5

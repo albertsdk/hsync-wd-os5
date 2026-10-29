@@ -67,7 +67,7 @@ jobs:
       - name: Lint, shell syntax and tests
         working-directory: hsync-wd-os5
         run: |
-          python -m pip install pytest ruff==0.17.2
+          python -m pip install pytest ruff==0.17.3
           ruff check .
           ruff format --check .
           bash -n compile.sh
