@@ -504,6 +504,10 @@ _stage_package_tree() {
     # single source and place it where the package manager looks for it.
     cp -f "${WDOS5_SRC_APKG}/web/hsync.png" "${stage_dir}/hsync.png"
 
+    # BSD-3-Clause requires the license text with binary distributions; the
+    # frozen engine is shipped inside this package.
+    cp -f "${SCRIPT_DIR}/LICENSE" "${stage_dir}/LICENSE"
+
     # Lifecycle hook scripts must be executable or the install on the NAS fails
     # silently.
     chmod 0755 "${stage_dir}"/*.sh 2>/dev/null || true

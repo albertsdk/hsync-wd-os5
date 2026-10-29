@@ -65,7 +65,7 @@ uninstall.
 
 | Path | Content |
 | --- | --- |
-| `/shares/Volume_1/Nas_Prog/hsync` | Installed service: binary (`bin/hsync/`), lifecycle scripts and web UI |
+| `/shares/Volume_1/Nas_Prog/hsync` | Installed service: binary (`bin/hsync/`), lifecycle scripts, web UI and the `LICENSE` |
 | `/var/www/apps/hsync` | Symlinks to the web UI assets (recreated at every boot) |
 | `/mnt/HD/HD_a2/hsync/config/hsync.env` | Your configuration, root-owned and not group/other-writable |
 | `/mnt/HD/HD_a2/hsync/data` | Default shared folder |

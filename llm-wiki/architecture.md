@@ -2,7 +2,9 @@
 
 A `.bin` is a signed tar of one **staged package tree**: the committed
 `packaging/Apkg` directory, the frozen client binary under
-`bin/hsync/` (PyInstaller `--onedir`), an icon and a rendered `packaging/Apkg/apkg.rc`.
+`bin/hsync/` (PyInstaller `--onedir`), an icon, the `LICENSE` (BSD-3-Clause
+requires it with binary distributions) and a rendered
+`packaging/Apkg/apkg.rc`.
 `mksapkg-OS5` produces it; the OS5 dashboard validates `apkg.sign` at upload.
 
 ## Component map
@@ -72,5 +74,16 @@ executes for trust probes and state resets.
 - `packaging/Apkg/apkg.rc` keeps the `__HSYNC_VERSION__` placeholder; only the
   staged copy is rendered, the source tree is never mutated.
 - The declared icon (`packaging/Apkg/apkg.rc` `Icon: hsync.png`) is the committed
-  `packaging/Apkg/web/hsync.png`, copied to the package root while staging.
+  `packaging/Apkg/web/hsync.png` (160x160), copied to the package root while
+  staging. It is the shared HSYNC app icon — the master is
+  `branding/hsync-app-icon.png` in the monorepo root (1024x1024), whose
+  geometry mirrors the Android adaptive icon in `hsync-android`; regenerate
+  the derivative by downscaling it with a high-quality filter, never by
+  redrawing the mark.
+
+  ```bash
+  python3 -c "from PIL import Image; Image.open('branding/hsync-app-icon.png') \
+    .resize((160, 160), Image.LANCZOS) \
+    .save('packaging/Apkg/web/hsync.png', optimize=True)"
+  ```
 - `dist/`, `build/` and `packaging/.cache/` are never committed.

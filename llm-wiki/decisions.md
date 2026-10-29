@@ -64,8 +64,11 @@ caller-owned. The image is local-only and rebuilt by `--clean`.
 serves `web/hsync.png`. A generator script produced the root copy in the past,
 but nothing invoked it any more and the file was absent.
 
-**Decision.** `packaging/Apkg/web/hsync.png` is the single committed source;
-`compile.sh::_stage_package_tree` copies it to the package root. The dead
+**Decision.** `packaging/Apkg/web/hsync.png` (160x160) is the single committed
+source; `compile.sh::_stage_package_tree` copies it to the package root. It is
+the shared HSYNC app icon, downscaled from the master
+`branding/hsync-app-icon.png` (1024x1024, same geometry as the Android
+adaptive icon), so every HSYNC application shows the same mark. The dead
 generator script is removed (historical: it was never invoked) instead of
 adding a Pillow
 dependency to the build.

@@ -99,6 +99,15 @@ def test_declared_icon_is_shipped() -> None:
     assert 'cp -f "${WDOS5_SRC_APKG}/web/hsync.png" "${stage_dir}/hsync.png"' in _compile_text()
 
 
+def test_dashboard_icon_is_a_square_png() -> None:
+    """The dashboard app tile is the shared HSYNC icon at 160x160 (ADR 005)."""
+    data = ICON.read_bytes()
+    assert data[:8] == b"\x89PNG\r\n\x1a\n", "not a PNG"
+    width = int.from_bytes(data[16:20], "big")
+    height = int.from_bytes(data[20:24], "big")
+    assert (width, height) == (160, 160), (width, height)
+
+
 def test_every_model_is_assigned_to_one_cpu_family() -> None:
     text = _compile_text()
     block = text.split("readonly -a WDOS5_ARMV7_MODELS=", 1)[1].split("# Version override", 1)[0]
@@ -141,6 +150,17 @@ def test_unrelated_version_is_refused() -> None:
     result = _bash("source ./compile.sh; _verify_embedded_version 999.0.0")
     assert result.returncode != 0
     assert "does not match the bundled engine" in result.stderr
+
+
+@requires_siblings
+def test_license_is_shipped_in_the_package(tmp_path: Path) -> None:
+    """BSD-3-Clause requires the license text with the binary distribution."""
+    stage = tmp_path / "hsync"
+    result = _bash(f"source ./compile.sh; _stage_package_tree {stage} 1.0.11")
+    assert result.returncode == 0, result.stderr
+    staged = stage / "LICENSE"
+    assert staged.is_file()
+    assert staged.read_bytes() == (ROOT / "LICENSE").read_bytes()
 
 
 @requires_siblings
