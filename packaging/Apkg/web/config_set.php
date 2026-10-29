@@ -57,12 +57,12 @@ const KEYS = [
     'HSYNC_P2P_TRUST', 'HSYNC_P2P_PEER_DOWNLOAD',
     'HSYNC_P2P_PEER_READ_CAP', 'HSYNC_P2P_PEER_SOURCES_MAX',
     'HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES', 'HSYNC_P2P_ALLOW_UNAUTHENTICATED',
-    'HSYNC_ALLOW_DELETIONS', 'HSYNC_DISCOVERY_TIMEOUT',
-    'HSYNC_BOOTNODE', 'HSYNC_BOOTNODE_PORTS', 'HSYNC_BOOTNODE_FINGERPRINT',
-    'HSYNC_BOOTNODE_TOFU', 'HSYNC_BOOTNODE_TRUST', 'HSYNC_UPNP_ENABLED',
+    'HSYNC_ALLOW_DELETIONS', 'HSYNC_PEER_DISCOVERY_TIMEOUT',
+    'HSYNC_DISCOVERY_SERVER_ENDPOINTS', 'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS', 'HSYNC_DISCOVERY_SERVER_FINGERPRINTS',
+    'HSYNC_DISCOVERY_SERVER_TOFU', 'HSYNC_DISCOVERY_SERVER_TRUST', 'HSYNC_MAP_DATA_PORT',
     'HSYNC_NTP_HOSTS',
-    'HSYNC_SERVER', 'HSYNC_API_KEY', 'HSYNC_INSECURE', 'HSYNC_CA_CERT',
-    'HSYNC_SERVER_TRUST', 'HSYNC_SERVER_FINGERPRINT', 'HSYNC_SERVER_TOFU',
+    'HSYNC_SERVER_URL', 'HSYNC_API_KEY', 'HSYNC_INSECURE', 'HSYNC_CA_CERT',
+    'HSYNC_SERVER_TRUST', 'HSYNC_SERVER_FINGERPRINTS', 'HSYNC_SERVER_TOFU',
     'HSYNC_INTERVAL', 'HSYNC_DELETION_POLICY', 'HSYNC_COMPRESSION_ENABLED',
     'HSYNC_DELTA_ENABLED', 'HSYNC_DELTA_MIN_FILE_SIZE', 'HSYNC_DELTA_MIN_FILE_SIZE_P2P',
     'HSYNC_MAX_BW_UPLOAD', 'HSYNC_MAX_BW_DOWNLOAD', 'HSYNC_MIN_FREE_DISK',
@@ -136,19 +136,28 @@ foreach (KEYS as $key) {
             }
             $val = implode(',', array_slice($patterns, 0, 50));
             break;
-        case 'HSYNC_BOOTNODE':
-            // HOST[:PORT] endpoint (hostname/IPv4 or bracketed IPv6); empty is
-            // valid and means "mDNS-only discovery". No scheme, no path.
-            if ($val !== '' && !preg_match($endpoint_re, $val)) $val = '';
+        case 'HSYNC_DISCOVERY_SERVER_ENDPOINTS':
+            // Ordered, comma-separated HOST[:PORT] endpoints (hostname/IPv4 or
+            // bracketed IPv6); empty is valid and means "mDNS-only discovery".
+            // No scheme, no path. One bad entry invalidates the whole value
+            // rather than being dropped silently: a typo must fail visibly, not
+            // quietly turn cross-network discovery off.
+            if ($val !== '') {
+                $valid = true;
+                foreach (array_map('trim', explode(',', $val)) as $entry) {
+                    if ($entry === '' || !preg_match($endpoint_re, $entry)) $valid = false;
+                }
+                if (!$valid) $val = '';
+            }
             break;
-        case 'HSYNC_SERVER':
+        case 'HSYNC_SERVER_URL':
             // A bare HOST[:PORT] endpoint or a full https:// URL; empty means
             // server mode is not configured. The client normalizes both forms.
             if ($val !== ''
                 && !preg_match($endpoint_re, $val)
                 && !preg_match('/^https:\/\//', $val)) $val = '';
             break;
-        case 'HSYNC_BOOTNODE_FINGERPRINT':
+        case 'HSYNC_DISCOVERY_SERVER_FINGERPRINTS':
             // Empty (no pin) or up to two 'sha256:<hex64>' / '<hex64>' pins,
             // comma-separated. Anything else is dropped to '' (fail closed).
             if ($val !== '') {
@@ -160,7 +169,7 @@ foreach (KEYS as $key) {
                 if (!$valid) $val = '';
             }
             break;
-        case 'HSYNC_SERVER_FINGERPRINT':
+        case 'HSYNC_SERVER_FINGERPRINTS':
             // Same grammar as the bootnode pins: empty or up to two sha256 pins.
             if ($val !== '') {
                 $parts = array_map('trim', explode(',', $val));
@@ -178,7 +187,7 @@ foreach (KEYS as $key) {
             // Absolute path to an existing readable PEM file, or empty.
             if ($val !== '' && (!str_starts_with($val, '/') || !is_file($val))) $val = '';
             break;
-        case 'HSYNC_BOOTNODE_PORTS':
+        case 'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS':
             // Comma-separated UDP ports (1-65535), order preserved; invalid and
             // duplicate entries are dropped (the client applies the same
             // normalization on load). Empty = single-port dialing (only the
@@ -191,7 +200,7 @@ foreach (KEYS as $key) {
             }
             $val = implode(',', $ports);
             break;
-        case 'HSYNC_BOOTNODE_TRUST':
+        case 'HSYNC_DISCOVERY_SERVER_TRUST':
             // Discovery-server identity check; an unknown value keeps the default.
             if (!in_array($val, ['ask', 'accept-new', 'strict', 'none'], true)) $val = 'ask';
             break;
@@ -215,7 +224,7 @@ foreach (KEYS as $key) {
                 $val = '';
             }
             break;
-        case 'HSYNC_DISCOVERY_TIMEOUT':
+        case 'HSYNC_PEER_DISCOVERY_TIMEOUT':
             $val = clamp_int($val, 5, 60, 10);
             break;
         case 'HSYNC_HTTP_TIMEOUT':
@@ -294,8 +303,8 @@ foreach (KEYS as $key) {
         case 'HSYNC_QUIET':
         case 'HSYNC_DRY_RUN':
         case 'HSYNC_MASS_DELETE_GUARD':
-        case 'HSYNC_UPNP_ENABLED':
-        case 'HSYNC_BOOTNODE_TOFU':
+        case 'HSYNC_MAP_DATA_PORT':
+        case 'HSYNC_DISCOVERY_SERVER_TOFU':
         case 'HSYNC_SERVER_TOFU':
         case 'HSYNC_AUTOTUNE':
         case 'HSYNC_P2P_PEER_DOWNLOAD':

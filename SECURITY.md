@@ -54,7 +54,7 @@ a web UI served by the stock Apache:
 
 - Upload the HSYNC Server CA certificate (`Certificates` → **Upload…**) or pin
   the server fingerprint instead of using `HSYNC_INSECURE`.
-- Pin the discovery server fingerprint and use `HSYNC_BOOTNODE_TRUST=strict`.
+- Pin the discovery server fingerprint and use `HSYNC_DISCOVERY_SERVER_TRUST=strict`.
 - Use a long shared password (`HSYNC_P2P_PASSPHRASE`, at least 12 characters;
   the installer generates 24) and keep it out of shell history and screenshots.
 - Restrict dashboard access to administrators; the web UI has no separate login.

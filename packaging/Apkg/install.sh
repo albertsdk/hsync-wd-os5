@@ -132,28 +132,28 @@ HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES="false"
 HSYNC_P2P_ALLOW_UNAUTHENTICATED="false"
 HSYNC_ALLOW_DELETIONS="false"
 # Seconds to wait for peer discovery.
-HSYNC_DISCOVERY_TIMEOUT="10"
+HSYNC_PEER_DISCOVERY_TIMEOUT="10"
 # Optional discovery server for cross-network discovery (bare host, no scheme,
 # no port; empty = discovery stays on the local network). Set the same host on
 # every device of the group.
-HSYNC_BOOTNODE=""
+HSYNC_DISCOVERY_SERVER_ENDPOINTS=""
 # Extra UDP ports to try for the same discovery server (comma-separated, ordered),
 # e.g. "53" so a client whose egress firewall blocks UDP 443 reaches the node
 # on 53. Empty = single-port. The discovery server must listen on the same set.
-HSYNC_BOOTNODE_PORTS=""
+HSYNC_DISCOVERY_SERVER_EXTRA_PORTS=""
 # Pin the discovery server certificate fingerprint ('sha256:<hex>' or bare hex,
 # comma-separated up to two for a rotation window); empty = no pin (fail closed).
-HSYNC_BOOTNODE_FINGERPRINT=""
+HSYNC_DISCOVERY_SERVER_FINGERPRINTS=""
 # Trust the discovery server certificate on first use (TOFU).
-HSYNC_BOOTNODE_TOFU="false"
+HSYNC_DISCOVERY_SERVER_TOFU="false"
 # Discovery server identity check: ask | accept-new | strict | none
-HSYNC_BOOTNODE_TRUST="ask"
+HSYNC_DISCOVERY_SERVER_TRUST="ask"
 # Map the master TCP port with UPnP so peers on other networks can dial this
 # device. Only effective with a discovery server.
-HSYNC_UPNP_ENABLED="true"
+HSYNC_MAP_DATA_PORT="true"
 
 # Server mode (used only when HSYNC_MODE=server)
-HSYNC_SERVER=""
+HSYNC_SERVER_URL=""
 HSYNC_API_KEY=""
 # Skip the certificate check (insecure; mutually exclusive with a pin or TOFU).
 HSYNC_INSECURE="false"
@@ -163,7 +163,7 @@ HSYNC_CA_CERT=""
 HSYNC_SERVER_TRUST="chain"
 # Pin the server certificate fingerprint ('sha256:<hex>' or bare hex,
 # comma-separated up to two for a rotation window); empty = no pin.
-HSYNC_SERVER_FINGERPRINT=""
+HSYNC_SERVER_FINGERPRINTS=""
 # Trust the server certificate on first use (TOFU).
 HSYNC_SERVER_TOFU="false"
 

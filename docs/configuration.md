@@ -52,33 +52,33 @@ describe what the NAS writes and what the range check accepts.
 | `HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES` | `false` | `true`, `false` — dangerous |
 | `HSYNC_P2P_ALLOW_UNAUTHENTICATED` | `false` | `true`, `false` — dangerous |
 | `HSYNC_ALLOW_DELETIONS` | `false` | `true`, `false` |
-| `HSYNC_DISCOVERY_TIMEOUT` | `10` | `5`–`60` seconds |
+| `HSYNC_PEER_DISCOVERY_TIMEOUT` | `10` | `5`–`60` seconds |
 
 ## Discovery server (p2p across networks)
 
 | Key | Default | Allowed values |
 | --- | --- | --- |
-| `HSYNC_BOOTNODE` | empty | `HOST`, `HOST:PORT`, `[IPv6]`, `[IPv6]:PORT`; empty keeps discovery on the local network |
-| `HSYNC_BOOTNODE_PORTS` | empty | comma-separated UDP ports `1`–`65535`, order preserved |
-| `HSYNC_BOOTNODE_FINGERPRINT` | empty | up to two `sha256:<64 hex>` (or bare hex) pins, comma-separated |
-| `HSYNC_BOOTNODE_TOFU` | `false` | `true`, `false` — trust the discovery server on first use |
-| `HSYNC_BOOTNODE_TRUST` | `ask` | `ask`, `accept-new`, `strict`, `none` |
-| `HSYNC_UPNP_ENABLED` | `true` | `true`, `false` — map the master port with UPnP |
+| `HSYNC_DISCOVERY_SERVER_ENDPOINTS` | empty | `HOST`, `HOST:PORT`, `[IPv6]`, `[IPv6]:PORT`; empty keeps discovery on the local network |
+| `HSYNC_DISCOVERY_SERVER_EXTRA_PORTS` | empty | comma-separated UDP ports `1`–`65535`, order preserved |
+| `HSYNC_DISCOVERY_SERVER_FINGERPRINTS` | empty | up to two `sha256:<64 hex>` (or bare hex) pins, comma-separated |
+| `HSYNC_DISCOVERY_SERVER_TOFU` | `false` | `true`, `false` — trust the discovery server on first use |
+| `HSYNC_DISCOVERY_SERVER_TRUST` | `ask` | `ask`, `accept-new`, `strict`, `none` |
+| `HSYNC_MAP_DATA_PORT` | `true` | `true`, `false` — map the master port with UPnP |
 | `HSYNC_NTP_HOSTS` | empty | comma-separated SNTP hosts used for clock-offset correction |
 
-An empty pin fails closed: without `HSYNC_BOOTNODE_TOFU` or
+An empty pin fails closed: without `HSYNC_DISCOVERY_SERVER_TOFU` or
 `accept-new`/`none` the discovery server is not trusted automatically.
 
 ## Server mode
 
 | Key | Default | Allowed values |
 | --- | --- | --- |
-| `HSYNC_SERVER` | empty | `HOST`, `HOST:PORT` or an `https://` URL |
+| `HSYNC_SERVER_URL` | empty | `HOST`, `HOST:PORT` or an `https://` URL |
 | `HSYNC_API_KEY` | empty | the API key issued by the server |
 | `HSYNC_INSECURE` | `false` | `true`, `false` — skip certificate validation (insecure) |
 | `HSYNC_CA_CERT` | empty | absolute path to a readable PEM file (upload it from the UI) |
 | `HSYNC_SERVER_TRUST` | `chain` | `chain` (CA validation), `ask`, `accept-new`, `strict`, `none` |
-| `HSYNC_SERVER_FINGERPRINT` | empty | up to two `sha256:<64 hex>` pins |
+| `HSYNC_SERVER_FINGERPRINTS` | empty | up to two `sha256:<64 hex>` pins |
 | `HSYNC_SERVER_TOFU` | `false` | `true`, `false` |
 
 `HSYNC_INSECURE` is mutually exclusive with a pin or TOFU; prefer uploading the

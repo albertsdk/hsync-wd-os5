@@ -28,7 +28,7 @@ for the on-disk constants; user settings live in `HSYNC_ENV_FILE`.
   re-validated with `case`.
 - The subcommand is chosen from `HSYNC_MODE` (`p2p` | `server`) and always comes
   first; `--bucket` and `--path` are always passed.
-- `server` mode aborts when `HSYNC_SERVER` is empty.
+- `server` mode aborts when `HSYNC_SERVER_URL` is empty.
 - `HSYNC_PREFER_MASTER=true` only adds `--prefer-master` when the direction is
   `bidirectional` (the client rejects the combination).
 - Delta floors are stored in KB (desktop unit) and converted to bytes when

@@ -61,19 +61,19 @@ def _supported_locales() -> list[str]:
     return re.findall(r"'([^']+)'", match.group(1))
 
 
-def test_bootnode_fields_present_in_ui() -> None:
-    """The p2p section exposes the optional bootnode host and the UPnP toggle."""
+def test_discovery_server_fields_present_in_ui() -> None:
+    """The p2p section exposes the discovery-server list and the UPnP toggle."""
     html = INDEX_HTML.read_text(encoding="utf-8")
-    assert 'id="HSYNC_BOOTNODE"' in html
-    assert 'id="HSYNC_UPNP_ENABLED"' in html
+    assert 'id="HSYNC_DISCOVERY_SERVER_ENDPOINTS"' in html
+    assert 'id="HSYNC_MAP_DATA_PORT"' in html
 
 
-def test_php_config_whitelists_bootnode_keys() -> None:
-    """Both PHP endpoints whitelist the two new environment keys."""
+def test_php_config_whitelists_discovery_server_keys() -> None:
+    """Both PHP endpoints whitelist the renamed environment keys."""
     for name in ("config_get.php", "config_set.php"):
         text = (WEB / name).read_text(encoding="utf-8")
-        assert "HSYNC_BOOTNODE" in text, name
-        assert "HSYNC_UPNP_ENABLED" in text, name
+        assert "HSYNC_DISCOVERY_SERVER_ENDPOINTS" in text, name
+        assert "HSYNC_MAP_DATA_PORT" in text, name
 
 
 def test_i18n_has_bootnode_keys_in_all_locales() -> None:
@@ -89,8 +89,8 @@ def test_start_sh_uses_p2p_subcommand_and_exports_bootnode() -> None:
     start = (PKG / "start.sh").read_text(encoding="utf-8")
     assert 'SUBCOMMAND="p2p"' in start
     assert 'SUBCOMMAND="lan"' not in start
-    assert "export HSYNC_BOOTNODE" in start
-    assert "export HSYNC_UPNP_ENABLED" in start
+    assert "export HSYNC_DISCOVERY_SERVER_ENDPOINTS" in start
+    assert "export HSYNC_MAP_DATA_PORT" in start
 
 
 def test_mode_value_is_p2p_everywhere() -> None:
@@ -112,16 +112,16 @@ def test_config_set_accepts_endpoint_grammar() -> None:
 
 
 def test_config_set_whitelists_server() -> None:
-    """``config_set.php`` validates ``HSYNC_SERVER`` (bare host or https:// URL)."""
+    """``config_set.php`` validates ``HSYNC_SERVER_URL`` (bare host or https:// URL)."""
     php = (WEB / "config_set.php").read_text(encoding="utf-8")
-    assert "case 'HSYNC_SERVER':" in php
+    assert "case 'HSYNC_SERVER_URL':" in php
 
 
 def test_server_input_is_text_not_url() -> None:
     """A bare ``HOST[:PORT]`` must be accepted by the browser (type=url blocks it)."""
     html = INDEX_HTML.read_text(encoding="utf-8")
-    assert 'id="HSYNC_SERVER" type="text"' in html or 'type="text" name="HSYNC_SERVER"' in html
-    assert 'type="url" name="HSYNC_SERVER"' not in html
+    assert 'id="HSYNC_SERVER_URL" type="text"' in html or 'type="text" name="HSYNC_SERVER_URL"' in html
+    assert 'type="url" name="HSYNC_SERVER_URL"' not in html
 
 
 def test_i18n_has_server_field_in_all_locales() -> None:
@@ -133,22 +133,22 @@ def test_i18n_has_server_field_in_all_locales() -> None:
 
 
 def test_bootnode_ports_field_is_wired_end_to_end() -> None:
-    """``HSYNC_BOOTNODE_PORTS`` is exposed, whitelisted, validated and exported."""
+    """``HSYNC_DISCOVERY_SERVER_EXTRA_PORTS`` is exposed, whitelisted, validated and exported."""
     html = INDEX_HTML.read_text(encoding="utf-8")
-    assert 'id="HSYNC_BOOTNODE_PORTS"' in html
+    assert 'id="HSYNC_DISCOVERY_SERVER_EXTRA_PORTS"' in html
 
     for name in ("config_get.php", "config_set.php"):
         text = (WEB / name).read_text(encoding="utf-8")
-        assert "HSYNC_BOOTNODE_PORTS" in text, name
+        assert "HSYNC_DISCOVERY_SERVER_EXTRA_PORTS" in text, name
 
     php = (WEB / "config_set.php").read_text(encoding="utf-8")
-    assert "case 'HSYNC_BOOTNODE_PORTS':" in php
+    assert "case 'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS':" in php
 
     start = (PKG / "start.sh").read_text(encoding="utf-8")
-    assert "export HSYNC_BOOTNODE_PORTS" in start
+    assert "export HSYNC_DISCOVERY_SERVER_EXTRA_PORTS" in start
 
     app = (WEB / "app.js").read_text(encoding="utf-8")
-    assert "'HSYNC_BOOTNODE_PORTS'" in app  # CONNECT_FIELDS + generated env prefix
+    assert "'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS'" in app  # CONNECT_FIELDS + generated env prefix
 
     import json
 
@@ -261,7 +261,7 @@ def test_no_numeric_flag_receives_an_empty_value() -> None:
     """The launcher guards every numeric flag and disables the resync explicitly."""
     start = (PKG / "start.sh").read_text(encoding="utf-8")
     for var in (
-        "HSYNC_DISCOVERY_TIMEOUT",
+        "HSYNC_PEER_DISCOVERY_TIMEOUT",
         "HSYNC_HTTP_TIMEOUT",
         "HSYNC_RECONNECT_DELAY",
         "HSYNC_STABILITY_DELAY",
@@ -279,8 +279,8 @@ def test_defaults_match_the_desktop_reference() -> None:
     expected = {
         "HSYNC_BUCKET": "my-bucket",
         "HSYNC_P2P_GROUP": "my-group",
-        "HSYNC_DISCOVERY_TIMEOUT": "10",
-        "HSYNC_UPNP_ENABLED": "true",
+        "HSYNC_PEER_DISCOVERY_TIMEOUT": "10",
+        "HSYNC_MAP_DATA_PORT": "true",
         "HSYNC_HTTP_TIMEOUT": "30",
         "HSYNC_RECONNECT_DELAY": "5",
         "HSYNC_STABILITY_DELAY": "5",
@@ -290,7 +290,7 @@ def test_defaults_match_the_desktop_reference() -> None:
         "HSYNC_DELTA_MIN_FILE_SIZE": "256",
         "HSYNC_DELTA_MIN_FILE_SIZE_P2P": "1024",
         "HSYNC_SERVER_TRUST": "chain",
-        "HSYNC_BOOTNODE_TRUST": "ask",
+        "HSYNC_DISCOVERY_SERVER_TRUST": "ask",
         "HSYNC_COMPRESSION_ENABLED": "true",
         "HSYNC_PREFER_MASTER": "false",
         "HSYNC_NEVER_MASTER": "false",
@@ -322,7 +322,7 @@ def test_config_set_clamps_ranges(tmp_path: Path) -> None:
         "    'HSYNC_MODE' => 'p2p',\n"
         "    'HSYNC_BUCKET' => 'bad bucket',\n"
         "    'HSYNC_HTTP_TIMEOUT' => '',\n"
-        "    'HSYNC_DISCOVERY_TIMEOUT' => '999',\n"
+        "    'HSYNC_PEER_DISCOVERY_TIMEOUT' => '999',\n"
         "    'HSYNC_RECONNECT_DELAY' => '0',\n"
         "    'HSYNC_P2P_PEER_READ_CAP' => '100',\n"
         "    'HSYNC_SYNC_DIRECTION' => 'sideways',\n"
@@ -349,7 +349,7 @@ def test_config_set_clamps_ranges(tmp_path: Path) -> None:
     written = dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
     assert written["HSYNC_BUCKET"] == "my-bucket"
     assert written["HSYNC_HTTP_TIMEOUT"] == "30"
-    assert written["HSYNC_DISCOVERY_TIMEOUT"] == "60"
+    assert written["HSYNC_PEER_DISCOVERY_TIMEOUT"] == "60"
     assert written["HSYNC_RECONNECT_DELAY"] == "1"
     assert written["HSYNC_P2P_PEER_READ_CAP"] == "32"
     assert written["HSYNC_SYNC_DIRECTION"] == "bidirectional"

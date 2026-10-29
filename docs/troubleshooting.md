@@ -34,19 +34,19 @@ Typical causes in the log:
 
 1. Confirm both devices use the same share name (`HSYNC_BUCKET`) and the same
    password (`HSYNC_P2P_PASSPHRASE`).
-2. If the devices are on **different networks**, set `HSYNC_BOOTNODE` to the
+2. If the devices are on **different networks**, set `HSYNC_DISCOVERY_SERVER_ENDPOINTS` to the
    discovery server and make sure the NAS can reach it (**Test discovery
    server**).
 3. Check that the local firewall/UPnP allows the master port; set
    `HSYNC_P2P_PORT` to an explicit port if the router needs a fixed mapping.
-4. Increase `HSYNC_DISCOVERY_TIMEOUT` if the network is slow (range 5–60 s).
+4. Increase `HSYNC_PEER_DISCOVERY_TIMEOUT` if the network is slow (range 5–60 s).
 
 ## TLS or fingerprint errors
 
 | Message | Meaning | Fix |
 | --- | --- | --- |
 | `unknown server` / fingerprint mismatch | The certificate changed or the pin is wrong | **Manage trusted servers & devices**, remove the stale entry, **Test Connection** and pin the new fingerprint |
-| `untrusted discovery server` | No pin and no TOFU/accept-new policy | Set `HSYNC_BOOTNODE_TRUST` or pin the fingerprint |
+| `untrusted discovery server` | No pin and no TOFU/accept-new policy | Set `HSYNC_DISCOVERY_SERVER_TRUST` or pin the fingerprint |
 | `certificate verify failed` (server mode) | The CA is not trusted | Upload the CA PEM in **Certificates**, or pin the fingerprint |
 
 Never use `HSYNC_INSECURE` to "make it work": it disables the identity check

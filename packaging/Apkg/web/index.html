@@ -437,27 +437,27 @@
         <p class="hsync-note" data-i18n="note.p2p_secure">p2p transport is encrypted (HTTPS/WSS). The master keeps a persistent identity and peers pin it on first contact.</p>
         <label class="hsync-label">
             <span data-i18n="field.discovery_timeout">Device search timeout (s)</span>
-            <input type="number" name="HSYNC_DISCOVERY_TIMEOUT" id="HSYNC_DISCOVERY_TIMEOUT" min="5" max="60">
+            <input type="number" name="HSYNC_PEER_DISCOVERY_TIMEOUT" id="HSYNC_PEER_DISCOVERY_TIMEOUT" min="5" max="60">
         </label>
         <label class="hsync-label">
             <span data-i18n="field.bootnode">Discovery server (optional)</span>
-            <input type="text" name="HSYNC_BOOTNODE" id="HSYNC_BOOTNODE" placeholder="boot.example.net:443">
+            <input type="text" name="HSYNC_DISCOVERY_SERVER_ENDPOINTS" id="HSYNC_DISCOVERY_SERVER_ENDPOINTS" placeholder="boot.example.net:443">
         </label>
         <label class="hsync-label">
             <span data-i18n="field.bootnode_ports">Extra discovery server UDP ports (optional)</span>
-            <input type="text" name="HSYNC_BOOTNODE_PORTS" id="HSYNC_BOOTNODE_PORTS" placeholder="53">
+            <input type="text" name="HSYNC_DISCOVERY_SERVER_EXTRA_PORTS" id="HSYNC_DISCOVERY_SERVER_EXTRA_PORTS" placeholder="53">
         </label>
         <label class="hsync-label">
             <span data-i18n="field.bootnode_fingerprint">Discovery server fingerprint (optional)</span>
-            <input type="text" name="HSYNC_BOOTNODE_FINGERPRINT" id="HSYNC_BOOTNODE_FINGERPRINT" placeholder="sha256:...">
+            <input type="text" name="HSYNC_DISCOVERY_SERVER_FINGERPRINTS" id="HSYNC_DISCOVERY_SERVER_FINGERPRINTS" placeholder="sha256:...">
         </label>
         <label class="hsync-label hsync-check">
-            <input type="checkbox" name="HSYNC_BOOTNODE_TOFU" id="HSYNC_BOOTNODE_TOFU">
+            <input type="checkbox" name="HSYNC_DISCOVERY_SERVER_TOFU" id="HSYNC_DISCOVERY_SERVER_TOFU">
             <span data-i18n="field.bootnode_tofu">Trust the discovery server on first use</span>
         </label>
         <label class="hsync-label">
             <span data-i18n="field.bootnode_trust">Discovery server identity check</span>
-            <select name="HSYNC_BOOTNODE_TRUST" id="HSYNC_BOOTNODE_TRUST">
+            <select name="HSYNC_DISCOVERY_SERVER_TRUST" id="HSYNC_DISCOVERY_SERVER_TRUST">
                 <option value="ask" data-i18n="trust_option.ask">Ask on first use</option>
                 <option value="accept-new" data-i18n="trust_option.accept_new">Accept automatically</option>
                 <option value="strict" data-i18n="trust_option.strict">Require the saved identity</option>
@@ -465,7 +465,7 @@
             </select>
         </label>
         <label class="hsync-label hsync-check">
-            <input type="checkbox" name="HSYNC_UPNP_ENABLED" id="HSYNC_UPNP_ENABLED">
+            <input type="checkbox" name="HSYNC_MAP_DATA_PORT" id="HSYNC_MAP_DATA_PORT">
             <span data-i18n="field.upnp">Open the port on my router automatically</span>
         </label>
         <label class="hsync-label">
@@ -513,7 +513,7 @@
         <div class="hsync-legend" data-i18n="section.server">Server</div>
         <label class="hsync-label">
             <span data-i18n="field.server">Server address</span>
-            <input type="text" name="HSYNC_SERVER" id="HSYNC_SERVER" placeholder="server.example.com:9753">
+            <input type="text" name="HSYNC_SERVER_URL" id="HSYNC_SERVER_URL" placeholder="server.example.com:9753">
         </label>
         <label class="hsync-label">
             <span data-i18n="field.api_key">API Key</span>
@@ -541,7 +541,7 @@
         </div>
         <label class="hsync-label">
             <span data-i18n="field.server_fingerprint">Server fingerprint (optional)</span>
-            <input type="text" name="HSYNC_SERVER_FINGERPRINT" id="HSYNC_SERVER_FINGERPRINT" placeholder="sha256:...">
+            <input type="text" name="HSYNC_SERVER_FINGERPRINTS" id="HSYNC_SERVER_FINGERPRINTS" placeholder="sha256:...">
         </label>
         <label class="hsync-label hsync-check">
             <input type="checkbox" name="HSYNC_SERVER_TOFU" id="HSYNC_SERVER_TOFU">
@@ -770,7 +770,7 @@
         <div class="hsync-list" id="hsync-trust-list"></div>
         <div class="hsync-actions" style="padding: 10px 16px !important; margin: 0 !important;">
             <select id="hsync-trust-kind">
-                <option value="bootnode" data-i18n="trust.kind_bootnode">Discovery server</option>
+                <option value="discovery-server" data-i18n="trust.kind_bootnode">Discovery server</option>
                 <option value="server" data-i18n="trust.kind_server">Server</option>
                 <option value="peer" data-i18n="trust.kind_peer">Device</option>
             </select>

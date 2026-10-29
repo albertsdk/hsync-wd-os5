@@ -81,19 +81,19 @@ fi
 : "${HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES:=false}"
 : "${HSYNC_P2P_ALLOW_UNAUTHENTICATED:=false}"
 : "${HSYNC_ALLOW_DELETIONS:=false}"
-: "${HSYNC_DISCOVERY_TIMEOUT:=10}"
-: "${HSYNC_BOOTNODE:=}"
-: "${HSYNC_BOOTNODE_FINGERPRINT:=}"
-: "${HSYNC_BOOTNODE_TOFU:=false}"
-: "${HSYNC_BOOTNODE_TRUST:=ask}"
-: "${HSYNC_BOOTNODE_PORTS:=}"
-: "${HSYNC_UPNP_ENABLED:=true}"
-: "${HSYNC_SERVER:=}"
+: "${HSYNC_PEER_DISCOVERY_TIMEOUT:=10}"
+: "${HSYNC_DISCOVERY_SERVER_ENDPOINTS:=}"
+: "${HSYNC_DISCOVERY_SERVER_FINGERPRINTS:=}"
+: "${HSYNC_DISCOVERY_SERVER_TOFU:=false}"
+: "${HSYNC_DISCOVERY_SERVER_TRUST:=ask}"
+: "${HSYNC_DISCOVERY_SERVER_EXTRA_PORTS:=}"
+: "${HSYNC_MAP_DATA_PORT:=true}"
+: "${HSYNC_SERVER_URL:=}"
 : "${HSYNC_API_KEY:=}"
 : "${HSYNC_INSECURE:=false}"
 : "${HSYNC_CA_CERT:=}"
 : "${HSYNC_SERVER_TRUST:=chain}"
-: "${HSYNC_SERVER_FINGERPRINT:=}"
+: "${HSYNC_SERVER_FINGERPRINTS:=}"
 : "${HSYNC_SERVER_TOFU:=false}"
 : "${HSYNC_INTERVAL:=0}"
 : "${HSYNC_DELETION_POLICY:=keep}"
@@ -135,9 +135,9 @@ case "${HSYNC_SERVER_TRUST}" in
     chain|ask|accept-new|strict|none) ;;
     *) HSYNC_SERVER_TRUST=chain ;;
 esac
-case "${HSYNC_BOOTNODE_TRUST}" in
+case "${HSYNC_DISCOVERY_SERVER_TRUST}" in
     ask|accept-new|strict|none) ;;
-    *) HSYNC_BOOTNODE_TRUST=ask ;;
+    *) HSYNC_DISCOVERY_SERVER_TRUST=ask ;;
 esac
 
 mkdir -p "${HSYNC_LOG_DIR}" "${HSYNC_RUN_DIR}" "${HSYNC_PATH}"
@@ -175,7 +175,7 @@ case "${HSYNC_MODE}" in
         is_uint_gt0 "${HSYNC_P2P_PORT}"               && set -- "$@" --listen-port "${HSYNC_P2P_PORT}"
         # A non-numeric or empty timeout must never reach the CLI: it would
         # abort the startup, so the client's own default applies instead.
-        is_uint_gt0 "${HSYNC_DISCOVERY_TIMEOUT}"      && set -- "$@" --discovery-timeout "${HSYNC_DISCOVERY_TIMEOUT}"
+        is_uint_gt0 "${HSYNC_PEER_DISCOVERY_TIMEOUT}"      && set -- "$@" --peer-discovery-timeout "${HSYNC_PEER_DISCOVERY_TIMEOUT}"
         # A p2p master is always bidirectional, so "prefer master" cannot be
         # combined with a one-way direction (the client rejects that pair).
         if [ "${HSYNC_PREFER_MASTER}" = "true" ] && [ "${HSYNC_SYNC_DIRECTION}" = "bidirectional" ]; then
@@ -184,8 +184,8 @@ case "${HSYNC_MODE}" in
         [ "${HSYNC_NEVER_MASTER}" = "true" ]          && set -- "$@" --never-master
         ;;
     server)
-        if [ -z "${HSYNC_SERVER}" ]; then
-            echo "HSYNC_MODE=server requires HSYNC_SERVER" >> "$LOG"
+        if [ -z "${HSYNC_SERVER_URL}" ]; then
+            echo "HSYNC_MODE=server requires HSYNC_SERVER_URL" >> "$LOG"
             exit 1
         fi
         # The full server URL is exported below: the bare-hostname form is
@@ -271,18 +271,18 @@ export HSYNC_NTP_HOSTS
 # Cross-network discovery: the bootnode host and the UPnP choice are
 # env-driven (the client also accepts a positional, but the service exports
 # them so no argument ordering is involved).
-export HSYNC_BOOTNODE
-export HSYNC_BOOTNODE_FINGERPRINT
-export HSYNC_BOOTNODE_TOFU
-export HSYNC_BOOTNODE_TRUST
-export HSYNC_BOOTNODE_PORTS
-export HSYNC_UPNP_ENABLED
+export HSYNC_DISCOVERY_SERVER_ENDPOINTS
+export HSYNC_DISCOVERY_SERVER_FINGERPRINTS
+export HSYNC_DISCOVERY_SERVER_TOFU
+export HSYNC_DISCOVERY_SERVER_TRUST
+export HSYNC_DISCOVERY_SERVER_EXTRA_PORTS
+export HSYNC_MAP_DATA_PORT
 # Server-mode endpoint: exported like the keys above — the client reads it
 # from the environment (no CLI flag carries the URL anymore).
-export HSYNC_SERVER
+export HSYNC_SERVER_URL
 # Server TLS trust (ADR-0036): the pin/tofu/policy are env-driven too.
 export HSYNC_SERVER_TRUST
-export HSYNC_SERVER_FINGERPRINT
+export HSYNC_SERVER_FINGERPRINTS
 export HSYNC_SERVER_TOFU
 # Per-file retry waits have no CLI flags; EnvSettings reads them from the
 # process environment. Empty values stay unset so autotune/defaults apply.

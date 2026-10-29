@@ -35,8 +35,8 @@
     const CHECKBOX_KEYS = [
         'HSYNC_PREFER_MASTER',
         'HSYNC_NEVER_MASTER',
-        'HSYNC_UPNP_ENABLED',
-        'HSYNC_BOOTNODE_TOFU',
+        'HSYNC_MAP_DATA_PORT',
+        'HSYNC_DISCOVERY_SERVER_TOFU',
         'HSYNC_SERVER_TOFU',
         'HSYNC_INSECURE',
         'HSYNC_P2P_PEER_DOWNLOAD', 'HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES',
@@ -50,7 +50,7 @@
 
     // Fields whose values are interpolated into the generated connect command;
     // editing any of them must re-render the section.
-    const CONNECT_FIELDS = ['HSYNC_BUCKET', 'HSYNC_P2P_GROUP', 'HSYNC_P2P_PASSPHRASE', 'HSYNC_BOOTNODE', 'HSYNC_BOOTNODE_FINGERPRINT', 'HSYNC_BOOTNODE_TOFU', 'HSYNC_BOOTNODE_TRUST', 'HSYNC_BOOTNODE_PORTS'];
+    const CONNECT_FIELDS = ['HSYNC_BUCKET', 'HSYNC_P2P_GROUP', 'HSYNC_P2P_PASSPHRASE', 'HSYNC_DISCOVERY_SERVER_ENDPOINTS', 'HSYNC_DISCOVERY_SERVER_FINGERPRINTS', 'HSYNC_DISCOVERY_SERVER_TOFU', 'HSYNC_DISCOVERY_SERVER_TRUST', 'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS'];
 
     function isConnectField(id) {
         return CONNECT_FIELDS.includes(id);
@@ -220,22 +220,22 @@
         // Cross-network discovery: the other device must use the same bootnode,
         // so it travels as an env prefix (HOST[:PORT], no scheme), together
         // with the optional fingerprint pin / trust-on-first-use.
-        const bootnodeEl = $('#HSYNC_BOOTNODE');
+        const bootnodeEl = $('#HSYNC_DISCOVERY_SERVER_ENDPOINTS');
         const bootnode = bootnodeEl ? bootnodeEl.value.trim() : '';
-        const fpEl = $('#HSYNC_BOOTNODE_FINGERPRINT');
+        const fpEl = $('#HSYNC_DISCOVERY_SERVER_FINGERPRINTS');
         const fp = fpEl ? fpEl.value.trim() : '';
-        const tofuEl = $('#HSYNC_BOOTNODE_TOFU');
+        const tofuEl = $('#HSYNC_DISCOVERY_SERVER_TOFU');
         const tofu = !!tofuEl && tofuEl.checked;
-        const trustEl = $('#HSYNC_BOOTNODE_TRUST');
+        const trustEl = $('#HSYNC_DISCOVERY_SERVER_TRUST');
         const trust = trustEl ? trustEl.value : '';
-        const portsEl = $('#HSYNC_BOOTNODE_PORTS');
+        const portsEl = $('#HSYNC_DISCOVERY_SERVER_EXTRA_PORTS');
         const ports = portsEl ? portsEl.value.trim() : '';
         let envPrefix = '';
-        if (bootnode) envPrefix += 'HSYNC_BOOTNODE=' + shellQuote(bootnode) + ' ';
-        if (fp) envPrefix += 'HSYNC_BOOTNODE_FINGERPRINT=' + shellQuote(fp) + ' ';
-        if (tofu) envPrefix += 'HSYNC_BOOTNODE_TOFU=true ';
-        if (trust) envPrefix += 'HSYNC_BOOTNODE_TRUST=' + shellQuote(trust) + ' ';
-        if (ports) envPrefix += 'HSYNC_BOOTNODE_PORTS=' + shellQuote(ports) + ' ';
+        if (bootnode) envPrefix += 'HSYNC_DISCOVERY_SERVER_ENDPOINTS=' + shellQuote(bootnode) + ' ';
+        if (fp) envPrefix += 'HSYNC_DISCOVERY_SERVER_FINGERPRINTS=' + shellQuote(fp) + ' ';
+        if (tofu) envPrefix += 'HSYNC_DISCOVERY_SERVER_TOFU=true ';
+        if (trust) envPrefix += 'HSYNC_DISCOVERY_SERVER_TRUST=' + shellQuote(trust) + ' ';
+        if (ports) envPrefix += 'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS=' + shellQuote(ports) + ' ';
         if (envPrefix) cmd = envPrefix + cmd;
 
         const showKey = passphrase.length > 0;
@@ -528,8 +528,11 @@
     // Probes, maintenance and certificate upload
     // -----------------------------------------------------------------
     async function testEndpoint(target) {
-        const hostEl = $(target === 'server' ? '#HSYNC_SERVER' : '#HSYNC_BOOTNODE');
-        const host = hostEl ? hostEl.value.trim() : '';
+        const hostEl = $(target === 'server' ? '#HSYNC_SERVER_URL' : '#HSYNC_DISCOVERY_SERVER_ENDPOINTS');
+        // The discovery-server field accepts a comma-separated list; probe the
+        // first entry so the button always tests one concrete node.
+        const raw = hostEl ? hostEl.value.trim() : '';
+        const host = target === 'server' ? raw : raw.split(',')[0].trim();
         if (!host) {
             toast(t('toast.test_missing', 'Set the address first'), 'error');
             return;
@@ -671,7 +674,7 @@
         bind('hsync-ignore-close', closeIgnoreEditor);
         bind('hsync-ignore-save', saveIgnoreRules);
         bind('hsync-btn-test-server', () => testEndpoint('server'));
-        bind('hsync-btn-test-bootnode', () => testEndpoint('bootnode'));
+        bind('hsync-btn-test-bootnode', () => testEndpoint('discovery-server'));
         bind('hsync-btn-reset-state', resetSyncState);
         bind('hsync-btn-trust', async () => {
             const modal = $('#hsync-trust-modal');

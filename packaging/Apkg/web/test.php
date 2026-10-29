@@ -20,7 +20,7 @@ parse_str($raw, $post);
 $target = (string)($post['target'] ?? '');
 $host = trim((string)($post['host'] ?? ''));
 
-if (!in_array($target, ['server', 'bootnode'], true)) {
+if (!in_array($target, ['server', 'discovery-server'], true)) {
     hsync_reply(['ok' => false, 'error' => 'invalid_target'], 400);
 }
 $endpoint_re = '/^(?:[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?|\[[0-9A-Fa-f:.]+\])(?::[0-9]{1,5})?$/';

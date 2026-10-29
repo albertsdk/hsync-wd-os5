@@ -56,7 +56,7 @@ After the install, open the app and pick a mode:
   (`HSYNC_P2P_PASSPHRASE`) everywhere; the **Connect another device** section
   prints the command to run on the other machines.
 - **server** — point the NAS at an HSYNC Server with
-  `HSYNC_SERVER` + `HSYNC_API_KEY`.
+  `HSYNC_SERVER_URL` + `HSYNC_API_KEY`.
 
 Then press **Save** and **Start**. The web UI tour is in
 [docs/usage.md](docs/usage.md); every field is described in
