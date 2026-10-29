@@ -1,0 +1,19 @@
+# Tooling configuration only: this repository ships no Python package.
+#
+# The packaged application is the hsync client frozen from the sibling
+# ``../hsync-client`` checkout (see compile.sh); the Python here is the test
+# suite that guards the Apkg tree and the build/packaging contract. The
+# released artifact version is the client version — never one declared here.
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM"]
+ignore = ["E501", "E402", "B904", "SIM115", "SIM117", "SIM102", "SIM105"]

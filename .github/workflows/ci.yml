@@ -1,0 +1,84 @@
+# CI — hsync-wd-os5
+# Lint + tests for the WD My Cloud OS5 package. The packaged engine is frozen
+# from the sibling hsync-client checkout, so the client and hsync-common are
+# checked out next to this repository: the contract tests assert the version
+# coupling between them, and the docs link-check lives in hsync-common.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  packaging:
+    name: lint + tests (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.13", "3.14"]
+    steps:
+      - name: Checkout hsync-wd-os5
+        uses: actions/checkout@v5
+        with:
+          path: hsync-wd-os5
+
+      # The suite reads ../hsync-client/pyproject.toml and
+      # ../hsync-common/hsync_common/constants.py to prove the packaged version
+      # is the bundled engine version. Both repositories are private, so the
+      # default GITHUB_TOKEN cannot read them: use the PAT secret.
+      - name: Checkout hsync-client
+        uses: actions/checkout@v5
+        with:
+          repository: albertsdk/hsync-client
+          ref: main
+          path: hsync-client
+          token: ${{ secrets.HSYNC_COMMON_PAT }}
+
+      - name: Checkout hsync-common
+        uses: actions/checkout@v5
+        with:
+          repository: albertsdk/hsync-common
+          ref: main
+          path: hsync-common
+          token: ${{ secrets.HSYNC_COMMON_PAT }}
+
+      - name: Install PHP CLI
+        # The configuration endpoints are executed by two behavioural tests.
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends php-cli
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Docs link-check
+        working-directory: hsync-wd-os5
+        run: python ../hsync-common/scripts/dev/check_doc_links.py .
+
+      - name: Install test tooling
+        working-directory: hsync-wd-os5
+        run: python -m pip install pytest ruff
+
+      - name: Shell syntax
+        working-directory: hsync-wd-os5
+        run: |
+          bash -n compile.sh
+          for script in packaging/Apkg/*.sh; do sh -n "$script"; done
+
+      - name: Ruff (lint)
+        working-directory: hsync-wd-os5
+        run: ruff check .
+
+      - name: Ruff (format check)
+        working-directory: hsync-wd-os5
+        run: ruff format --check .
+
+      - name: Tests
+        working-directory: hsync-wd-os5
+        run: pytest -q

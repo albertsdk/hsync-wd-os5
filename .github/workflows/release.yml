@@ -1,0 +1,171 @@
+name: Release
+
+# Publish the WD My Cloud OS5 .bin installers (one per supported model) as
+# GitHub Release assets of THIS repository. The engine is frozen from the
+# sibling hsync-client checkout, so every build pins a client ref.
+#
+# Two triggers:
+# 1. vX.Y.Z tag pushed  →  create a formal Release. The tag must equal the
+#                          hsync-client version: the packaged version is the
+#                          bundled engine version, never an independent one.
+# 2. workflow_dispatch  →  build artifacts (optionally create a Release),
+#                          optionally from a different client ref/suffix.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      client_ref:
+        description: "hsync-client git ref to package (default: main)"
+        type: string
+        default: "main"
+      create_release:
+        description: "Create a GitHub Release (otherwise just build artifacts)"
+        type: boolean
+        default: false
+      version_suffix:
+        description: "Optional version suffix (e.g. 'dev', 'test123')"
+        type: string
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with: { path: hsync-wd-os5 }
+      - uses: actions/checkout@v7
+        with:
+          repository: albertsdk/hsync-client
+          ref: ${{ inputs.client_ref || 'main' }}
+          path: hsync-client
+          token: ${{ secrets.HSYNC_COMMON_PAT }}
+      - uses: actions/checkout@v7
+        with:
+          repository: albertsdk/hsync-common
+          ref: main
+          path: hsync-common
+          token: ${{ secrets.HSYNC_COMMON_PAT }}
+      - name: Install PHP CLI
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends php-cli
+      - uses: actions/setup-python@v7
+        with: { python-version: "3.13" }
+      - name: Docs link-check
+        working-directory: hsync-wd-os5
+        run: python ../hsync-common/scripts/dev/check_doc_links.py .
+      - name: Lint, shell syntax and tests
+        working-directory: hsync-wd-os5
+        run: |
+          python -m pip install pytest ruff
+          ruff check .
+          ruff format --check .
+          bash -n compile.sh
+          for script in packaging/Apkg/*.sh; do sh -n "$script"; done
+          pytest -q
+
+  packages:
+    needs: gate
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+        with: { path: hsync-wd-os5 }
+      - uses: actions/checkout@v7
+        with:
+          repository: albertsdk/hsync-client
+          ref: ${{ inputs.client_ref || 'main' }}
+          path: hsync-client
+          token: ${{ secrets.HSYNC_COMMON_PAT }}
+      - uses: actions/checkout@v7
+        with:
+          repository: albertsdk/hsync-common
+          ref: main
+          path: hsync-common
+          token: ${{ secrets.HSYNC_COMMON_PAT }}
+      # The packaged version is the client version: read it from the checkout
+      # so a build can never advertise a version its engine does not report.
+      - name: Determine version
+        id: version
+        run: |
+          CLIENT_VERSION=$(grep -E '^version\s*=' hsync-client/pyproject.toml |
+            head -1 | sed 's/.*"\(.*\)".*/\1/')
+          if [[ -z "${CLIENT_VERSION}" ]]; then
+            echo "::error::cannot read the version from hsync-client/pyproject.toml"
+            exit 1
+          fi
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            TAG_VERSION="${GITHUB_REF_NAME#v}"
+            if [[ "${TAG_VERSION}" != "${CLIENT_VERSION}" ]]; then
+              echo "::error::tag ${GITHUB_REF_NAME} does not match hsync-client ${CLIENT_VERSION}"
+              exit 1
+            fi
+            echo "version=${TAG_VERSION}" >> "$GITHUB_OUTPUT"
+          else
+            SUFFIX="${{ inputs.version_suffix }}"
+            if [[ -n "${SUFFIX}" ]]; then
+              echo "version=${CLIENT_VERSION}-${SUFFIX}" >> "$GITHUB_OUTPUT"
+            else
+              echo "version=${CLIENT_VERSION}" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+      # The ARMv7 models are cross-built under qemu-user. The QEMU bundled with
+      # the ubuntu-latest runner has regressed and crashes gcc deterministically
+      # with SIGSEGV (exit 139) while emitting -O3 code for some CPython/OpenSSL
+      # translation units, aborting the source builds even at -j1. Register a
+      # pinned, known-good QEMU/binfmt build instead of relying on the default.
+      # A recent QEMU (v10.x) is required: older lines avoid the SIGSEGV but
+      # regress the emulated link step (CPython's libm probe fails).
+      - name: Set up QEMU (pinned, known-good)
+        uses: docker/setup-qemu-action@v4
+        with:
+          image: tonistiigi/binfmt:qemu-v10.1.3
+          platforms: arm,arm64
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+      - name: Build all WD OS5 packages
+        working-directory: hsync-wd-os5
+        env:
+          HSYNC_VERSION: ${{ steps.version.outputs.version }}
+        run: ./compile.sh --target wd-os5-all
+      - uses: actions/upload-artifact@v7
+        with:
+          name: wd-os5-packages
+          path: hsync-wd-os5/dist/wd-os5/*.bin
+
+  release:
+    needs: packages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine release tag
+        id: tag
+        run: |
+          if [[ "${{ github.event_name }}" == "push" ]]; then
+            echo "tag=${GITHUB_REF_NAME}" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=v${{ needs.packages.outputs.version }}" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/download-artifact@v8
+        with:
+          path: assets
+          merge-multiple: true
+      - name: Generate checksums
+        run: |
+          cd assets
+          sha256sum * > SHA256SUMS
+      - uses: softprops/action-gh-release@v3
+        if: github.event_name == 'push' || inputs.create_release
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          target_commitish: ${{ github.sha }}
+          files: assets/*
+          generate_release_notes: true
+          prerelease: ${{ contains(steps.tag.outputs.tag, '-') }}
+          make_latest: ${{ ! contains(steps.tag.outputs.tag, '-') }}

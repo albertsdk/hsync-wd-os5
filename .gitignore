@@ -1,0 +1,50 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+**/*.pyc
+**/__pycache__
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# Unit test / coverage
+.coverage
+coverage/
+htmlcov/
+.pytest_cache/
+
+# Build / distribution
+/dist/
+/build/
+*.bin
+*.spec
+
+# mksapkg-OS5 binary downloaded on first build (see compile.sh).
+/packaging/.cache/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS specific
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Kilo
+.kilo
+
+# Cache
+.mypy_cache
+.ruff_cache
+
+# HSYNC
+.hsynckeep
