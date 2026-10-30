@@ -36,7 +36,7 @@ for the on-disk constants; user settings live in `HSYNC_ENV_FILE`.
 - `HSYNC_INTERVAL=0` disables the periodic check by exporting `HSYNC_RESYNC=0`
   instead of passing a flag (the client has no CLI "off").
 - Secrets (`HSYNC_API_KEY`, `HSYNC_P2P_PASSPHRASE`) and the env-only settings
-  (bootnode/UPnP/NTP/server trust, per-file retry waits) are **exported**, never
+  (rendezvous/UPnP/NTP/server trust, per-file retry waits) are **exported**, never
   placed on the command line, so they cannot leak through `ps`.
 - `HSYNC_STATE_DIR` defaults next to the config tree and is exported.
 
@@ -54,6 +54,6 @@ for the on-disk constants; user settings live in `HSYNC_ENV_FILE`.
 ## Test coverage
 
 `tests/test_wd_os5_web.py` asserts the launcher/installer invariants that are
-easy to break by hand: `p2p` subcommand spelling, exported bootnode/UPnP
+easy to break by hand: `p2p` subcommand spelling, exported rendezvous/UPnP
 variables, no empty value passed to a numeric flag, the shipped defaults, and
 the password wiring (`HSYNC_P2P_PASSPHRASE`, never `HSYNC_P2P_KEY`).

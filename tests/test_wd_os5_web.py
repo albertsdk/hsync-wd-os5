@@ -50,7 +50,7 @@ def test_bucket_pattern_is_v_flag_safe() -> None:
     )
 
 
-# ── bootnode / mode consistency ────────────────────────────────────────
+# ── rendezvous / mode consistency ────────────────────────────────────────
 _SUPPORTED_RE = re.compile(r"const SUPPORTED = \[([^\]]*)\]")
 
 
@@ -61,35 +61,35 @@ def _supported_locales() -> list[str]:
     return re.findall(r"'([^']+)'", match.group(1))
 
 
-def test_discovery_server_fields_present_in_ui() -> None:
-    """The p2p section exposes the discovery-server list and the UPnP toggle."""
+def test_rendezvous_server_fields_present_in_ui() -> None:
+    """The p2p section exposes the rendezvous-server list and the UPnP toggle."""
     html = INDEX_HTML.read_text(encoding="utf-8")
-    assert 'id="HSYNC_DISCOVERY_SERVER_ENDPOINTS"' in html
+    assert 'id="HSYNC_RENDEZVOUS_SERVER_ENDPOINTS"' in html
     assert 'id="HSYNC_MAP_DATA_PORT"' in html
 
 
-def test_php_config_whitelists_discovery_server_keys() -> None:
+def test_php_config_whitelists_rendezvous_server_keys() -> None:
     """Both PHP endpoints whitelist the renamed environment keys."""
     for name in ("config_get.php", "config_set.php"):
         text = (WEB / name).read_text(encoding="utf-8")
-        assert "HSYNC_DISCOVERY_SERVER_ENDPOINTS" in text, name
+        assert "HSYNC_RENDEZVOUS_SERVER_ENDPOINTS" in text, name
         assert "HSYNC_MAP_DATA_PORT" in text, name
 
 
-def test_i18n_has_bootnode_keys_in_all_locales() -> None:
+def test_i18n_has_rendezvous_keys_in_all_locales() -> None:
     import json
 
     for locale in _supported_locales():
         data = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))
-        assert data.get("field.discovery_server"), locale
+        assert data.get("field.rendezvous_server"), locale
         assert data.get("field.upnp"), locale
 
 
-def test_start_sh_uses_p2p_subcommand_and_exports_bootnode() -> None:
+def test_start_sh_uses_p2p_subcommand_and_exports_rendezvous() -> None:
     start = (PKG / "start.sh").read_text(encoding="utf-8")
     assert 'SUBCOMMAND="p2p"' in start
     assert 'SUBCOMMAND="lan"' not in start
-    assert "export HSYNC_DISCOVERY_SERVER_ENDPOINTS" in start
+    assert "export HSYNC_RENDEZVOUS_SERVER_ENDPOINTS" in start
     assert "export HSYNC_MAP_DATA_PORT" in start
 
 
@@ -132,29 +132,29 @@ def test_i18n_has_server_field_in_all_locales() -> None:
         assert data.get("field.server"), locale
 
 
-def test_bootnode_ports_field_is_wired_end_to_end() -> None:
-    """``HSYNC_DISCOVERY_SERVER_EXTRA_PORTS`` is exposed, whitelisted, validated and exported."""
+def test_rendezvous_ports_field_is_wired_end_to_end() -> None:
+    """``HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS`` is exposed, whitelisted, validated and exported."""
     html = INDEX_HTML.read_text(encoding="utf-8")
-    assert 'id="HSYNC_DISCOVERY_SERVER_EXTRA_PORTS"' in html
+    assert 'id="HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS"' in html
 
     for name in ("config_get.php", "config_set.php"):
         text = (WEB / name).read_text(encoding="utf-8")
-        assert "HSYNC_DISCOVERY_SERVER_EXTRA_PORTS" in text, name
+        assert "HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS" in text, name
 
     php = (WEB / "config_set.php").read_text(encoding="utf-8")
-    assert "case 'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS':" in php
+    assert "case 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS':" in php
 
     start = (PKG / "start.sh").read_text(encoding="utf-8")
-    assert "export HSYNC_DISCOVERY_SERVER_EXTRA_PORTS" in start
+    assert "export HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS" in start
 
     app = (WEB / "app.js").read_text(encoding="utf-8")
-    assert "'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS'" in app  # CONNECT_FIELDS + generated env prefix
+    assert "'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS'" in app  # CONNECT_FIELDS + generated env prefix
 
     import json
 
     for locale in _supported_locales():
         data = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))
-        assert data.get("field.discovery_server_extra_ports"), locale
+        assert data.get("field.rendezvous_server_extra_ports"), locale
 
 
 def test_i18n_dictionaries_cover_every_supported_locale() -> None:
@@ -261,7 +261,7 @@ def test_no_numeric_flag_receives_an_empty_value() -> None:
     """The launcher guards every numeric flag and disables the resync explicitly."""
     start = (PKG / "start.sh").read_text(encoding="utf-8")
     for var in (
-        "HSYNC_PEER_DISCOVERY_TIMEOUT",
+        "HSYNC_PEER_RENDEZVOUS_TIMEOUT",
         "HSYNC_HTTP_TIMEOUT",
         "HSYNC_RECONNECT_DELAY",
         "HSYNC_STABILITY_DELAY",
@@ -279,7 +279,7 @@ def test_defaults_match_the_desktop_reference() -> None:
     expected = {
         "HSYNC_BUCKET": "my-bucket",
         "HSYNC_P2P_GROUP": "my-group",
-        "HSYNC_PEER_DISCOVERY_TIMEOUT": "10",
+        "HSYNC_PEER_RENDEZVOUS_TIMEOUT": "10",
         "HSYNC_MAP_DATA_PORT": "true",
         "HSYNC_HTTP_TIMEOUT": "30",
         "HSYNC_RECONNECT_DELAY": "5",
@@ -290,7 +290,7 @@ def test_defaults_match_the_desktop_reference() -> None:
         "HSYNC_DELTA_MIN_FILE_SIZE": "256",
         "HSYNC_DELTA_MIN_FILE_SIZE_P2P": "1024",
         "HSYNC_SERVER_TRUST": "chain",
-        "HSYNC_DISCOVERY_SERVER_TRUST": "ask",
+        "HSYNC_RENDEZVOUS_SERVER_TRUST": "ask",
         "HSYNC_COMPRESSION_ENABLED": "true",
         "HSYNC_PREFER_MASTER": "false",
         "HSYNC_NEVER_MASTER": "false",
@@ -322,7 +322,7 @@ def test_config_set_clamps_ranges(tmp_path: Path) -> None:
         "    'HSYNC_MODE' => 'p2p',\n"
         "    'HSYNC_BUCKET' => 'bad bucket',\n"
         "    'HSYNC_HTTP_TIMEOUT' => '',\n"
-        "    'HSYNC_PEER_DISCOVERY_TIMEOUT' => '999',\n"
+        "    'HSYNC_PEER_RENDEZVOUS_TIMEOUT' => '999',\n"
         "    'HSYNC_RECONNECT_DELAY' => '0',\n"
         "    'HSYNC_P2P_PEER_READ_CAP' => '100',\n"
         "    'HSYNC_SYNC_DIRECTION' => 'sideways',\n"
@@ -349,7 +349,7 @@ def test_config_set_clamps_ranges(tmp_path: Path) -> None:
     written = dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
     assert written["HSYNC_BUCKET"] == "my-bucket"
     assert written["HSYNC_HTTP_TIMEOUT"] == "30"
-    assert written["HSYNC_PEER_DISCOVERY_TIMEOUT"] == "60"
+    assert written["HSYNC_PEER_RENDEZVOUS_TIMEOUT"] == "60"
     assert written["HSYNC_RECONNECT_DELAY"] == "1"
     assert written["HSYNC_P2P_PEER_READ_CAP"] == "32"
     assert written["HSYNC_SYNC_DIRECTION"] == "bidirectional"

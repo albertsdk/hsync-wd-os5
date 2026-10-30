@@ -57,9 +57,9 @@ const KEYS = [
     'HSYNC_P2P_TRUST', 'HSYNC_P2P_PEER_DOWNLOAD',
     'HSYNC_P2P_PEER_READ_CAP', 'HSYNC_P2P_PEER_SOURCES_MAX',
     'HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES', 'HSYNC_P2P_ALLOW_UNAUTHENTICATED',
-    'HSYNC_ALLOW_DELETIONS', 'HSYNC_PEER_DISCOVERY_TIMEOUT',
-    'HSYNC_DISCOVERY_SERVER_ENDPOINTS', 'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS', 'HSYNC_DISCOVERY_SERVER_FINGERPRINTS',
-    'HSYNC_DISCOVERY_SERVER_TOFU', 'HSYNC_DISCOVERY_SERVER_TRUST', 'HSYNC_MAP_DATA_PORT',
+    'HSYNC_ALLOW_DELETIONS', 'HSYNC_PEER_RENDEZVOUS_TIMEOUT',
+    'HSYNC_RENDEZVOUS_SERVER_ENDPOINTS', 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS', 'HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS',
+    'HSYNC_RENDEZVOUS_SERVER_TOFU', 'HSYNC_RENDEZVOUS_SERVER_TRUST', 'HSYNC_MAP_DATA_PORT',
     'HSYNC_NTP_HOSTS',
     'HSYNC_SERVER_URL', 'HSYNC_API_KEY', 'HSYNC_INSECURE', 'HSYNC_CA_CERT',
     'HSYNC_SERVER_TRUST', 'HSYNC_SERVER_FINGERPRINTS', 'HSYNC_SERVER_TOFU',
@@ -136,12 +136,12 @@ foreach (KEYS as $key) {
             }
             $val = implode(',', array_slice($patterns, 0, 50));
             break;
-        case 'HSYNC_DISCOVERY_SERVER_ENDPOINTS':
+        case 'HSYNC_RENDEZVOUS_SERVER_ENDPOINTS':
             // Ordered, comma-separated HOST[:PORT] endpoints (hostname/IPv4 or
-            // bracketed IPv6); empty is valid and means "mDNS-only discovery".
+            // bracketed IPv6); empty is valid and means "mDNS-only rendezvous".
             // No scheme, no path. One bad entry invalidates the whole value
             // rather than being dropped silently: a typo must fail visibly, not
-            // quietly turn cross-network discovery off.
+            // quietly turn cross-network rendezvous off.
             if ($val !== '') {
                 $valid = true;
                 foreach (array_map('trim', explode(',', $val)) as $entry) {
@@ -157,7 +157,7 @@ foreach (KEYS as $key) {
                 && !preg_match($endpoint_re, $val)
                 && !preg_match('/^https:\/\//', $val)) $val = '';
             break;
-        case 'HSYNC_DISCOVERY_SERVER_FINGERPRINTS':
+        case 'HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS':
             // Empty (no pin) or up to two 'sha256:<hex64>' / '<hex64>' pins,
             // comma-separated. Anything else is dropped to '' (fail closed).
             if ($val !== '') {
@@ -170,7 +170,7 @@ foreach (KEYS as $key) {
             }
             break;
         case 'HSYNC_SERVER_FINGERPRINTS':
-            // Same grammar as the bootnode pins: empty or up to two sha256 pins.
+            // Same grammar as the rendezvous pins: empty or up to two sha256 pins.
             if ($val !== '') {
                 $parts = array_map('trim', explode(',', $val));
                 $valid = count($parts) <= 2;
@@ -187,11 +187,11 @@ foreach (KEYS as $key) {
             // Absolute path to an existing readable PEM file, or empty.
             if ($val !== '' && (!str_starts_with($val, '/') || !is_file($val))) $val = '';
             break;
-        case 'HSYNC_DISCOVERY_SERVER_EXTRA_PORTS':
+        case 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS':
             // Comma-separated UDP ports (1-65535), order preserved; invalid and
             // duplicate entries are dropped (the client applies the same
             // normalization on load). Empty = single-port dialing (only the
-            // bootnode/default port is tried).
+            // rendezvous/default port is tried).
             $ports = [];
             foreach (array_map('trim', explode(',', $val)) as $p) {
                 if ($p === '' || !preg_match('/^[0-9]{1,5}$/', $p)) continue;
@@ -200,8 +200,8 @@ foreach (KEYS as $key) {
             }
             $val = implode(',', $ports);
             break;
-        case 'HSYNC_DISCOVERY_SERVER_TRUST':
-            // Discovery-server identity check; an unknown value keeps the default.
+        case 'HSYNC_RENDEZVOUS_SERVER_TRUST':
+            // Rendezvous-server identity check; an unknown value keeps the default.
             if (!in_array($val, ['ask', 'accept-new', 'strict', 'none'], true)) $val = 'ask';
             break;
         case 'HSYNC_SERVER_TRUST':
@@ -224,7 +224,7 @@ foreach (KEYS as $key) {
                 $val = '';
             }
             break;
-        case 'HSYNC_PEER_DISCOVERY_TIMEOUT':
+        case 'HSYNC_PEER_RENDEZVOUS_TIMEOUT':
             $val = clamp_int($val, 5, 60, 10);
             break;
         case 'HSYNC_HTTP_TIMEOUT':
@@ -304,7 +304,7 @@ foreach (KEYS as $key) {
         case 'HSYNC_DRY_RUN':
         case 'HSYNC_MASS_DELETE_GUARD':
         case 'HSYNC_MAP_DATA_PORT':
-        case 'HSYNC_DISCOVERY_SERVER_TOFU':
+        case 'HSYNC_RENDEZVOUS_SERVER_TOFU':
         case 'HSYNC_SERVER_TOFU':
         case 'HSYNC_AUTOTUNE':
         case 'HSYNC_P2P_PEER_DOWNLOAD':

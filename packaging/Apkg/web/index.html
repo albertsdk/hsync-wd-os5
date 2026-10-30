@@ -433,31 +433,31 @@
     </div>
     <!-- p2p: Finding devices --------------------------------------- -->
     <div class="hsync-section">
-        <div class="hsync-legend" data-i18n="section.p2p_discovery">Finding devices</div>
+        <div class="hsync-legend" data-i18n="section.p2p_rendezvous">Finding devices</div>
         <p class="hsync-note" data-i18n="note.p2p_secure">p2p transport is encrypted (HTTPS/WSS). The master keeps a persistent identity and peers pin it on first contact.</p>
         <label class="hsync-label">
-            <span data-i18n="field.discovery_timeout">Device search timeout (s)</span>
-            <input type="number" name="HSYNC_PEER_DISCOVERY_TIMEOUT" id="HSYNC_PEER_DISCOVERY_TIMEOUT" min="5" max="60">
+            <span data-i18n="field.rendezvous_timeout">Device search timeout (s)</span>
+            <input type="number" name="HSYNC_PEER_RENDEZVOUS_TIMEOUT" id="HSYNC_PEER_RENDEZVOUS_TIMEOUT" min="5" max="60">
         </label>
         <label class="hsync-label">
-            <span data-i18n="field.discovery_server">Discovery server (optional)</span>
-            <input type="text" name="HSYNC_DISCOVERY_SERVER_ENDPOINTS" id="HSYNC_DISCOVERY_SERVER_ENDPOINTS" placeholder="boot.example.net:443">
+            <span data-i18n="field.rendezvous_server">Rendezvous server (optional)</span>
+            <input type="text" name="HSYNC_RENDEZVOUS_SERVER_ENDPOINTS" id="HSYNC_RENDEZVOUS_SERVER_ENDPOINTS" placeholder="boot.example.net:443">
         </label>
         <label class="hsync-label">
-            <span data-i18n="field.discovery_server_extra_ports">Extra discovery server UDP ports (optional)</span>
-            <input type="text" name="HSYNC_DISCOVERY_SERVER_EXTRA_PORTS" id="HSYNC_DISCOVERY_SERVER_EXTRA_PORTS" placeholder="53">
+            <span data-i18n="field.rendezvous_server_extra_ports">Extra rendezvous server UDP ports (optional)</span>
+            <input type="text" name="HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS" id="HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS" placeholder="53">
         </label>
         <label class="hsync-label">
-            <span data-i18n="field.discovery_server_fingerprints">Discovery server fingerprint (optional)</span>
-            <input type="text" name="HSYNC_DISCOVERY_SERVER_FINGERPRINTS" id="HSYNC_DISCOVERY_SERVER_FINGERPRINTS" placeholder="sha256:...">
+            <span data-i18n="field.rendezvous_server_fingerprints">Rendezvous server fingerprint (optional)</span>
+            <input type="text" name="HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS" id="HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS" placeholder="sha256:...">
         </label>
         <label class="hsync-label hsync-check">
-            <input type="checkbox" name="HSYNC_DISCOVERY_SERVER_TOFU" id="HSYNC_DISCOVERY_SERVER_TOFU">
-            <span data-i18n="field.discovery_server_tofu">Trust the discovery server on first use</span>
+            <input type="checkbox" name="HSYNC_RENDEZVOUS_SERVER_TOFU" id="HSYNC_RENDEZVOUS_SERVER_TOFU">
+            <span data-i18n="field.rendezvous_server_tofu">Trust the rendezvous server on first use</span>
         </label>
         <label class="hsync-label">
-            <span data-i18n="field.discovery_server_trust">Discovery server identity check</span>
-            <select name="HSYNC_DISCOVERY_SERVER_TRUST" id="HSYNC_DISCOVERY_SERVER_TRUST">
+            <span data-i18n="field.rendezvous_server_trust">Rendezvous server identity check</span>
+            <select name="HSYNC_RENDEZVOUS_SERVER_TRUST" id="HSYNC_RENDEZVOUS_SERVER_TRUST">
                 <option value="ask" data-i18n="trust_option.ask">Ask on first use</option>
                 <option value="accept-new" data-i18n="trust_option.accept_new">Accept automatically</option>
                 <option value="strict" data-i18n="trust_option.strict">Require the saved identity</option>
@@ -474,7 +474,7 @@
                    placeholder="pool.ntp.org,time.cloudflare.com,time.google.com">
         </label>
         <div class="hsync-actions">
-            <button type="button" id="hsync-btn-test-bootnode" class="hsync-btn" data-i18n="action.test_discovery_server">Test discovery server</button>
+            <button type="button" id="hsync-btn-test-rendezvous" class="hsync-btn" data-i18n="action.test_rendezvous_server">Test rendezvous server</button>
         </div>
     </div>
 
@@ -770,7 +770,7 @@
         <div class="hsync-list" id="hsync-trust-list"></div>
         <div class="hsync-actions" style="padding: 10px 16px !important; margin: 0 !important;">
             <select id="hsync-trust-kind">
-                <option value="discovery-server" data-i18n="trust.kind_discovery_server">Discovery server</option>
+                <option value="rendezvous-server" data-i18n="trust.kind_rendezvous_server">Rendezvous server</option>
                 <option value="server" data-i18n="trust.kind_server">Server</option>
                 <option value="peer" data-i18n="trust.kind_peer">Device</option>
             </select>

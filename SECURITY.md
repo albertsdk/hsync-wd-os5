@@ -44,7 +44,7 @@ a web UI served by the stock Apache:
   (`HSYNC_SERVER_TRUST=chain`); p2p is HTTPS/WSS-only with certificate
   fingerprint pinning. `HSYNC_INSECURE` disables verification and is for testing
   only.
-- **Discovery server** — authenticated by certificate fingerprint; a changed
+- **Rendezvous server** — authenticated by certificate fingerprint; a changed
   fingerprint is always refused.
 - **Unattended appliance** — the NAS cannot answer an interactive `ask`
   prompt, so the shipped p2p default is `accept-new` (pin on first use). Pin
@@ -54,7 +54,7 @@ a web UI served by the stock Apache:
 
 - Upload the HSYNC Server CA certificate (`Certificates` → **Upload…**) or pin
   the server fingerprint instead of using `HSYNC_INSECURE`.
-- Pin the discovery server fingerprint and use `HSYNC_DISCOVERY_SERVER_TRUST=strict`.
+- Pin the rendezvous server fingerprint and use `HSYNC_RENDEZVOUS_SERVER_TRUST=strict`.
 - Use a long shared password (`HSYNC_P2P_PASSPHRASE`, at least 12 characters;
   the installer generates 24) and keep it out of shell history and screenshots.
 - Restrict dashboard access to administrators; the web UI has no separate login.

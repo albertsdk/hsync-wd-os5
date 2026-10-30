@@ -52,22 +52,22 @@ describe what the NAS writes and what the range check accepts.
 | `HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES` | `false` | `true`, `false` — dangerous |
 | `HSYNC_P2P_ALLOW_UNAUTHENTICATED` | `false` | `true`, `false` — dangerous |
 | `HSYNC_ALLOW_DELETIONS` | `false` | `true`, `false` |
-| `HSYNC_PEER_DISCOVERY_TIMEOUT` | `10` | `5`–`60` seconds |
+| `HSYNC_PEER_RENDEZVOUS_TIMEOUT` | `10` | `5`–`60` seconds |
 
-## Discovery server (p2p across networks)
+## Rendezvous server (p2p across networks)
 
 | Key | Default | Allowed values |
 | --- | --- | --- |
-| `HSYNC_DISCOVERY_SERVER_ENDPOINTS` | empty | `HOST`, `HOST:PORT`, `[IPv6]`, `[IPv6]:PORT`; empty keeps discovery on the local network |
-| `HSYNC_DISCOVERY_SERVER_EXTRA_PORTS` | empty | comma-separated UDP ports `1`–`65535`, order preserved |
-| `HSYNC_DISCOVERY_SERVER_FINGERPRINTS` | empty | up to two `sha256:<64 hex>` (or bare hex) pins, comma-separated |
-| `HSYNC_DISCOVERY_SERVER_TOFU` | `false` | `true`, `false` — trust the discovery server on first use |
-| `HSYNC_DISCOVERY_SERVER_TRUST` | `ask` | `ask`, `accept-new`, `strict`, `none` |
+| `HSYNC_RENDEZVOUS_SERVER_ENDPOINTS` | empty | `HOST`, `HOST:PORT`, `[IPv6]`, `[IPv6]:PORT`; empty keeps rendezvous on the local network |
+| `HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS` | empty | comma-separated UDP ports `1`–`65535`, order preserved |
+| `HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS` | empty | up to two `sha256:<64 hex>` (or bare hex) pins, comma-separated |
+| `HSYNC_RENDEZVOUS_SERVER_TOFU` | `false` | `true`, `false` — trust the rendezvous server on first use |
+| `HSYNC_RENDEZVOUS_SERVER_TRUST` | `ask` | `ask`, `accept-new`, `strict`, `none` |
 | `HSYNC_MAP_DATA_PORT` | `true` | `true`, `false` — map the master port with UPnP |
 | `HSYNC_NTP_HOSTS` | empty | comma-separated SNTP hosts used for clock-offset correction |
 
-An empty pin fails closed: without `HSYNC_DISCOVERY_SERVER_TOFU` or
-`accept-new`/`none` the discovery server is not trusted automatically.
+An empty pin fails closed: without `HSYNC_RENDEZVOUS_SERVER_TOFU` or
+`accept-new`/`none` the rendezvous server is not trusted automatically.
 
 ## Server mode
 

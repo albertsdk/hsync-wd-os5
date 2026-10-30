@@ -81,12 +81,12 @@ fi
 : "${HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES:=false}"
 : "${HSYNC_P2P_ALLOW_UNAUTHENTICATED:=false}"
 : "${HSYNC_ALLOW_DELETIONS:=false}"
-: "${HSYNC_PEER_DISCOVERY_TIMEOUT:=10}"
-: "${HSYNC_DISCOVERY_SERVER_ENDPOINTS:=}"
-: "${HSYNC_DISCOVERY_SERVER_FINGERPRINTS:=}"
-: "${HSYNC_DISCOVERY_SERVER_TOFU:=false}"
-: "${HSYNC_DISCOVERY_SERVER_TRUST:=ask}"
-: "${HSYNC_DISCOVERY_SERVER_EXTRA_PORTS:=}"
+: "${HSYNC_PEER_RENDEZVOUS_TIMEOUT:=10}"
+: "${HSYNC_RENDEZVOUS_SERVER_ENDPOINTS:=}"
+: "${HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS:=}"
+: "${HSYNC_RENDEZVOUS_SERVER_TOFU:=false}"
+: "${HSYNC_RENDEZVOUS_SERVER_TRUST:=ask}"
+: "${HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS:=}"
 : "${HSYNC_MAP_DATA_PORT:=true}"
 : "${HSYNC_SERVER_URL:=}"
 : "${HSYNC_API_KEY:=}"
@@ -135,9 +135,9 @@ case "${HSYNC_SERVER_TRUST}" in
     chain|ask|accept-new|strict|none) ;;
     *) HSYNC_SERVER_TRUST=chain ;;
 esac
-case "${HSYNC_DISCOVERY_SERVER_TRUST}" in
+case "${HSYNC_RENDEZVOUS_SERVER_TRUST}" in
     ask|accept-new|strict|none) ;;
-    *) HSYNC_DISCOVERY_SERVER_TRUST=ask ;;
+    *) HSYNC_RENDEZVOUS_SERVER_TRUST=ask ;;
 esac
 
 mkdir -p "${HSYNC_LOG_DIR}" "${HSYNC_RUN_DIR}" "${HSYNC_PATH}"
@@ -175,7 +175,7 @@ case "${HSYNC_MODE}" in
         is_uint_gt0 "${HSYNC_P2P_PORT}"               && set -- "$@" --listen-port "${HSYNC_P2P_PORT}"
         # A non-numeric or empty timeout must never reach the CLI: it would
         # abort the startup, so the client's own default applies instead.
-        is_uint_gt0 "${HSYNC_PEER_DISCOVERY_TIMEOUT}"      && set -- "$@" --peer-discovery-timeout "${HSYNC_PEER_DISCOVERY_TIMEOUT}"
+        is_uint_gt0 "${HSYNC_PEER_RENDEZVOUS_TIMEOUT}"      && set -- "$@" --peer-rendezvous-timeout "${HSYNC_PEER_RENDEZVOUS_TIMEOUT}"
         # A p2p master is always bidirectional, so "prefer master" cannot be
         # combined with a one-way direction (the client rejects that pair).
         if [ "${HSYNC_PREFER_MASTER}" = "true" ] && [ "${HSYNC_SYNC_DIRECTION}" = "bidirectional" ]; then
@@ -268,14 +268,14 @@ export HSYNC_P2P_PEER_READ_CAP
 export HSYNC_P2P_PEER_SOURCES_MAX
 export HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES
 export HSYNC_NTP_HOSTS
-# Cross-network discovery: the bootnode host and the UPnP choice are
+# Cross-network rendezvous: the rendezvous host and the UPnP choice are
 # env-driven (the client also accepts a positional, but the service exports
 # them so no argument ordering is involved).
-export HSYNC_DISCOVERY_SERVER_ENDPOINTS
-export HSYNC_DISCOVERY_SERVER_FINGERPRINTS
-export HSYNC_DISCOVERY_SERVER_TOFU
-export HSYNC_DISCOVERY_SERVER_TRUST
-export HSYNC_DISCOVERY_SERVER_EXTRA_PORTS
+export HSYNC_RENDEZVOUS_SERVER_ENDPOINTS
+export HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS
+export HSYNC_RENDEZVOUS_SERVER_TOFU
+export HSYNC_RENDEZVOUS_SERVER_TRUST
+export HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS
 export HSYNC_MAP_DATA_PORT
 # Server-mode endpoint: exported like the keys above — the client reads it
 # from the environment (no CLI flag carries the URL anymore).

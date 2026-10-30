@@ -17,7 +17,7 @@ handles with dialogs.
 | `packaging/Apkg/web/config_get.php` | returns the whitelisted `HSYNC_*` keys from `hsync.env` as JSON |
 | `packaging/Apkg/web/config_set.php` | validates + writes the whitelisted keys atomically (`::clamp_int`, per-key grammars) |
 | `packaging/Apkg/web/hsyncignore_get.php` / `_set.php` | read/replace `<HSYNC_PATH>/.hsyncignore` (hot-reloaded by the client) |
-| `packaging/Apkg/web/trust.php` | `hsync trust <kind> list\|add\|remove` for bootnode/server/peer |
+| `packaging/Apkg/web/trust.php` | `hsync trust <kind> list\|add\|remove` for rendezvous/server/peer |
 | `packaging/Apkg/web/state_reset.php` | stop → `hsync state reset --folder … --quarantine --json` → start |
 | `packaging/Apkg/web/test.php` | reachability + fingerprint via `hsync trust <kind> fingerprint` |
 | `packaging/Apkg/web/ca_cert_upload.php` | stores a PEM as `config/ca.pem` (the `HSYNC_CA_CERT` path) |

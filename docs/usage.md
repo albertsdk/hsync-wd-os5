@@ -20,8 +20,8 @@ version of the installed engine.
 The **Mode** section switches the whole form between the two run modes:
 
 - **p2p** — this NAS is a peer. Fill **Mode & Group** (share name and shared
-  password), optionally **Finding devices** (discovery server for cross-network
-  discovery) and **Role & security**.
+  password), optionally **Finding devices** (rendezvous server for cross-network
+  rendezvous) and **Role & security**.
 - **server** — this NAS is a client of a central HSYNC Server. Fill **Server**
   (URL and API key) and, if you use a private CA or a pinned certificate,
   **Certificates**.
@@ -86,12 +86,12 @@ form adds comma-separated patterns on top of the file.
 **Manage trusted servers & devices…** edits the trust store used for
 fingerprint pinning:
 
-- **Discovery server** — the `boot/1` node identity
+- **Rendezvous server** — the `rdv/1` node identity
 - **Server** — the central HSYNC Server certificate
 - **Peer** — a p2p master certificate
 
 For each kind the dialog lists the pinned fingerprints and lets you **Add**
-(host + `sha256:…` fingerprint) or **Remove** an entry. **Test discovery
+(host + `sha256:…` fingerprint) or **Remove** an entry. **Test rendezvous
 server** and **Test Connection** contact the configured endpoint and show its
 fingerprint, so you can pin it before the first connection.
 

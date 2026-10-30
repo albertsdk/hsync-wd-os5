@@ -131,25 +131,25 @@ HSYNC_P2P_PEER_SOURCES_MAX="3"
 HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES="false"
 HSYNC_P2P_ALLOW_UNAUTHENTICATED="false"
 HSYNC_ALLOW_DELETIONS="false"
-# Seconds to wait for peer discovery.
-HSYNC_PEER_DISCOVERY_TIMEOUT="10"
-# Optional discovery server for cross-network discovery (bare host, no scheme,
-# no port; empty = discovery stays on the local network). Set the same host on
+# Seconds to wait for peer rendezvous.
+HSYNC_PEER_RENDEZVOUS_TIMEOUT="10"
+# Optional rendezvous server for cross-network rendezvous (bare host, no scheme,
+# no port; empty = rendezvous stays on the local network). Set the same host on
 # every device of the group.
-HSYNC_DISCOVERY_SERVER_ENDPOINTS=""
-# Extra UDP ports to try for the same discovery server (comma-separated, ordered),
+HSYNC_RENDEZVOUS_SERVER_ENDPOINTS=""
+# Extra UDP ports to try for the same rendezvous server (comma-separated, ordered),
 # e.g. "53" so a client whose egress firewall blocks UDP 443 reaches the node
-# on 53. Empty = single-port. The discovery server must listen on the same set.
-HSYNC_DISCOVERY_SERVER_EXTRA_PORTS=""
-# Pin the discovery server certificate fingerprint ('sha256:<hex>' or bare hex,
+# on 53. Empty = single-port. The rendezvous server must listen on the same set.
+HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS=""
+# Pin the rendezvous server certificate fingerprint ('sha256:<hex>' or bare hex,
 # comma-separated up to two for a rotation window); empty = no pin (fail closed).
-HSYNC_DISCOVERY_SERVER_FINGERPRINTS=""
-# Trust the discovery server certificate on first use (TOFU).
-HSYNC_DISCOVERY_SERVER_TOFU="false"
-# Discovery server identity check: ask | accept-new | strict | none
-HSYNC_DISCOVERY_SERVER_TRUST="ask"
+HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS=""
+# Trust the rendezvous server certificate on first use (TOFU).
+HSYNC_RENDEZVOUS_SERVER_TOFU="false"
+# Rendezvous server identity check: ask | accept-new | strict | none
+HSYNC_RENDEZVOUS_SERVER_TRUST="ask"
 # Map the master TCP port with UPnP so peers on other networks can dial this
-# device. Only effective with a discovery server.
+# device. Only effective with a rendezvous server.
 HSYNC_MAP_DATA_PORT="true"
 
 # Server mode (used only when HSYNC_MODE=server)

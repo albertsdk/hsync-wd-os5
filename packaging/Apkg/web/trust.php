@@ -18,11 +18,11 @@ if ($raw === false || strlen($raw) > 65536) {
 parse_str($raw, $post);
 
 $action = (string)($post['action'] ?? 'list');
-$kind = (string)($post['kind'] ?? 'discovery-server');
+$kind = (string)($post['kind'] ?? 'rendezvous-server');
 $host = trim((string)($post['host'] ?? ''));
 $fingerprint = trim((string)($post['fingerprint'] ?? ''));
 
-if (!in_array($kind, ['discovery-server', 'server', 'peer'], true)) {
+if (!in_array($kind, ['rendezvous-server', 'server', 'peer'], true)) {
     hsync_reply(['ok' => false, 'error' => 'invalid_kind'], 400);
 }
 if (!in_array($action, ['list', 'add', 'remove'], true)) {
