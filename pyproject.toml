@@ -5,6 +5,7 @@
 # suite that guards the Apkg tree and the build/packaging contract. The
 # released artifact version is the client version — never one declared here.
 [tool.pytest.ini_options]
+asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]

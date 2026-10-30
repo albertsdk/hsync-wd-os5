@@ -120,7 +120,9 @@ def test_config_set_whitelists_server() -> None:
 def test_server_input_is_text_not_url() -> None:
     """A bare ``HOST[:PORT]`` must be accepted by the browser (type=url blocks it)."""
     html = INDEX_HTML.read_text(encoding="utf-8")
-    assert 'id="HSYNC_SERVER_URL" type="text"' in html or 'type="text" name="HSYNC_SERVER_URL"' in html
+    assert (
+        'id="HSYNC_SERVER_URL" type="text"' in html or 'type="text" name="HSYNC_SERVER_URL"' in html
+    )
     assert 'type="url" name="HSYNC_SERVER_URL"' not in html
 
 
