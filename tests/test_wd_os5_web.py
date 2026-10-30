@@ -81,7 +81,7 @@ def test_i18n_has_bootnode_keys_in_all_locales() -> None:
 
     for locale in _supported_locales():
         data = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))
-        assert data.get("field.bootnode"), locale
+        assert data.get("field.discovery_server"), locale
         assert data.get("field.upnp"), locale
 
 
@@ -154,7 +154,7 @@ def test_bootnode_ports_field_is_wired_end_to_end() -> None:
 
     for locale in _supported_locales():
         data = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))
-        assert data.get("field.bootnode_ports"), locale
+        assert data.get("field.discovery_server_extra_ports"), locale
 
 
 def test_i18n_dictionaries_cover_every_supported_locale() -> None:
