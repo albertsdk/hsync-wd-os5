@@ -17,7 +17,7 @@ to configure and control it without SSH.
 | Background service | The HSYNC client (the platform-specific frozen binary) runs as a NAS service and syncs the configured shared folder |
 | Web UI | Configuration, start/stop/restart, log viewer, ignore list, trust store, sync-state reset, "connect another device" command |
 | Data on the NAS | Everything lives under `/mnt/HD/HD_a2/hsync` (`config/`, `data/`, `log/`, `run/`, `state/`) and survives package upgrades |
-| Modes | **p2p** (NAS is a peer; optionally found across networks through a rendezvous server) and **server** (NAS is a client of a central HSYNC Server) |
+| Modes | **p2p** (NAS is a peer; optionally found across networks through a discovery server) and **server** (NAS is a client of a central HSYNC Server) |
 
 The NAS is treated as a **backup target** by default: deletions made on the
 other devices are never applied here (`HSYNC_DELETION_POLICY=keep`), so a

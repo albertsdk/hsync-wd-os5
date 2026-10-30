@@ -1,6 +1,6 @@
 <?php
 /*
- * test.php — check that a server or rendezvous server is reachable.
+ * test.php — check that a server or a discovery server is reachable.
  *
  * Reading the peer certificate through ``hsync trust <kind> fingerprint`` proves
  * reachability and returns the SHA256 fingerprint in one round-trip, so the UI

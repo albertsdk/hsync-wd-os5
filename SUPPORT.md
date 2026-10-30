@@ -22,7 +22,7 @@
    binaries) and that the firmware is supported.
 3. Check the shared-folder path, free space (`HSYNC_MIN_FREE_DISK`) and the
    share name / password match on every device.
-4. For TLS problems, use **Test rendezvous server** / **Test Connection** and
+4. For TLS problems, use **Test discovery servers** / **Test Connection** and
    compare the fingerprint with the one you pinned.
 
 ## 💚 Solo project
