@@ -75,6 +75,42 @@ installers and always packages an **explicit engine ref**:
 Both jobs check out `hsync-client` and `hsync-common` with
 `secrets.HSYNC_COMMON_PAT` because those repositories are private.
 
+### Create a release
+
+This repository declares **no version of its own**: the packaged version is
+always the bundled `hsync-client` version, so a release only sets the tag —
+there is no version bump to commit here.
+
+1. Ensure the working tree is clean and on `main`.
+2. Make sure the matching `hsync-client` tag `vX.Y.Z` exists: the workflow
+   checks it out as the engine ref and fails when the tag's version differs
+   from the client's. Publish the client release first if needed.
+3. Tag the commit and push the tag:
+
+   ```bash
+   git tag vX.Y.Z
+   git push origin vX.Y.Z
+   ```
+
+4. The `release.yml` workflow runs automatically: it gates on lint+test,
+   builds all 10 model `.bin` packages (4 ARMv7 + 6 amd64) with
+   `./compile.sh --target wd-os5-all`, generates `SHA256SUMS`, and creates the
+   GitHub Release with auto-generated release notes.
+5. Verify the release on the
+   [Releases page](https://github.com/albertsdk/hsync-wd-os5/releases).
+
+> You can also trigger a build-only run (no tag, no Release) or a Release from
+> a different engine ref via `workflow_dispatch` on the Actions tab — useful
+> for testing packaging changes without cutting a release. A
+> `vX.Y.Z-<prerelease>` tag produces a GitHub prerelease (never `latest`), as
+> in the other HSYNC projects.
+
+### Post-release checklist
+
+- [ ] All model `.bin` packages and `SHA256SUMS` are uploaded to the release
+- [ ] A `.bin` is installed and smoke-tested on a WD My Cloud OS5 unit
+- [ ] Release notes are published on GitHub
+
 ## Changing the web UI or the launcher
 
 Any change to a CLI flag, an `HSYNC_*` variable or a user-facing default must
