@@ -188,6 +188,36 @@ def test_missing_bin_aborts_with_an_explicit_diagnostic(tmp_path: Path) -> None:
     assert "did not produce a .bin" in result.stderr
 
 
+def test_mksapkg_tool_stdout_carries_only_the_cache_path(tmp_path: Path) -> None:
+    """Fetch progress must not leak into _mksapkg_tool's captured stdout.
+
+    Callers assign via ``mksapkg="$(_mksapkg_tool)"``; on a fresh checkout the
+    download branch emitted ``log_step`` to stdout, so the value became the
+    progress line plus the path and the ``cd`` in ``_run_mksapkg`` failed on CI.
+    """
+    result = subprocess.run(
+        [
+            "bash",
+            "-c",
+            'source "$1"; '
+            "curl() { printf '%s\\n' '#!/bin/sh' > \"$WDOS5_MKSAPKG\"; "
+            'chmod 0755 "$WDOS5_MKSAPKG"; }; '
+            'out="$(_mksapkg_tool)"; printf \'%s\' "$out"',
+            "_",
+            str(COMPILE),
+        ],
+        cwd=tmp_path,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert result.stdout == "packaging/.cache/mksapkg-OS5"
+    assert (tmp_path / result.stdout).is_file()
+    assert "Fetching mksapkg-OS5" in result.stderr
+    assert "Fetching mksapkg-OS5" not in result.stdout
+
+
 @requires_siblings
 def test_malformed_bundle_fails_with_an_explicit_diagnostic(tmp_path: Path) -> None:
     """A bundle without the entry point must not surface as a bare chmod error."""

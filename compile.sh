@@ -283,10 +283,11 @@ ensure_qemu_binfmt() {
 }
 
 # Emit the path of the cached mksapkg-OS5, downloading it on first use.
+# stdout is the value channel (callers capture it); progress goes to stderr.
 _mksapkg_tool() {
     if [[ ! -x "${WDOS5_MKSAPKG}" ]]; then
         mkdir -p "${WDOS5_CACHE_DIR}"
-        log_step "Fetching mksapkg-OS5 from WDCommunity/wdpksrc..."
+        log_step "Fetching mksapkg-OS5 from WDCommunity/wdpksrc..." >&2
         curl -fsSL "${WDOS5_MKSAPKG_URL}" -o "${WDOS5_MKSAPKG}"
         chmod 0755 "${WDOS5_MKSAPKG}"
     fi
