@@ -31,7 +31,8 @@ the client from the sibling `../hsync-client` checkout into a `.bin`.
   `git diff --cached`) and prefer explicit paths over `git add -A`.
 - **Never commit** `dist/`, `build/`, `packaging/.cache/`, `*.bin`, `.venv/` or
   any `.env`-style secret file.
-- Conventional Commits (`type(scope): description`), English only.
+- Conventional Commits (`type(scope): description`), English only. Keep the
+  message concise: precise, but no elaboration.
 
 ## ⚠️ Domain-critical rule — WD My Cloud OS5
 
@@ -130,5 +131,6 @@ invocation style) structurally aligned with the other projects' `compile.sh`.
 
 ## 📝 Changelog
 
-`CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/). Do not
+`CHANGELOG.md` follows [Keep a Changelog](https://keepachangelog.com/). Keep
+entries concise: one short, precise line per change, without elaboration. Do not
 edit it without explicit confirmation for the current task.
