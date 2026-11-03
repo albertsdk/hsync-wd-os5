@@ -50,6 +50,44 @@ def test_bucket_pattern_is_v_flag_safe() -> None:
     )
 
 
+# ── placeholder styling ──────────────────────────────────────────────────
+
+_HEX_RE = re.compile(r"#([0-9A-Fa-f]{6})")
+
+
+def _relative_luminance(hex_color: str) -> float:
+    """WCAG 2.1 relative luminance of an ``#rrggbb`` colour."""
+    channels = [int(hex_color[i : i + 2], 16) / 255 for i in (1, 3, 5)]
+
+    def linear(c: float) -> float:
+        return c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4
+
+    r, g, b = (linear(c) for c in channels)
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+
+def _contrast_ratio(fg: str, bg: str) -> float:
+    lf, lb = _relative_luminance(fg), _relative_luminance(bg)
+    hi, lo = max(lf, lb), min(lf, lb)
+    return (hi + 0.05) / (lo + 0.05)
+
+
+def test_placeholder_text_is_visually_distinct_and_accessible() -> None:
+    """Placeholders are hints, not saved values: they must not share the input
+    text colour (#161D1D) and must keep WCAG AA contrast on the white field, or
+    an empty field reads as a filled one."""
+    html = INDEX_HTML.read_text(encoding="utf-8")
+    match = re.search(r"#hsync-app\s+input::placeholder\s*\{([^}]*)\}", html)
+    assert match is not None, "no '#hsync-app input::placeholder' rule in index.html"
+    color = _HEX_RE.search(match.group(1))
+    assert color is not None, "the ::placeholder rule sets no colour"
+    value = color.group(0).upper()
+    assert value != "#161D1D", "placeholder colour equals the input text colour"
+    assert _contrast_ratio(value, "#FFFFFF") >= 4.5, (
+        f"placeholder {value} is below the WCAG AA 4.5:1 contrast on white"
+    )
+
+
 # ── rendezvous / mode consistency ────────────────────────────────────────
 _SUPPORTED_RE = re.compile(r"const SUPPORTED = \[([^\]]*)\]")
 

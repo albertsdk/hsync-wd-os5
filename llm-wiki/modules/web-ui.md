@@ -50,6 +50,9 @@ without a form field is reset to its default on Save.
   `packaging/Apkg/web/app.js::SUPPORTED` carries the same keys.
 - `packaging/Apkg/start.sh` never passes an empty argument to a numeric flag and disables the
   periodic check explicitly with `HSYNC_RESYNC=0`.
+- Placeholder text is a muted colour distinct from the input text
+  (`packaging/Apkg/web/index.html` `#hsync-app input::placeholder`, WCAG AA on white), so an
+  empty field is never mistaken for a filled one.
 
 ## "Connect another device" command generator
 

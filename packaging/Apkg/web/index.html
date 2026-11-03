@@ -191,6 +191,22 @@
     color: #161D1D;
 }
 
+/*
+ * Placeholders are format hints, never saved values: a muted colour stays
+ * readable (WCAG AA, 4.74:1 on the white field) yet clearly lighter than the
+ * real text (#161D1D), so an empty field cannot be mistaken for a filled one.
+ * opacity:1 stops Firefox's default placeholder opacity from fading it further.
+ */
+#hsync-app input::placeholder {
+    color: #6b7575;
+    opacity: 1;
+}
+/* Legacy WebKit (the OS5 dashboard is injected into a WebKit-era page). */
+#hsync-app input::-webkit-input-placeholder {
+    color: #6b7575;
+    opacity: 1;
+}
+
 /* ---- buttons ---- */
 #hsync-app .hsync-actions {
     display: flex !important;
