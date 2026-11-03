@@ -153,6 +153,30 @@ def test_unrelated_version_is_refused() -> None:
 
 
 @requires_siblings
+def test_patch_level_drift_is_warned_but_allowed() -> None:
+    """A version that differs from the engine only in the patch number is
+    tolerated with a warning instead of aborting the build."""
+    result = _bash(
+        'source ./compile.sh; e="$(_engine_version)"; v="${e%.*}.999"; '
+        '_verify_embedded_version "${v}"'
+    )
+    assert result.returncode == 0, result.stdout
+    assert "only in the patch number" in result.stdout
+    assert "Packaging hsync" in result.stdout
+
+
+@requires_siblings
+def test_minor_level_drift_is_refused() -> None:
+    """A major/minor drift from the bundled engine must still abort the build."""
+    result = _bash(
+        'source ./compile.sh; e="$(_engine_version)"; v="${e%%.*}.99.0"; '
+        '_verify_embedded_version "${v}"'
+    )
+    assert result.returncode != 0
+    assert "does not match the bundled engine" in result.stderr
+
+
+@requires_siblings
 def test_license_is_shipped_in_the_package(tmp_path: Path) -> None:
     """BSD-3-Clause requires the license text with the binary distribution."""
     stage = tmp_path / "hsync"

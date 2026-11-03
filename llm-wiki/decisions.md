@@ -23,13 +23,15 @@ file name, while the engine reports its own `HSYNC_VERSION`.
 
 **Decision.** `compile.sh::get_version` reads the version from
 `../hsync-client/pyproject.toml` (`-v` / `HSYNC_VERSION` override it) and
-`compile.sh::_verify_embedded_version` refuses any base version that differs
-from `hsync_common.constants::HSYNC_VERSION`. Only a suffix
-(`-alpha.1`, `+build.7`) may be added. This repository declares no version of
-its own.
+`compile.sh::_verify_embedded_version` refuses any major/minor drift from
+`hsync_common.constants::HSYNC_VERSION`, while a drift confined to the patch
+number is tolerated with a warning. Only a suffix
+(`-alpha.1`, `+build.7`) may otherwise be added. This repository declares no
+version of its own.
 
-**Consequences.** One place to bump; a stale or mixed checkout fails the build
-instead of shipping a package whose dashboard version lies about its engine.
+**Consequences.** One place to bump; a stale or mixed checkout (beyond a patch
+drift) fails the build instead of shipping a package whose dashboard version lies
+about its engine.
 
 ## ADR 003 — Debian 10 (buster) for both CPU families
 

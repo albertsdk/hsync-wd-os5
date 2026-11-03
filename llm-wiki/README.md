@@ -31,7 +31,8 @@ that guards the Apkg tree and the build contract.
   `wd-ex2-ultra-os5`. There is no host/native artifact.
 - Version SSOT: the frozen client (`../hsync-client/pyproject.toml`) which must
   equal `hsync_common.constants::HSYNC_VERSION`; enforced by
-  `compile.sh::_verify_embedded_version`. Only a suffix may be added on top.
+  `compile.sh::_verify_embedded_version`. A patch-level drift is a warning; a
+  major/minor drift aborts. Only a suffix may otherwise be added on top.
 - Model → CPU family map: `compile.sh::WDOS5_ARMV7_MODELS` /
   `compile.sh::WDOS5_AMD64_MODELS`.
 - Outputs: `dist/wd-ex2-ultra-os5/<MODEL>_hsync_<ver>.bin`,

@@ -180,10 +180,34 @@ _client_version() {
 }
 
 # Version the frozen engine reports: the single source of truth shared by every
-# HSYNC component (hsync_common.constants.HSYSYNC_VERSION).
+# HSYNC component (hsync_common.constants.HSYNC_VERSION).
 _engine_version() {
     grep -E '^HSYNC_VERSION[[:space:]]*=' "${COMMON_DIR}/hsync_common/constants.py" | head -1 |
         sed 's/.*"\(.*\)".*/\1/'
+}
+
+# Classify a version against the engine version, printing one of:
+#   match        - identical
+#   patch        - same major and minor; only the patch (or a prerelease/build
+#                  suffix) differs -> tolerated with a warning
+#   incompatible - major or minor differ -> refused
+_version_relation() {
+    local reported="${1%%+*}" expected="${2%%+*}"
+    if [[ "${reported}" == "${expected}" ]]; then
+        printf 'match'
+        return 0
+    fi
+
+    local r_core="${reported%%-*}" e_core="${expected%%-*}"
+    local r_major="${r_core%%.*}"   e_major="${e_core%%.*}"
+    local r_minor="${r_core#*.}"; r_minor="${r_minor%%.*}"
+    local e_minor="${e_core#*.}"; e_minor="${e_minor%%.*}"
+
+    if [[ "${r_major}" == "${e_major}" && "${r_minor}" == "${e_minor}" ]]; then
+        printf 'patch'
+    else
+        printf 'incompatible'
+    fi
 }
 
 # Get the packaged (SemVer) version: --version flag > HSYNC_VERSION env >
@@ -198,9 +222,10 @@ get_version() {
     fi
 }
 
-# Refuse to package an engine whose version does not match the version stamped
-# into apkg.rc/VERSION/the .bin name. A suffix (prerelease or build metadata) is
-# allowed on top of the engine version, never a different base version.
+# Refuse to package a mismatched engine: a major/minor drift from the frozen
+# engine (or between the sibling checkouts) aborts the build, while a drift
+# confined to the patch number is tolerated with a warning. The stamped version
+# may otherwise only add a suffix (prerelease or build metadata).
 _verify_embedded_version() {
     local version="$1" client engine
     client="$(_client_version)"
@@ -211,18 +236,34 @@ _verify_embedded_version() {
         log_error "or HSYNC_VERSION (${COMMON_DIR}/hsync_common/constants.py)."
         exit 1
     fi
-    if [[ "${client}" != "${engine}" ]]; then
-        log_error "Sibling checkouts disagree: hsync-client ${client} but hsync-common ${engine}."
-        log_error "Update both checkouts before packaging."
-        exit 1
-    fi
+
+    case "$(_version_relation "${client}" "${engine}")" in
+        match) ;;
+        patch)
+            log_warn "Sibling checkouts differ only in the patch number:" \
+                "hsync-client ${client}, hsync-common ${engine}."
+            ;;
+        *)
+            log_error "Sibling checkouts disagree: hsync-client ${client} but hsync-common ${engine}."
+            log_error "Update both checkouts before packaging."
+            exit 1
+            ;;
+    esac
 
     case "${version}" in
         "${engine}"|"${engine}"-*|"${engine}"+*) ;;
         *)
-            log_error "Version ${version} does not match the bundled engine ${engine}."
-            log_error "Only a suffix may be added (e.g. ${engine}-alpha.1)."
-            exit 1
+            case "$(_version_relation "${version}" "${engine}")" in
+                patch)
+                    log_warn "Packaged version ${version} differs from the bundled" \
+                        "engine ${engine} only in the patch number."
+                    ;;
+                *)
+                    log_error "Version ${version} does not match the bundled engine ${engine}."
+                    log_error "Only a patch-level difference or a suffix (e.g. ${engine}-alpha.1) is allowed."
+                    exit 1
+                    ;;
+            esac
             ;;
     esac
     log_ok "Packaging hsync ${version} (engine ${engine})"

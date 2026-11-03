@@ -33,11 +33,12 @@ compile.sh
   └─ _wdos5_package_model       → build/wdos5/all/stage/<MODEL>/hsync/… → mksapkg-OS5 → dist/…bin
 ```
 
-The staged version is validated by `compile.sh::_verify_embedded_version`:
-the client `pyproject.toml` version must equal
-`../hsync-common/hsync_common/constants.py::HSYNC_VERSION`, and the requested
-version may only add a suffix. A `.bin` therefore cannot advertise a version
-its engine does not report.
+The staged version is validated by `compile.sh::_verify_embedded_version`
+(`compile.sh::_version_relation`): a major/minor drift between the client
+`pyproject.toml` version, `../hsync-common/hsync_common/constants.py::HSYNC_VERSION`
+and the requested version aborts the build, while a drift confined to the patch
+number is a warning. The requested version may otherwise only add a suffix, so a
+`.bin` cannot advertise a version its engine does not report.
 
 ## CPU families
 

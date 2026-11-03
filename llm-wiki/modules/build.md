@@ -11,7 +11,8 @@ is the firmware's, not the host's. The default target is `wd-os5-all`.
 | --- | --- |
 | `compile.sh::CLIENT_DIR`, `compile.sh::COMMON_DIR` | sibling checkouts (`../hsync-client`, `../hsync-common`) |
 | `compile.sh::get_version` | `-v` > `HSYNC_VERSION` > client `pyproject.toml` |
-| `compile.sh::_verify_embedded_version` | client version == `HSYNC_VERSION`; only a suffix may be added |
+| `compile.sh::_verify_embedded_version` | client vs `HSYNC_VERSION`: a major/minor drift aborts, a patch drift warns; only a suffix may otherwise be added |
+| `compile.sh::_version_relation` | classify a version against the engine (`match` / `patch` / `incompatible`) |
 | `compile.sh::check_prerequisites` | sibling trees present + Docker reachable |
 | `compile.sh::qemu_handler_active`, `compile.sh::ensure_qemu_binfmt` | binfmt registration for the ARMv7 emulation (docker image pinned by digest) |
 | `compile.sh::_stage_context` | minimal Docker context (`hsync-client/` + `hsync-common/`, `__pycache__` pruned) |
