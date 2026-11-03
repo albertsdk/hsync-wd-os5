@@ -88,6 +88,7 @@ fi
 : "${HSYNC_RENDEZVOUS_SERVER_TRUST:=ask}"
 : "${HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS:=}"
 : "${HSYNC_MAP_DATA_PORT:=true}"
+: "${HSYNC_MDNS:=true}"
 : "${HSYNC_SERVER_URL:=}"
 : "${HSYNC_API_KEY:=}"
 : "${HSYNC_INSECURE:=false}"
@@ -277,6 +278,7 @@ export HSYNC_RENDEZVOUS_SERVER_TOFU
 export HSYNC_RENDEZVOUS_SERVER_TRUST
 export HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS
 export HSYNC_MAP_DATA_PORT
+export HSYNC_MDNS
 # Server-mode endpoint: exported like the keys above — the client reads it
 # from the environment (no CLI flag carries the URL anymore).
 export HSYNC_SERVER_URL

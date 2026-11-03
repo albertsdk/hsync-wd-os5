@@ -64,6 +64,7 @@ describe what the NAS writes and what the range check accepts.
 | `HSYNC_RENDEZVOUS_SERVER_TOFU` | `false` | `true`, `false` — trust the discovery server on first use |
 | `HSYNC_RENDEZVOUS_SERVER_TRUST` | `ask` | `ask`, `accept-new`, `strict`, `none` |
 | `HSYNC_MAP_DATA_PORT` | `true` | `true`, `false` — map the master port with UPnP |
+| `HSYNC_MDNS` | `true` | `true`, `false` — discover devices on the local network (mDNS); `false` uses only the discovery servers (requires `HSYNC_RENDEZVOUS_SERVER_ENDPOINTS`) |
 | `HSYNC_NTP_HOSTS` | empty | comma-separated SNTP hosts used for clock-offset correction |
 
 An empty pin fails closed: without `HSYNC_RENDEZVOUS_SERVER_TOFU` or

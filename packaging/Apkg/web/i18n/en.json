@@ -62,6 +62,7 @@
     "note.p2p_secure": "p2p transport is encrypted (HTTPS/WSS). The master keeps a persistent identity and peers pin it on first contact.",
     "field.rendezvous_timeout": "Device search timeout (s)",
     "field.upnp": "Open the port on my router automatically",
+    "field.local_discovery": "Discover devices on the local network (mDNS)",
     "field.ntp_hosts": "Time servers (comma-separated)",
     "field.prefer_master": "Prefer primary role",
     "field.never_master": "Never become primary",

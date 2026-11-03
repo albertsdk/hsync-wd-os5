@@ -62,6 +62,7 @@
     "note.p2p_secure": "Transport p2p jest szyfrowany (HTTPS/WSS). Węzeł główny zachowuje trwałą tożsamość, a węzły przypinają ją przy pierwszym kontakcie.",
     "field.rendezvous_timeout": "Limit czasu wyszukiwania urządzeń (s)",
     "field.upnp": "Otwórz port na routerze automatycznie",
+    "field.local_discovery": "Wykrywaj urządzenia w sieci lokalnej (mDNS)",
     "field.ntp_hosts": "Serwery czasu (oddzielone przecinkami)",
     "field.prefer_master": "Preferuj rolę główną",
     "field.never_master": "Nigdy nie zostawaj głównym",

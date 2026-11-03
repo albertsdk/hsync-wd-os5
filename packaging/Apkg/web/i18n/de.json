@@ -62,6 +62,7 @@
     "note.p2p_secure": "Die p2p-Übertragung ist verschlüsselt (HTTPS/WSS). Der Master behält eine dauerhafte Identität, Peers fixieren sie beim ersten Kontakt.",
     "field.rendezvous_timeout": "Zeitlimit für Gerätesuche (s)",
     "field.upnp": "Port automatisch am Router öffnen",
+    "field.local_discovery": "Geräte im lokalen Netzwerk finden (mDNS)",
     "field.ntp_hosts": "Zeitserver (kommagetrennt)",
     "field.prefer_master": "Primäre Rolle bevorzugen",
     "field.never_master": "Nie primär werden",

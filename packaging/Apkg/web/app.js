@@ -36,6 +36,7 @@
         'HSYNC_PREFER_MASTER',
         'HSYNC_NEVER_MASTER',
         'HSYNC_MAP_DATA_PORT',
+        'HSYNC_MDNS',
         'HSYNC_RENDEZVOUS_SERVER_TOFU',
         'HSYNC_SERVER_TOFU',
         'HSYNC_INSECURE',

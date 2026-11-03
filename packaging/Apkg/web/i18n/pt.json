@@ -62,6 +62,7 @@
     "note.p2p_secure": "O transporte p2p é cifrado (HTTPS/WSS). O mestre mantém uma identidade persistente e os pares fixam-na no primeiro contacto.",
     "field.rendezvous_timeout": "Tempo de pesquisa de dispositivos (s)",
     "field.upnp": "Abrir a porta no router automaticamente",
+    "field.local_discovery": "Detectar dispositivos na rede local (mDNS)",
     "field.ntp_hosts": "Servidores horários (separados por vírgulas)",
     "field.prefer_master": "Preferir a função principal",
     "field.never_master": "Nunca ser principal",

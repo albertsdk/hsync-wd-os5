@@ -62,6 +62,7 @@
     "note.p2p_secure": "p2p-verkeer is versleuteld (HTTPS/WSS). De master houdt een blijvende identiteit en peers leggen die vast bij het eerste contact.",
     "field.rendezvous_timeout": "Time-out voor apparaatzoekopdracht (s)",
     "field.upnp": "De poort automatisch op de router openen",
+    "field.local_discovery": "Apparaten op het lokale netwerk detecteren (mDNS)",
     "field.ntp_hosts": "Tijdservers (komma-gescheiden)",
     "field.prefer_master": "Primaire rol verkiezen",
     "field.never_master": "Nooit primair worden",

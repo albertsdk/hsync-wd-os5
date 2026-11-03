@@ -62,6 +62,7 @@
     "note.p2p_secure": "p2p 传输始终加密（HTTPS/WSS）。主节点保持持久身份，对等节点在首次连接时固定该身份。",
     "field.rendezvous_timeout": "设备搜索超时（秒）",
     "field.upnp": "自动在路由器上打开端口",
+    "field.local_discovery": "在本地网络中发现设备（mDNS）",
     "field.ntp_hosts": "时间服务器（逗号分隔）",
     "field.prefer_master": "优先担任主节点",
     "field.never_master": "永不成为主节点",

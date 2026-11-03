@@ -62,6 +62,7 @@
     "note.p2p_secure": "Le transport p2p est chiffré (HTTPS/WSS). Le maître conserve une identité persistante et les pairs l'épinglent au premier contact.",
     "field.rendezvous_timeout": "Délai de recherche des appareils (s)",
     "field.upnp": "Ouvrir automatiquement le port sur le routeur",
+    "field.local_discovery": "Détecter les appareils sur le réseau local (mDNS)",
     "field.ntp_hosts": "Serveurs horaires (séparés par des virgules)",
     "field.prefer_master": "Préférer le rôle principal",
     "field.never_master": "Ne jamais devenir principal",
