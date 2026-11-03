@@ -151,6 +151,10 @@ HSYNC_RENDEZVOUS_SERVER_TRUST="ask"
 # Map the master TCP port with UPnP so peers on other networks can dial this
 # device. Only effective with a rendezvous server.
 HSYNC_MAP_DATA_PORT="true"
+# Discover peers over mDNS on the local network. Set to false to use only the
+# rendezvous server(s) above (exclude the local network). Only meaningful with a
+# rendezvous server configured.
+HSYNC_MDNS="true"
 
 # Server mode (used only when HSYNC_MODE=server)
 HSYNC_SERVER_URL=""

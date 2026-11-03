@@ -321,6 +321,7 @@ def test_defaults_match_the_desktop_reference() -> None:
         "HSYNC_P2P_GROUP": "my-group",
         "HSYNC_PEER_RENDEZVOUS_TIMEOUT": "10",
         "HSYNC_MAP_DATA_PORT": "true",
+        "HSYNC_MDNS": "true",
         "HSYNC_HTTP_TIMEOUT": "30",
         "HSYNC_RECONNECT_DELAY": "5",
         "HSYNC_STABILITY_DELAY": "5",
