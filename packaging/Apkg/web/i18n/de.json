@@ -139,10 +139,14 @@
     "footer.version": "Version",
     "toast.password_too_short": "Das gemeinsame Passwort muss mindestens 12 Zeichen lang sein.",
     "field.rendezvous_server": "Rendezvous-server (optional)",
-    "field.rendezvous_server_extra_ports": "Zusätzliche UDP-Ports des Rendezvous-servers (optional)",
+    "field.rendezvous_server_extra_ports": "Zusätzliche Ports des Rendezvous-servers (optional)",
     "field.rendezvous_server_fingerprints": "Fingerabdruck des Rendezvous-servers (optional)",
     "field.rendezvous_server_tofu": "Rendezvous-server beim ersten Gebrauch vertrauen",
     "field.rendezvous_server_trust": "Identitätsprüfung des Rendezvous-servers",
     "action.test_rendezvous_server": "Rendezvous-server testen",
-    "trust.kind_rendezvous_server": "Rendezvous-server"
+    "trust.kind_rendezvous_server": "Rendezvous-server",
+    "field.rendezvous_transport": "Rendezvous-server erreichen über",
+    "transport_option.auto": "Auto (QUIC, dann TLS/TCP)",
+    "transport_option.quic": "Nur QUIC/UDP",
+    "transport_option.tcp": "Nur TLS/TCP"
 }

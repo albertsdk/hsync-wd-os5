@@ -51,7 +51,7 @@
 
     // Fields whose values are interpolated into the generated connect command;
     // editing any of them must re-render the section.
-    const CONNECT_FIELDS = ['HSYNC_BUCKET', 'HSYNC_P2P_GROUP', 'HSYNC_P2P_PASSPHRASE', 'HSYNC_RENDEZVOUS_SERVER_ENDPOINTS', 'HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS', 'HSYNC_RENDEZVOUS_SERVER_TOFU', 'HSYNC_RENDEZVOUS_SERVER_TRUST', 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS'];
+    const CONNECT_FIELDS = ['HSYNC_BUCKET', 'HSYNC_P2P_GROUP', 'HSYNC_P2P_PASSPHRASE', 'HSYNC_RENDEZVOUS_SERVER_ENDPOINTS', 'HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS', 'HSYNC_RENDEZVOUS_SERVER_TOFU', 'HSYNC_RENDEZVOUS_SERVER_TRUST', 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS', 'HSYNC_RENDEZVOUS_TRANSPORT'];
 
     function isConnectField(id) {
         return CONNECT_FIELDS.includes(id);
@@ -231,12 +231,15 @@
         const trust = trustEl ? trustEl.value : '';
         const portsEl = $('#HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS');
         const ports = portsEl ? portsEl.value.trim() : '';
+        const transportEl = $('#HSYNC_RENDEZVOUS_TRANSPORT');
+        const transport = transportEl ? transportEl.value : '';
         let envPrefix = '';
         if (rendezvous) envPrefix += 'HSYNC_RENDEZVOUS_SERVER_ENDPOINTS=' + shellQuote(rendezvous) + ' ';
         if (fp) envPrefix += 'HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS=' + shellQuote(fp) + ' ';
         if (tofu) envPrefix += 'HSYNC_RENDEZVOUS_SERVER_TOFU=true ';
         if (trust) envPrefix += 'HSYNC_RENDEZVOUS_SERVER_TRUST=' + shellQuote(trust) + ' ';
         if (ports) envPrefix += 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS=' + shellQuote(ports) + ' ';
+        if (transport) envPrefix += 'HSYNC_RENDEZVOUS_TRANSPORT=' + shellQuote(transport) + ' ';
         if (envPrefix) cmd = envPrefix + cmd;
 
         const showKey = passphrase.length > 0;

@@ -139,10 +139,14 @@
     "footer.version": "Version",
     "toast.password_too_short": "Le mot de passe partagé doit contenir au moins 12 caractères.",
     "field.rendezvous_server": "Serveur de découverte (facultatif)",
-    "field.rendezvous_server_extra_ports": "Ports UDP supplémentaires du serveur de découverte (facultatifs)",
+    "field.rendezvous_server_extra_ports": "Ports supplémentaires du serveur de découverte (facultatifs)",
     "field.rendezvous_server_fingerprints": "Empreinte du serveur de découverte (facultative)",
     "field.rendezvous_server_tofu": "Faire confiance au serveur de découverte au premier usage",
     "field.rendezvous_server_trust": "Vérification de l'identité du serveur de découverte",
     "action.test_rendezvous_server": "Tester le serveur de découverte",
-    "trust.kind_rendezvous_server": "Serveur de découverte"
+    "trust.kind_rendezvous_server": "Serveur de découverte",
+    "field.rendezvous_transport": "Atteindre le serveur de découverte via",
+    "transport_option.auto": "Auto (QUIC, puis TLS/TCP)",
+    "transport_option.quic": "QUIC/UDP uniquement",
+    "transport_option.tcp": "TLS/TCP uniquement"
 }

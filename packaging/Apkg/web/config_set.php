@@ -59,7 +59,7 @@ const KEYS = [
     'HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES', 'HSYNC_P2P_ALLOW_UNAUTHENTICATED',
     'HSYNC_ALLOW_DELETIONS', 'HSYNC_PEER_RENDEZVOUS_TIMEOUT',
     'HSYNC_RENDEZVOUS_SERVER_ENDPOINTS', 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS', 'HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS',
-    'HSYNC_RENDEZVOUS_SERVER_TOFU', 'HSYNC_RENDEZVOUS_SERVER_TRUST', 'HSYNC_MAP_DATA_PORT',
+    'HSYNC_RENDEZVOUS_SERVER_TOFU', 'HSYNC_RENDEZVOUS_SERVER_TRUST', 'HSYNC_RENDEZVOUS_TRANSPORT', 'HSYNC_MAP_DATA_PORT',
     'HSYNC_MDNS',
     'HSYNC_NTP_HOSTS',
     'HSYNC_SERVER_URL', 'HSYNC_API_KEY', 'HSYNC_INSECURE', 'HSYNC_CA_CERT',
@@ -204,6 +204,11 @@ foreach (KEYS as $key) {
         case 'HSYNC_RENDEZVOUS_SERVER_TRUST':
             // Rendezvous-server identity check; an unknown value keeps the default.
             if (!in_array($val, ['ask', 'accept-new', 'strict', 'none'], true)) $val = 'ask';
+            break;
+        case 'HSYNC_RENDEZVOUS_TRANSPORT':
+            // Transport(s) used to reach the rendezvous server(s); an unknown
+            // value keeps the default (auto races QUIC/UDP and TLS/TCP).
+            if (!in_array($val, ['auto', 'quic', 'tcp'], true)) $val = 'auto';
             break;
         case 'HSYNC_SERVER_TRUST':
             // Server identity check; chain is the standard CA validation.

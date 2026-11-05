@@ -460,8 +460,16 @@
             <input type="text" name="HSYNC_RENDEZVOUS_SERVER_ENDPOINTS" id="HSYNC_RENDEZVOUS_SERVER_ENDPOINTS" placeholder="rdv.example.net:443">
         </label>
         <label class="hsync-label">
-            <span data-i18n="field.rendezvous_server_extra_ports">Extra discovery server UDP ports (optional)</span>
+            <span data-i18n="field.rendezvous_server_extra_ports">Extra discovery server ports (optional)</span>
             <input type="text" name="HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS" id="HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS" placeholder="53">
+        </label>
+        <label class="hsync-label">
+            <span data-i18n="field.rendezvous_transport">Reach the discovery server via</span>
+            <select name="HSYNC_RENDEZVOUS_TRANSPORT" id="HSYNC_RENDEZVOUS_TRANSPORT">
+                <option value="auto" data-i18n="transport_option.auto">Auto (QUIC, then TLS/TCP)</option>
+                <option value="quic" data-i18n="transport_option.quic">QUIC/UDP only</option>
+                <option value="tcp" data-i18n="transport_option.tcp">TLS/TCP only</option>
+            </select>
         </label>
         <label class="hsync-label">
             <span data-i18n="field.rendezvous_server_fingerprints">Discovery server fingerprint (optional)</span>

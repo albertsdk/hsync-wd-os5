@@ -139,10 +139,14 @@
     "footer.version": "版本",
     "toast.password_too_short": "共享密码必须至少包含 12 个字符。",
     "field.rendezvous_server": "发现服务器（可选）",
-    "field.rendezvous_server_extra_ports": "发现服务器的额外 UDP 端口（可选）",
+    "field.rendezvous_server_extra_ports": "发现服务器的额外端口（可选）",
     "field.rendezvous_server_fingerprints": "发现服务器指纹（可选）",
     "field.rendezvous_server_tofu": "首次使用时信任发现服务器",
     "field.rendezvous_server_trust": "发现服务器身份检查",
     "action.test_rendezvous_server": "测试发现服务器",
-    "trust.kind_rendezvous_server": "发现服务器"
+    "trust.kind_rendezvous_server": "发现服务器",
+    "field.rendezvous_transport": "通过以下方式连接发现服务器",
+    "transport_option.auto": "自动（QUIC，然后 TLS/TCP）",
+    "transport_option.quic": "仅 QUIC/UDP",
+    "transport_option.tcp": "仅 TLS/TCP"
 }

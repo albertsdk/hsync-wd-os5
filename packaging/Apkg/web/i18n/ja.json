@@ -139,10 +139,14 @@
     "footer.version": "バージョン",
     "toast.password_too_short": "共有パスワードは12文字以上である必要があります。",
     "field.rendezvous_server": "検出サーバー（任意）",
-    "field.rendezvous_server_extra_ports": "検出サーバーの追加 UDP ポート（任意）",
+    "field.rendezvous_server_extra_ports": "検出サーバーの追加ポート（任意）",
     "field.rendezvous_server_fingerprints": "検出サーバーのフィンガープリント（任意）",
     "field.rendezvous_server_tofu": "初回使用時に検出サーバーを信頼する",
     "field.rendezvous_server_trust": "検出サーバーの識別情報の確認",
     "action.test_rendezvous_server": "検出サーバーをテスト",
-    "trust.kind_rendezvous_server": "検出サーバー"
+    "trust.kind_rendezvous_server": "検出サーバー",
+    "field.rendezvous_transport": "検出サーバーまでの接続",
+    "transport_option.auto": "自動（QUIC、次に TLS/TCP）",
+    "transport_option.quic": "QUIC/UDP のみ",
+    "transport_option.tcp": "TLS/TCP のみ"
 }

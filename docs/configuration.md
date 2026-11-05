@@ -59,10 +59,11 @@ describe what the NAS writes and what the range check accepts.
 | Key | Default | Allowed values |
 | --- | --- | --- |
 | `HSYNC_RENDEZVOUS_SERVER_ENDPOINTS` | empty | `HOST`, `HOST:PORT`, `[IPv6]`, `[IPv6]:PORT`; empty keeps rendezvous on the local network |
-| `HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS` | empty | comma-separated UDP ports `1`–`65535`, order preserved |
+| `HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS` | empty | comma-separated ports `1`–`65535` (tried on each transport), order preserved |
 | `HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS` | empty | up to two `sha256:<64 hex>` (or bare hex) pins, comma-separated |
 | `HSYNC_RENDEZVOUS_SERVER_TOFU` | `false` | `true`, `false` — trust the discovery server on first use |
 | `HSYNC_RENDEZVOUS_SERVER_TRUST` | `ask` | `ask`, `accept-new`, `strict`, `none` |
+| `HSYNC_RENDEZVOUS_TRANSPORT` | `auto` | `auto` (race QUIC/UDP, then TLS/TCP), `quic`, `tcp` |
 | `HSYNC_MAP_DATA_PORT` | `true` | `true`, `false` — map the master port with UPnP |
 | `HSYNC_MDNS` | `true` | `true`, `false` — discover devices on the local network (mDNS); `false` uses only the discovery servers (requires `HSYNC_RENDEZVOUS_SERVER_ENDPOINTS`) |
 | `HSYNC_NTP_HOSTS` | empty | comma-separated SNTP hosts used for clock-offset correction |

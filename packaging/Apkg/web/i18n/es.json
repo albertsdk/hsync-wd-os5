@@ -139,10 +139,14 @@
     "footer.version": "Versión",
     "toast.password_too_short": "La contraseña compartida debe tener al menos 12 caracteres.",
     "field.rendezvous_server": "Servidor de descubrimiento (opcional)",
-    "field.rendezvous_server_extra_ports": "Puertos UDP adicionales del servidor de descubrimiento (opcionales)",
+    "field.rendezvous_server_extra_ports": "Puertos adicionales del servidor de descubrimiento (opcionales)",
     "field.rendezvous_server_fingerprints": "Huella del servidor de descubrimiento (opcional)",
     "field.rendezvous_server_tofu": "Confiar en el servidor de descubrimiento al primer uso",
     "field.rendezvous_server_trust": "Verificación de identidad del servidor de descubrimiento",
     "action.test_rendezvous_server": "Probar servidor de descubrimiento",
-    "trust.kind_rendezvous_server": "Servidor de descubrimiento"
+    "trust.kind_rendezvous_server": "Servidor de descubrimiento",
+    "field.rendezvous_transport": "Alcanzar el servidor de descubrimiento vía",
+    "transport_option.auto": "Auto (QUIC, luego TLS/TCP)",
+    "transport_option.quic": "Solo QUIC/UDP",
+    "transport_option.tcp": "Solo TLS/TCP"
 }

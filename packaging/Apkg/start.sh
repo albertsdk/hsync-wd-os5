@@ -87,6 +87,7 @@ fi
 : "${HSYNC_RENDEZVOUS_SERVER_TOFU:=false}"
 : "${HSYNC_RENDEZVOUS_SERVER_TRUST:=ask}"
 : "${HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS:=}"
+: "${HSYNC_RENDEZVOUS_TRANSPORT:=auto}"
 : "${HSYNC_MAP_DATA_PORT:=true}"
 : "${HSYNC_MDNS:=true}"
 : "${HSYNC_SERVER_URL:=}"
@@ -139,6 +140,10 @@ esac
 case "${HSYNC_RENDEZVOUS_SERVER_TRUST}" in
     ask|accept-new|strict|none) ;;
     *) HSYNC_RENDEZVOUS_SERVER_TRUST=ask ;;
+esac
+case "${HSYNC_RENDEZVOUS_TRANSPORT}" in
+    auto|quic|tcp) ;;
+    *) HSYNC_RENDEZVOUS_TRANSPORT=auto ;;
 esac
 
 mkdir -p "${HSYNC_LOG_DIR}" "${HSYNC_RUN_DIR}" "${HSYNC_PATH}"
@@ -277,6 +282,7 @@ export HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS
 export HSYNC_RENDEZVOUS_SERVER_TOFU
 export HSYNC_RENDEZVOUS_SERVER_TRUST
 export HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS
+export HSYNC_RENDEZVOUS_TRANSPORT
 export HSYNC_MAP_DATA_PORT
 export HSYNC_MDNS
 # Server-mode endpoint: exported like the keys above — the client reads it

@@ -197,6 +197,38 @@ def test_rendezvous_ports_field_is_wired_end_to_end() -> None:
         assert data.get("field.rendezvous_server_extra_ports"), locale
 
 
+def test_rendezvous_transport_field_is_wired_end_to_end() -> None:
+    """``HSYNC_RENDEZVOUS_TRANSPORT`` is exposed, whitelisted, validated, exported."""
+    html = INDEX_HTML.read_text(encoding="utf-8")
+    assert 'id="HSYNC_RENDEZVOUS_TRANSPORT"' in html
+    assert 'option value="auto"' in html
+    assert 'option value="tcp"' in html
+
+    for name in ("config_get.php", "config_set.php"):
+        text = (WEB / name).read_text(encoding="utf-8")
+        assert "HSYNC_RENDEZVOUS_TRANSPORT" in text, name
+
+    php = (WEB / "config_set.php").read_text(encoding="utf-8")
+    assert "case 'HSYNC_RENDEZVOUS_TRANSPORT':" in php
+    assert "['auto', 'quic', 'tcp']" in php
+
+    start = (PKG / "start.sh").read_text(encoding="utf-8")
+    assert "HSYNC_RENDEZVOUS_TRANSPORT:=auto" in start
+    assert "export HSYNC_RENDEZVOUS_TRANSPORT" in start
+    assert "auto|quic|tcp" in start
+
+    app = (WEB / "app.js").read_text(encoding="utf-8")
+    assert "'HSYNC_RENDEZVOUS_TRANSPORT'" in app  # CONNECT_FIELDS + generated env prefix
+
+    import json
+
+    for locale in _supported_locales():
+        data = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))
+        assert data.get("field.rendezvous_transport"), locale
+        assert data.get("transport_option.auto"), locale
+        assert data.get("transport_option.tcp"), locale
+
+
 def test_i18n_dictionaries_cover_every_supported_locale() -> None:
     """Every language in app.js SUPPORTED has a complete i18n dictionary.
 

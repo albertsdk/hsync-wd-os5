@@ -139,10 +139,14 @@
     "footer.version": "Version",
     "toast.password_too_short": "The shared password must be at least 12 characters.",
     "field.rendezvous_server": "Discovery server (optional)",
-    "field.rendezvous_server_extra_ports": "Extra discovery server UDP ports (optional)",
+    "field.rendezvous_server_extra_ports": "Extra discovery server ports (optional)",
     "field.rendezvous_server_fingerprints": "Discovery server fingerprint (optional)",
     "field.rendezvous_server_tofu": "Trust the discovery server on first use",
     "field.rendezvous_server_trust": "Discovery server identity check",
     "action.test_rendezvous_server": "Test discovery server",
-    "trust.kind_rendezvous_server": "Discovery server"
+    "trust.kind_rendezvous_server": "Discovery server",
+    "field.rendezvous_transport": "Reach the discovery server via",
+    "transport_option.auto": "Auto (QUIC, then TLS/TCP)",
+    "transport_option.quic": "QUIC/UDP only",
+    "transport_option.tcp": "TLS/TCP only"
 }

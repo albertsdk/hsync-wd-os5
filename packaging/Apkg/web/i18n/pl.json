@@ -139,10 +139,14 @@
     "footer.version": "Wersja",
     "toast.password_too_short": "Wspólne hasło musi mieć co najmniej 12 znaków.",
     "field.rendezvous_server": "Serwer odkrywania (opcjonalny)",
-    "field.rendezvous_server_extra_ports": "Dodatkowe porty UDP serwera odkrywania (opcjonalne)",
+    "field.rendezvous_server_extra_ports": "Dodatkowe porty serwera odkrywania (opcjonalne)",
     "field.rendezvous_server_fingerprints": "Odcisk serwera odkrywania (opcjonalny)",
     "field.rendezvous_server_tofu": "Zaufaj serwerowi odkrywania przy pierwszym użyciu",
     "field.rendezvous_server_trust": "Sprawdzanie tożsamości serwera odkrywania",
     "action.test_rendezvous_server": "Testuj serwer odkrywania",
-    "trust.kind_rendezvous_server": "Serwer odkrywania"
+    "trust.kind_rendezvous_server": "Serwer odkrywania",
+    "field.rendezvous_transport": "Osiągnij serwer odkrywania przez",
+    "transport_option.auto": "Auto (QUIC, potem TLS/TCP)",
+    "transport_option.quic": "Tylko QUIC/UDP",
+    "transport_option.tcp": "Tylko TLS/TCP"
 }

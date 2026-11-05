@@ -139,10 +139,14 @@
     "footer.version": "Versie",
     "toast.password_too_short": "Het gedeelde wachtwoord moet minimaal 12 tekens lang zijn.",
     "field.rendezvous_server": "Rendezvous-server (optioneel)",
-    "field.rendezvous_server_extra_ports": "Extra UDP-poorten van de rendezvous-server (optioneel)",
+    "field.rendezvous_server_extra_ports": "Extra poorten van de rendezvous-server (optioneel)",
     "field.rendezvous_server_fingerprints": "Vingerafdruk van de rendezvous-server (optioneel)",
     "field.rendezvous_server_tofu": "De rendezvous-server bij eerste gebruik vertrouwen",
     "field.rendezvous_server_trust": "Identiteitscontrole van de rendezvous-server",
     "action.test_rendezvous_server": "Rendezvous-server testen",
-    "trust.kind_rendezvous_server": "Rendezvous-server"
+    "trust.kind_rendezvous_server": "Rendezvous-server",
+    "field.rendezvous_transport": "Rendezvous-server bereiken via",
+    "transport_option.auto": "Auto (QUIC, daarna TLS/TCP)",
+    "transport_option.quic": "Alleen QUIC/UDP",
+    "transport_option.tcp": "Alleen TLS/TCP"
 }
