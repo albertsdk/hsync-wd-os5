@@ -35,7 +35,7 @@ compile.sh
 
 The staged version is validated by `compile.sh::_verify_embedded_version`
 (`compile.sh::_version_relation`): a major/minor drift between the client
-`pyproject.toml` version, `../hsync-common/hsync_common/constants.py::HSYNC_VERSION`
+`pyproject.toml` version, `hsync-common/hsync_common/constants.py::HSYNC_VERSION`
 and the requested version aborts the build, while a drift confined to the patch
 number is a warning. The requested version may otherwise only add a suffix, so a
 `.bin` cannot advertise a version its engine does not report.

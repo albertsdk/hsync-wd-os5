@@ -3,7 +3,7 @@
 PHP + vanilla JS served by the stock Apache under `WEB_ROOT`
 (`packaging/Apkg/env::WEB_ROOT`, a symlink farm of `packaging/Apkg/web/*`).
 It configures and controls the daemon without SSH. The reference for defaults
-and wording is `hsync-desktop` (`../hsync-desktop/hsync_desktop/config.py`); NAS-only additions
+and wording is `hsync-desktop` (`hsync-desktop/hsync_desktop/config.py`); NAS-only additions
 are the explicit pin/TOFU fields and the dangerous opt-ins that the desktop
 handles with dialogs.
 

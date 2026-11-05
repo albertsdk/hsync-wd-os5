@@ -29,8 +29,8 @@ that guards the Apkg tree and the build contract.
   `compile.sh::APP_NAME`).
 - Build entry: `compile.sh` — default target `wd-os5-all`; single-model target
   `wd-ex2-ultra-os5`. There is no host/native artifact.
-- Version SSOT: the frozen client (`../hsync-client/pyproject.toml`) which must
-  equal `hsync_common.constants::HSYNC_VERSION`; enforced by
+- Version SSOT: the frozen client (`hsync-client/pyproject.toml`) which must
+  equal `hsync-common/hsync_common/constants.py::HSYNC_VERSION`; enforced by
   `compile.sh::_verify_embedded_version`. A patch-level drift is a warning; a
   major/minor drift aborts. Only a suffix may otherwise be added on top.
 - Model → CPU family map: `compile.sh::WDOS5_ARMV7_MODELS` /
@@ -44,15 +44,19 @@ that guards the Apkg tree and the build contract.
 ## Cross-repo SSOT
 
 - CLI flags, `HSYNC_*` variables and their semantics are owned by
-  `hsync-client` ([wiki](../../hsync-client/llm-wiki/README.md)).
+  `hsync-client` ([wiki](https://github.com/albertsdk/hsync-client/blob/main/llm-wiki/README.md)).
 - Shared constants (including `HSYNC_VERSION`) and the wire protocol are owned
-  by `hsync-common` ([wiki](../../hsync-common/llm-wiki/README.md)).
+  by `hsync-common` ([wiki](https://github.com/albertsdk/hsync-common/blob/main/llm-wiki/README.md)).
 - This repository only *mirrors* them into the NAS launcher, the web UI and the
   package. Never redefine a contract here.
 
 ## Conventions used in this wiki
 
 - Every claim is anchored to code via `path::symbol`; no line numbers.
+- Local paths are repository-root-relative. Cross-repo references start with the
+  sibling repo directory under the `hsync/` workspace root (`hsync-client/…`,
+  `hsync-common/…`, `hsync-server/…`, `hsync-rendezvous/…`, `hsync-desktop/…`) and
+  are code spans, not hyperlinks.
 - No large code blocks are duplicated — intent is described and the code
   referenced.
 - Kept in sync with `../docs/` per the Dual-Docs rule in the root `AGENTS.md`.

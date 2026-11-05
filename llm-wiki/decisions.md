@@ -22,9 +22,9 @@ documentation, workflows and release assets for the NAS package live here.
 file name, while the engine reports its own `HSYNC_VERSION`.
 
 **Decision.** `compile.sh::get_version` reads the version from
-`../hsync-client/pyproject.toml` (`-v` / `HSYNC_VERSION` override it) and
+`hsync-client/pyproject.toml` (`-v` / `HSYNC_VERSION` override it) and
 `compile.sh::_verify_embedded_version` refuses any major/minor drift from
-`hsync_common.constants::HSYNC_VERSION`, while a drift confined to the patch
+`hsync-common/hsync_common/constants.py::HSYNC_VERSION`, while a drift confined to the patch
 number is tolerated with a warning. Only a suffix
 (`-alpha.1`, `+build.7`) may otherwise be added. This repository declares no
 version of its own.
@@ -69,7 +69,7 @@ but nothing invoked it any more and the file was absent.
 **Decision.** `packaging/Apkg/web/hsync.png` (160x160) is the single committed
 source; `compile.sh::_stage_package_tree` copies it to the package root. It is
 the shared HSYNC app icon, downscaled from the master
-`branding/hsync-app-icon.png` (1024x1024, same geometry as the Android
+`branding/hsync-app-icon.png` in the monorepo root (1024x1024, same geometry as the Android
 adaptive icon), so every HSYNC application shows the same mark. The dead
 generator script is removed (historical: it was never invoked) instead of
 adding a Pillow
