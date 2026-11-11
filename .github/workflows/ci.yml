@@ -50,7 +50,8 @@ jobs:
 
       - name: Install PHP CLI
         # The configuration endpoints are executed by two behavioural tests.
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends php-cli
+        # The hosted mirror can stop resolving for minutes; the script retries.
+        run: bash hsync-wd-os5/.github/scripts/apt-install.sh php-cli
 
       - name: Set up Python
         uses: actions/setup-python@v7
@@ -63,7 +64,7 @@ jobs:
 
       - name: Install test tooling
         working-directory: hsync-wd-os5
-        run: python -m pip install pytest ruff==0.17.3
+        run: python -m pip install pytest ruff==0.17.4
 
       - name: Shell syntax
         working-directory: hsync-wd-os5
