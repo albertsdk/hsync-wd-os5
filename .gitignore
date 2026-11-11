@@ -51,3 +51,6 @@ AGENTS.md
 
 # HSYNC
 .hsynckeep
+
+# Internal agent knowledge base (local-only, not versioned)
+/llm-wiki/

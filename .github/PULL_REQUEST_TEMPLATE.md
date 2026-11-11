@@ -17,7 +17,6 @@ Brief summary of the changes and why they are needed.
 - [ ] Shell syntax is valid (`bash -n compile.sh`, `sh -n packaging/Apkg/*.sh`)
 - [ ] Documentation is updated:
   - [ ] `docs/` (user-facing) for configuration, install or UI changes
-  - [ ] `llm-wiki/` (internal) for architecture or contract changes
 - [ ] `packaging/Apkg/web/i18n/*.json` updated for every language in `SUPPORTED`
 - [ ] Client parity: the matching change landed (or is already present) in
       `hsync-client` / `hsync-common`

@@ -128,10 +128,7 @@ first, then mirror it here in the same change set.
 
 ## Documentation
 
-Two documentation sets must stay in sync with the code:
-
-- `llm-wiki/` — agent-oriented map (architecture, modules, data models, ADRs)
-- `docs/` — user documentation (install, usage, configuration, troubleshooting)
+The user documentation in `docs/` must stay in sync with the code.
 
 ## Commits
 
