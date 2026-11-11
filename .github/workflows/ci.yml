@@ -24,7 +24,7 @@ jobs:
         python-version: ["3.12", "3.13", "3.14"]
     steps:
       - name: Checkout hsync-wd-os5
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           path: hsync-wd-os5
 
@@ -33,7 +33,7 @@ jobs:
       # is the bundled engine version. Both repositories are private, so the
       # default GITHUB_TOKEN cannot read them: use the PAT secret.
       - name: Checkout hsync-client
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           repository: albertsdk/hsync-client
           ref: main
@@ -41,7 +41,7 @@ jobs:
           token: ${{ secrets.HSYNC_COMMON_PAT }}
 
       - name: Checkout hsync-common
-        uses: actions/checkout@v7
+        uses: actions/checkout@v7.0.1
         with:
           repository: albertsdk/hsync-common
           ref: main
@@ -54,7 +54,7 @@ jobs:
         run: bash hsync-wd-os5/.github/scripts/apt-install.sh php-cli
 
       - name: Set up Python
-        uses: actions/setup-python@v7
+        uses: actions/setup-python@v7.1.0
         with:
           python-version: ${{ matrix.python-version }}
 
