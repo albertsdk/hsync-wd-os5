@@ -74,7 +74,7 @@ fi
 : "${HSYNC_P2P_PORT:=0}"
 : "${HSYNC_PREFER_MASTER:=false}"
 : "${HSYNC_NEVER_MASTER:=false}"
-: "${HSYNC_P2P_TRUST:=accept-new}"
+: "${HSYNC_P2P_TRUST:=auto}"
 : "${HSYNC_P2P_PEER_DOWNLOAD:=true}"
 : "${HSYNC_P2P_PEER_READ_CAP:=2}"
 : "${HSYNC_P2P_PEER_SOURCES_MAX:=3}"
@@ -85,7 +85,7 @@ fi
 : "${HSYNC_RENDEZVOUS_SERVER_ENDPOINTS:=}"
 : "${HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS:=}"
 : "${HSYNC_RENDEZVOUS_SERVER_TOFU:=false}"
-: "${HSYNC_RENDEZVOUS_SERVER_TRUST:=ask}"
+: "${HSYNC_RENDEZVOUS_SERVER_TRUST:=auto}"
 : "${HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS:=}"
 : "${HSYNC_RENDEZVOUS_TRANSPORT:=auto}"
 : "${HSYNC_MAP_DATA_PORT:=true}"
@@ -94,7 +94,7 @@ fi
 : "${HSYNC_API_KEY:=}"
 : "${HSYNC_INSECURE:=false}"
 : "${HSYNC_CA_CERT:=}"
-: "${HSYNC_SERVER_TRUST:=chain}"
+: "${HSYNC_SERVER_TRUST:=auto}"
 : "${HSYNC_SERVER_FINGERPRINTS:=}"
 : "${HSYNC_SERVER_TOFU:=false}"
 : "${HSYNC_INTERVAL:=0}"
@@ -134,12 +134,12 @@ case "${HSYNC_SYNC_DIRECTION}" in
     *) HSYNC_SYNC_DIRECTION=bidirectional ;;
 esac
 case "${HSYNC_SERVER_TRUST}" in
-    chain|ask|accept-new|strict|none) ;;
-    *) HSYNC_SERVER_TRUST=chain ;;
+    auto|ask|strict|none) ;;
+    *) HSYNC_SERVER_TRUST=auto ;;
 esac
 case "${HSYNC_RENDEZVOUS_SERVER_TRUST}" in
-    ask|accept-new|strict|none) ;;
-    *) HSYNC_RENDEZVOUS_SERVER_TRUST=ask ;;
+    auto|ask|strict|none) ;;
+    *) HSYNC_RENDEZVOUS_SERVER_TRUST=auto ;;
 esac
 case "${HSYNC_RENDEZVOUS_TRANSPORT}" in
     auto|quic|tcp) ;;

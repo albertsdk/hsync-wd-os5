@@ -203,7 +203,7 @@ foreach (KEYS as $key) {
             break;
         case 'HSYNC_RENDEZVOUS_SERVER_TRUST':
             // Rendezvous-server identity check; an unknown value keeps the default.
-            if (!in_array($val, ['ask', 'accept-new', 'strict', 'none'], true)) $val = 'ask';
+            if (!in_array($val, ['auto', 'ask', 'strict', 'none'], true)) $val = 'auto';
             break;
         case 'HSYNC_RENDEZVOUS_TRANSPORT':
             // Transport(s) used to reach the rendezvous server(s); an unknown
@@ -211,8 +211,8 @@ foreach (KEYS as $key) {
             if (!in_array($val, ['auto', 'quic', 'tcp'], true)) $val = 'auto';
             break;
         case 'HSYNC_SERVER_TRUST':
-            // Server identity check; chain is the standard CA validation.
-            if (!in_array($val, ['chain', 'ask', 'accept-new', 'strict', 'none'], true)) $val = 'chain';
+            // Server identity check (auto prefers a CA chain, else remembers).
+            if (!in_array($val, ['auto', 'ask', 'strict', 'none'], true)) $val = 'auto';
             break;
         case 'HSYNC_MIN_FREE_DISK':
             // A size with an explicit unit ("500MB", "2GB") or "0" (off): the
@@ -298,7 +298,7 @@ foreach (KEYS as $key) {
             if (!preg_match('/^[0-9]*\.?[0-9]*$/', $val)) $val = '';
             break;
         case 'HSYNC_P2P_TRUST':
-            if (!in_array($val, ['accept-new', 'strict'], true)) $val = 'accept-new';
+            if (!in_array($val, ['auto', 'ask', 'strict'], true)) $val = 'auto';
             break;
         case 'HSYNC_DELETION_POLICY':
             if (!in_array($val, ['keep', 'propagate'], true)) $val = 'keep';

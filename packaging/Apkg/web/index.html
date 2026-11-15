@@ -482,10 +482,10 @@
         <label class="hsync-label">
             <span data-i18n="field.rendezvous_server_trust">Discovery server identity check</span>
             <select name="HSYNC_RENDEZVOUS_SERVER_TRUST" id="HSYNC_RENDEZVOUS_SERVER_TRUST">
+                <option value="auto" data-i18n="trust_option.auto">Automatic (recommended)</option>
                 <option value="ask" data-i18n="trust_option.ask">Ask on first use</option>
-                <option value="accept-new" data-i18n="trust_option.accept_new">Accept automatically</option>
                 <option value="strict" data-i18n="trust_option.strict">Require the saved identity</option>
-                <option value="none" data-i18n="trust_option.none">Don't verify</option>
+                <option value="none" data-i18n="trust_option.none">Don't verify (insecure)</option>
             </select>
         </label>
         <label class="hsync-label hsync-check">
@@ -520,8 +520,9 @@
         <label class="hsync-label">
             <span data-i18n="field.p2p_trust">New primary device</span>
             <select name="HSYNC_P2P_TRUST" id="HSYNC_P2P_TRUST">
-                <option value="accept-new" data-i18n="trust_option.accept_new">Accept automatically</option>
-                <option value="strict" data-i18n="trust_option.p2p_strict">Require an explicit confirmation (pin it first)</option>
+                <option value="auto" data-i18n="trust_option.auto">Automatic (recommended)</option>
+                <option value="ask" data-i18n="trust_option.ask">Ask on first use</option>
+                <option value="strict" data-i18n="trust_option.strict">Require the saved identity</option>
             </select>
         </label>
         <label class="hsync-label hsync-check">
@@ -578,11 +579,10 @@
         <label class="hsync-label">
             <span data-i18n="field.server_trust">Server identity check</span>
             <select name="HSYNC_SERVER_TRUST" id="HSYNC_SERVER_TRUST">
-                <option value="chain" data-i18n="trust_option.chain">Standard verification (recommended)</option>
+                <option value="auto" data-i18n="trust_option.auto">Automatic (recommended)</option>
                 <option value="ask" data-i18n="trust_option.ask">Ask on first use</option>
-                <option value="accept-new" data-i18n="trust_option.accept_new">Accept automatically</option>
                 <option value="strict" data-i18n="trust_option.strict">Require the saved identity</option>
-                <option value="none" data-i18n="trust_option.none">Don't verify</option>
+                <option value="none" data-i18n="trust_option.none">Don't verify (insecure)</option>
             </select>
         </label>
     </div>

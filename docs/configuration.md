@@ -45,7 +45,7 @@ describe what the NAS writes and what the range check accepts.
 | `HSYNC_P2P_PORT` | `0` | `0` (auto-assign) or `1`–`65535` |
 | `HSYNC_PREFER_MASTER` | `false` | `true`, `false` |
 | `HSYNC_NEVER_MASTER` | `false` | `true`, `false` |
-| `HSYNC_P2P_TRUST` | `accept-new` | `accept-new` (pin on first use), `strict` (pin out of band first) |
+| `HSYNC_P2P_TRUST` | `auto` | `auto` (remember a first-seen primary, enforce a saved pin), `ask`, `strict` (pin out of band first) |
 | `HSYNC_P2P_PEER_DOWNLOAD` | `true` | `true`, `false` — allow peer-assisted reads |
 | `HSYNC_P2P_PEER_READ_CAP` | `2` | `1`–`32` — simultaneous peer reads |
 | `HSYNC_P2P_PEER_SOURCES_MAX` | `3` | `1`–`8` — peers a file may be fetched from |
@@ -62,14 +62,14 @@ describe what the NAS writes and what the range check accepts.
 | `HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS` | empty | comma-separated ports `1`–`65535` (tried on each transport), order preserved |
 | `HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS` | empty | up to two `sha256:<64 hex>` (or bare hex) pins, comma-separated |
 | `HSYNC_RENDEZVOUS_SERVER_TOFU` | `false` | `true`, `false` — trust the discovery server on first use |
-| `HSYNC_RENDEZVOUS_SERVER_TRUST` | `ask` | `ask`, `accept-new`, `strict`, `none` |
+| `HSYNC_RENDEZVOUS_SERVER_TRUST` | `auto` | `auto` (remember a first-seen node), `ask`, `strict`, `none` |
 | `HSYNC_RENDEZVOUS_TRANSPORT` | `auto` | `auto` (race QUIC/UDP, then TLS/TCP), `quic`, `tcp` |
 | `HSYNC_MAP_DATA_PORT` | `true` | `true`, `false` — map the master port with UPnP |
 | `HSYNC_MDNS` | `true` | `true`, `false` — discover devices on the local network (mDNS); `false` uses only the discovery servers (requires `HSYNC_RENDEZVOUS_SERVER_ENDPOINTS`) |
 | `HSYNC_NTP_HOSTS` | empty | comma-separated SNTP hosts used for clock-offset correction |
 
 An empty pin fails closed: without `HSYNC_RENDEZVOUS_SERVER_TOFU` or
-`accept-new`/`none` the discovery server is not trusted automatically.
+`auto`/`none` the discovery server is not trusted automatically.
 
 ## Server mode
 
@@ -79,7 +79,7 @@ An empty pin fails closed: without `HSYNC_RENDEZVOUS_SERVER_TOFU` or
 | `HSYNC_API_KEY` | empty | the API key issued by the server |
 | `HSYNC_INSECURE` | `false` | `true`, `false` — skip certificate validation (insecure) |
 | `HSYNC_CA_CERT` | empty | absolute path to a readable PEM file (upload it from the UI) |
-| `HSYNC_SERVER_TRUST` | `chain` | `chain` (CA validation), `ask`, `accept-new`, `strict`, `none` |
+| `HSYNC_SERVER_TRUST` | `auto` | `auto` (CA chain when valid, else remember the first certificate), `ask`, `strict`, `none` |
 | `HSYNC_SERVER_FINGERPRINTS` | empty | up to two `sha256:<64 hex>` pins |
 | `HSYNC_SERVER_TOFU` | `false` | `true`, `false` |
 

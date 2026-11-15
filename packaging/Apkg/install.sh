@@ -119,10 +119,9 @@ HSYNC_PREFER_MASTER="false"
 HSYNC_NEVER_MASTER="false"
 # Strict pairing: refuse a first-seen master fingerprint until confirmed
 # out of band (disables Trust-On-First-Use auto-pinning).
-# The appliance has no interactive prompter: ask cannot be answered here, so
-# the shipped default pins a first-seen primary (accept-new) and the web UI
-# offers strict for operators who pin fingerprints first.
-HSYNC_P2P_TRUST="accept-new"
+# The appliance has no interactive prompter: `auto` remembers a first-seen
+# primary (and enforces a saved pin), and the web UI offers `ask`/`strict`.
+HSYNC_P2P_TRUST="auto"
 # Peer-assisted reads and the caps that bound them.
 HSYNC_P2P_PEER_DOWNLOAD="true"
 HSYNC_P2P_PEER_READ_CAP="2"
@@ -146,8 +145,8 @@ HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS=""
 HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS=""
 # Trust the rendezvous server certificate on first use (TOFU).
 HSYNC_RENDEZVOUS_SERVER_TOFU="false"
-# Rendezvous server identity check: ask | accept-new | strict | none
-HSYNC_RENDEZVOUS_SERVER_TRUST="ask"
+# Rendezvous server identity check: auto | ask | strict | none
+HSYNC_RENDEZVOUS_SERVER_TRUST="auto"
 # Map the master TCP port with UPnP so peers on other networks can dial this
 # device. Only effective with a rendezvous server.
 HSYNC_MAP_DATA_PORT="true"
@@ -163,8 +162,8 @@ HSYNC_API_KEY=""
 HSYNC_INSECURE="false"
 # Certificate authority file used to validate the server certificate.
 HSYNC_CA_CERT=""
-# Server identity check: chain (standard CA validation) | ask | accept-new | strict | none
-HSYNC_SERVER_TRUST="chain"
+# Server identity check: auto | ask | strict | none
+HSYNC_SERVER_TRUST="auto"
 # Pin the server certificate fingerprint ('sha256:<hex>' or bare hex,
 # comma-separated up to two for a rotation window); empty = no pin.
 HSYNC_SERVER_FINGERPRINTS=""
