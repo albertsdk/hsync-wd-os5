@@ -77,7 +77,8 @@ The HSYNC client itself (CLI, server mode, p2p internals) is documented in the
 ## Development
 
 Building a `.bin` requires Docker with qemu-user-static and the sibling
-`hsync-client` + `hsync-common` checkouts. See [CONTRIBUTING.md](CONTRIBUTING.md).
+`hsync-client` + `hsync-common` checkouts. See [CONTRIBUTING.md](CONTRIBUTING.md)
+and the list of [contributors](CONTRIBUTORS.md).
 
 ## License
 
