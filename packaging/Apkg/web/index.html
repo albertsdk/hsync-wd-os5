@@ -435,9 +435,18 @@
             <input type="number" name="HSYNC_P2P_PORT" id="HSYNC_P2P_PORT" min="0" max="65535">
         </label>
         <label class="hsync-label hsync-check">
-            <input type="checkbox" name="HSYNC_P2P_PEER_DOWNLOAD" id="HSYNC_P2P_PEER_DOWNLOAD" checked>
-            <span data-i18n="field.p2p_peer_download">Download from other devices</span>
+            <input type="checkbox" name="HSYNC_P2P_SERVE_BLOCKS" id="HSYNC_P2P_SERVE_BLOCKS" checked>
+            <span data-i18n="field.p2p_serve_blocks">Serve files to other devices</span>
         </label>
+        <label class="hsync-label hsync-check">
+            <input type="checkbox" name="HSYNC_P2P_FETCH_FROM_PEERS" id="HSYNC_P2P_FETCH_FROM_PEERS" checked>
+            <span data-i18n="field.p2p_fetch_from_peers">Download from other devices</span>
+        </label>
+        <label class="hsync-label hsync-check">
+            <input type="checkbox" name="HSYNC_P2P_PUBLISH_INVENTORY" id="HSYNC_P2P_PUBLISH_INVENTORY" checked>
+            <span data-i18n="field.p2p_publish_inventory">Publish the file index</span>
+        </label>
+        <p class="hsync-note" data-i18n="note.p2p_roles">Serving uses this device's upload bandwidth. The file index lets the other devices see what is already up to date; it is sent only to devices in the same group.</p>
         <label class="hsync-label">
             <span data-i18n="field.p2p_peer_read_cap">Max simultaneous reads from other devices</span>
             <input type="number" name="HSYNC_P2P_PEER_READ_CAP" id="HSYNC_P2P_PEER_READ_CAP" min="1" max="32">

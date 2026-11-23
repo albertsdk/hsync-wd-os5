@@ -46,7 +46,9 @@ describe what the NAS writes and what the range check accepts.
 | `HSYNC_PREFER_MASTER` | `false` | `true`, `false` |
 | `HSYNC_NEVER_MASTER` | `false` | `true`, `false` |
 | `HSYNC_P2P_TRUST` | `auto` | `auto` (remember a first-seen primary, enforce a saved pin), `ask`, `strict` (pin out of band first) |
-| `HSYNC_P2P_PEER_DOWNLOAD` | `true` | `true`, `false` — allow peer-assisted reads |
+| `HSYNC_P2P_SERVE_BLOCKS` | `true` | `true`, `false` — serve files to the other devices |
+| `HSYNC_P2P_FETCH_FROM_PEERS` | `true` | `true`, `false` — download files from the other devices |
+| `HSYNC_P2P_PUBLISH_INVENTORY` | `true` | `true`, `false` — publish this device's file index |
 | `HSYNC_P2P_PEER_READ_CAP` | `2` | `1`–`32` — simultaneous peer reads |
 | `HSYNC_P2P_PEER_SOURCES_MAX` | `3` | `1`–`8` — peers a file may be fetched from |
 | `HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES` | `false` | `true`, `false` — dangerous |

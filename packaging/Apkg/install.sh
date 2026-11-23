@@ -122,8 +122,10 @@ HSYNC_NEVER_MASTER="false"
 # The appliance has no interactive prompter: `auto` remembers a first-seen
 # primary (and enforces a saved pin), and the web UI offers `ask`/`strict`.
 HSYNC_P2P_TRUST="auto"
-# Peer-assisted reads and the caps that bound them.
-HSYNC_P2P_PEER_DOWNLOAD="true"
+# Peer-mesh roles (one key per capability) and the caps that bound serving.
+HSYNC_P2P_SERVE_BLOCKS="true"
+HSYNC_P2P_FETCH_FROM_PEERS="true"
+HSYNC_P2P_PUBLISH_INVENTORY="true"
 HSYNC_P2P_PEER_READ_CAP="2"
 HSYNC_P2P_PEER_SOURCES_MAX="3"
 # Writes without the p2p key stay blocked unless these dangerous opt-ins are set.

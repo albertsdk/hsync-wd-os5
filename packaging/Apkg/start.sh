@@ -75,7 +75,9 @@ fi
 : "${HSYNC_PREFER_MASTER:=false}"
 : "${HSYNC_NEVER_MASTER:=false}"
 : "${HSYNC_P2P_TRUST:=auto}"
-: "${HSYNC_P2P_PEER_DOWNLOAD:=true}"
+: "${HSYNC_P2P_SERVE_BLOCKS:=true}"
+: "${HSYNC_P2P_FETCH_FROM_PEERS:=true}"
+: "${HSYNC_P2P_PUBLISH_INVENTORY:=true}"
 : "${HSYNC_P2P_PEER_READ_CAP:=2}"
 : "${HSYNC_P2P_PEER_SOURCES_MAX:=3}"
 : "${HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES:=false}"
@@ -174,7 +176,9 @@ case "${HSYNC_MODE}" in
         # its certificate fingerprint, which slaves pin (TOFU). There is no
         # plain-HTTP option.
         [ -n "${HSYNC_P2P_TRUST}" ]                    && set -- "$@" --p2p-trust "${HSYNC_P2P_TRUST}"
-        [ "${HSYNC_P2P_PEER_DOWNLOAD}" = "false" ]    && set -- "$@" --no-peer-download
+        [ "${HSYNC_P2P_SERVE_BLOCKS}" = "false" ]     && set -- "$@" --no-serve-peer-blocks
+        [ "${HSYNC_P2P_FETCH_FROM_PEERS}" = "false" ] && set -- "$@" --no-fetch-from-peers
+        [ "${HSYNC_P2P_PUBLISH_INVENTORY}" = "false" ] && set -- "$@" --no-publish-inventory
         [ "${HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES}" = "true" ] && set -- "$@" --allow-unauthenticated-writes
         [ "${HSYNC_P2P_ALLOW_UNAUTHENTICATED}" = "true" ] && set -- "$@" --allow-unauthenticated-p2p
         [ -n "${HSYNC_P2P_GROUP}" ]                   && set -- "$@" --group "${HSYNC_P2P_GROUP}"
@@ -269,7 +273,9 @@ fi
 # ---------------------------------------------------------------------------
 export HSYNC_API_KEY
 export HSYNC_P2P_PASSPHRASE
-export HSYNC_P2P_PEER_DOWNLOAD
+export HSYNC_P2P_SERVE_BLOCKS
+export HSYNC_P2P_FETCH_FROM_PEERS
+export HSYNC_P2P_PUBLISH_INVENTORY
 export HSYNC_P2P_PEER_READ_CAP
 export HSYNC_P2P_PEER_SOURCES_MAX
 export HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES
