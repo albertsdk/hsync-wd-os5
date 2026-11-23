@@ -7,8 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Three checkboxes for the peer-mesh capabilities (serve blocks, fetch from peers,
+  publish inventory), translated in every language the selector offers.
+
 ### Changed
 
+- The launcher maps the three keys (and the preset) to the client flags, and the config
+  API whitelists them.
 - The web UI identity checks default to **Automatic**: the shipped `hsync.env`
   and launcher use `auto` (a CA chain when valid, else remember the first
   fingerprint), and a stored `chain` or `accept-new` is normalized to `auto`.
