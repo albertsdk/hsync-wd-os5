@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- The launcher maps the three keys (and the preset) to the client flags, and the config
+- The launcher maps the three keys to the client flags, and the config
   API whitelists them.
 - The web UI identity checks default to **Automatic**: the shipped `hsync.env`
   and launcher use `auto` (a CA chain when valid, else remember the first
