@@ -68,7 +68,7 @@ describe what the NAS writes and what the range check accepts.
 | `HSYNC_RENDEZVOUS_TRANSPORT` | `auto` | `auto` (race QUIC/UDP, then TLS/TCP), `quic`, `tcp` |
 | `HSYNC_MAP_DATA_PORT` | `true` | `true`, `false` — map the master port with UPnP |
 | `HSYNC_MDNS` | `true` | `true`, `false` — discover devices on the local network (mDNS); `false` uses only the discovery servers (requires `HSYNC_RENDEZVOUS_SERVER_ENDPOINTS`) |
-| `HSYNC_NTP_HOSTS` | empty | comma-separated SNTP hosts used for clock-offset correction |
+| `HSYNC_NTP_HOSTS` | unset | optional SNTP hosts (deployment override) for clock-offset correction; unset = no public time servers (the server/master reference is used); a malformed value yields no probe |
 
 An empty pin fails closed: without `HSYNC_RENDEZVOUS_SERVER_TOFU` or
 `auto`/`none` the discovery server is not trusted automatically.
