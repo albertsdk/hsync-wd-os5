@@ -616,6 +616,15 @@
             </select>
         </label>
         <p class="hsync-note" data-i18n="note.deletion_policy">Backup Mode keeps on this NAS every file a client deletes. Choosing "Apply deletions" starts applying client deletions here; the save asks for confirmation first.</p>
+        <label class="hsync-label">
+            <span data-i18n="field.trash_retention">Restore window (days, 0 = keep until emptied)</span>
+            <input type="number" name="HSYNC_TRASH_RETENTION_DAYS" id="HSYNC_TRASH_RETENTION_DAYS" min="0" max="3650">
+        </label>
+        <label class="hsync-label">
+            <span data-i18n="field.trash_dir">Trash folder (empty = inside the state folder)</span>
+            <input type="text" name="HSYNC_TRASH_DIR" id="HSYNC_TRASH_DIR" placeholder="/mnt/HD/HD_a2/hsync/state/trash">
+        </label>
+        <p class="hsync-note" data-i18n="note.trash">The NAS keeps on its own disk the files it deletes, so you can restore them. The trash is never synced.</p>
         <label class="hsync-label hsync-check">
             <input type="checkbox" name="HSYNC_COMPRESSION_ENABLED" id="HSYNC_COMPRESSION_ENABLED" checked>
             <span data-i18n="field.compression">Enable compression</span>
@@ -730,6 +739,7 @@
         <p class="hsync-note" data-i18n="note.reset_state">The next cycle re-scans every file. Nothing is transferred or deleted; the service restarts around it.</p>
         <div class="hsync-actions">
             <button type="button" id="hsync-btn-reset-state" class="hsync-btn" data-i18n="action.reset_state">Reset sync state…</button>
+            <button type="button" id="hsync-btn-trash" class="hsync-btn" data-i18n="action.trash">Restore deleted files…</button>
         </div>
     </div>
 
@@ -816,6 +826,18 @@
             <button type="button" id="hsync-trust-add" class="hsync-btn" data-i18n="trust.add">Add</button>
             <button type="button" id="hsync-trust-remove" class="hsync-btn" data-i18n="trust.remove">Remove</button>
         </div>
+    </div>
+</div>
+
+<!-- Deleted files: list, restore and empty the local trash (trash.php). -->
+<div id="hsync-trash-modal" hidden>
+    <div class="hsync-dialog">
+        <div class="hsync-log-head">
+            <span class="hsync-log-title" data-i18n="trash.title">Deleted files</span>
+            <button type="button" id="hsync-trash-empty" class="hsync-btn" data-i18n="trash.empty_all">Empty trash</button>
+            <button type="button" id="hsync-trash-close" class="hsync-btn" data-i18n="log.close">Close</button>
+        </div>
+        <div class="hsync-list" id="hsync-trash-list"></div>
     </div>
 </div>
 

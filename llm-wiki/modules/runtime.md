@@ -39,6 +39,9 @@ for the on-disk constants; user settings live in `HSYNC_ENV_FILE`.
   (rendezvous/UPnP/NTP/server trust, per-file retry waits) are **exported**, never
   placed on the command line, so they cannot leak through `ps`.
 - `HSYNC_STATE_DIR` defaults next to the config tree and is exported.
+- `HSYNC_TRASH_RETENTION_DAYS` travels as `--trash-retention` behind
+  `packaging/Apkg/start.sh::is_uint`; `HSYNC_TRASH_DIR` is exported (no flag) and
+  left unset when empty, so the client derives `<state dir>/trash`.
 
 ## Security invariants
 

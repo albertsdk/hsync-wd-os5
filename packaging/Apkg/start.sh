@@ -83,6 +83,8 @@ fi
 : "${HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES:=false}"
 : "${HSYNC_P2P_ALLOW_UNAUTHENTICATED:=false}"
 : "${HSYNC_ALLOW_DELETIONS:=false}"
+: "${HSYNC_TRASH_DIR:=}"
+: "${HSYNC_TRASH_RETENTION_DAYS:=30}"
 : "${HSYNC_PEER_RENDEZVOUS_TIMEOUT:=10}"
 : "${HSYNC_RENDEZVOUS_SERVER_ENDPOINTS:=}"
 : "${HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS:=}"
@@ -168,6 +170,10 @@ set -- "${SUBCOMMAND}" \
     --path "${HSYNC_PATH}"
 
 [ "${HSYNC_ALLOW_DELETIONS}" = "true" ] && set -- "$@" --allow-deletions
+# Restore window of the local trash (ADR-0056). A non-numeric hand edit is
+# dropped so the client default applies instead of aborting the startup.
+is_uint "${HSYNC_TRASH_RETENTION_DAYS}" \
+    && set -- "$@" --trash-retention "${HSYNC_TRASH_RETENTION_DAYS}"
 
 case "${HSYNC_MODE}" in
     p2p)
@@ -306,6 +312,10 @@ export HSYNC_SERVER_TOFU
 # the NAS config/log tree so it survives package upgrades.
 HSYNC_STATE_DIR="${HSYNC_STATE_DIR:-/mnt/HD/HD_a2/hsync/state}"
 export HSYNC_STATE_DIR
+# Trash store location: exported (not a flag) like the state dir above, and left
+# unset when empty so the client keeps its default (state dir/trash). The web
+# UI's trash.php reads the same key, so both address one store.
+[ -n "${HSYNC_TRASH_DIR}" ] && export HSYNC_TRASH_DIR
 
 cd "${APKG_PATH}"
 nohup "${HSYNC_BIN}" "$@" >> "${HSYNC_LOG_FILE}" 2>&1 &

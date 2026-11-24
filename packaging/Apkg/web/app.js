@@ -568,6 +568,96 @@
         }
     }
 
+    // -----------------------------------------------------------------
+    // Trash: list, restore and empty the local store (trash.php)
+    // -----------------------------------------------------------------
+    // The store lives outside the share (ADR-0056), so the endpoint runs
+    // `hsync trash` on this device. A restore is a plain local write: the
+    // running sync propagates it, which is why neither action stops the service.
+    async function trashRequest(payload) {
+        const r = await fetch(`${BASE}/trash.php`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(payload).toString(),
+        });
+        const j = await r.json();
+        if (!r.ok || !j.ok) throw new Error(j.detail || j.error || `HTTP ${r.status}`);
+        return j;
+    }
+
+    function formatBytes(bytes) {
+        const n = Number(bytes) || 0;
+        if (n >= 1073741824) return (n / 1073741824).toFixed(1) + ' GB';
+        if (n >= 1048576) return (n / 1048576).toFixed(1) + ' MB';
+        if (n >= 1024) return (n / 1024).toFixed(1) + ' KB';
+        return n + ' B';
+    }
+
+    function trashRow(text) {
+        const row = document.createElement('div');
+        row.textContent = text;
+        return row;
+    }
+
+    async function renderTrashList() {
+        const list = $('#hsync-trash-list');
+        if (!list) return;
+        list.textContent = '';
+        let j;
+        try {
+            j = await trashRequest({ action: 'list' });
+        } catch (e) {
+            list.appendChild(trashRow(t('toast.trash_error', 'The trash operation failed') + ': ' + e.message));
+            return;
+        }
+        // The store may sit on another volume: a move then copies the bytes.
+        if (j.same_volume === false) {
+            list.appendChild(trashRow(t('trash.cross_volume',
+                'The trash is on another volume than the share: moving a file into it or back copies the bytes.')));
+        }
+        const entries = j.entries || [];
+        if (!entries.length) {
+            list.appendChild(trashRow(t('trash.empty', 'No deleted files.')));
+            return;
+        }
+        entries.forEach((entry) => {
+            const row = document.createElement('div');
+            const when = new Date((Number(entry.deleted_at) || 0) * 1000).toLocaleString();
+            const label = document.createElement('span');
+            label.textContent = when + '  ' + formatBytes(entry.size) + '  ' + (entry.path || '');
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'hsync-btn';
+            btn.textContent = t('trash.restore', 'Restore');
+            btn.addEventListener('click', () => restoreTrashEntry(entry.path));
+            row.appendChild(label);
+            row.appendChild(btn);
+            list.appendChild(row);
+        });
+    }
+
+    async function restoreTrashEntry(path) {
+        try {
+            await trashRequest({ action: 'restore', path: path });
+            toast(t('toast.trash_ok', 'Done'), 'ok');
+            await renderTrashList();
+        } catch (e) {
+            toast(t('toast.trash_error', 'The trash operation failed') + ': ' + e.message, 'error');
+        }
+    }
+
+    async function emptyTrash() {
+        if (!window.confirm(t('confirm.empty_trash',
+            'Delete the trashed files for good? This cannot be undone.'))) return;
+        try {
+            await trashRequest({ action: 'empty' });
+            toast(t('toast.trash_ok', 'Done'), 'ok');
+            await renderTrashList();
+        } catch (e) {
+            toast(t('toast.trash_error', 'The trash operation failed') + ': ' + e.message, 'error');
+        }
+    }
+
     async function uploadCaCert(file) {
         const form = new FormData();
         form.append('file', file);
@@ -681,6 +771,16 @@
         bind('hsync-btn-test-server', () => testEndpoint('server'));
         bind('hsync-btn-test-rendezvous', () => testEndpoint('rendezvous-server'));
         bind('hsync-btn-reset-state', resetSyncState);
+        bind('hsync-btn-trash', async () => {
+            const modal = $('#hsync-trash-modal');
+            if (modal) modal.hidden = false;
+            await renderTrashList();
+        });
+        bind('hsync-trash-close', () => {
+            const modal = $('#hsync-trash-modal');
+            if (modal) modal.hidden = true;
+        });
+        bind('hsync-trash-empty', emptyTrash);
         bind('hsync-btn-trust', async () => {
             const modal = $('#hsync-trust-modal');
             if (modal) modal.hidden = false;

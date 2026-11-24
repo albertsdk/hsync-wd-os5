@@ -54,6 +54,8 @@ describe what the NAS writes and what the range check accepts.
 | `HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES` | `false` | `true`, `false` — dangerous |
 | `HSYNC_P2P_ALLOW_UNAUTHENTICATED` | `false` | `true`, `false` — dangerous |
 | `HSYNC_ALLOW_DELETIONS` | `false` | `true`, `false` |
+| `HSYNC_TRASH_RETENTION_DAYS` | `30` | `0`–`3650` days; `0` keeps an entry until the size budget prunes it or the trash is emptied |
+| `HSYNC_TRASH_DIR` | empty | absolute path outside the share; empty keeps the store inside the state folder |
 | `HSYNC_PEER_RENDEZVOUS_TIMEOUT` | `10` | `5`–`60` seconds |
 
 ## Discovery servers (p2p across networks)
