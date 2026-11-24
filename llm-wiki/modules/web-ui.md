@@ -19,6 +19,7 @@ handles with dialogs.
 | `packaging/Apkg/web/hsyncignore_get.php` / `_set.php` | read/replace `<HSYNC_PATH>/.hsyncignore` (hot-reloaded by the client) |
 | `packaging/Apkg/web/trust.php` | `hsync trust <kind> list\|add\|remove` for rendezvous/server/peer |
 | `packaging/Apkg/web/state_reset.php` | stop → `hsync state reset --folder … --quarantine --json` → start |
+| `packaging/Apkg/web/trash.php` | `hsync trash list\|restore\|empty` for the shared folder; reports whether the store shares the share's volume |
 | `packaging/Apkg/web/test.php` | reachability + fingerprint via `hsync trust <kind> fingerprint` |
 | `packaging/Apkg/web/ca_cert_upload.php` | stores a PEM as `config/ca.pem` (the `HSYNC_CA_CERT` path) |
 | `packaging/Apkg/web/service.php` | start/stop/restart/status of the daemon |
@@ -71,6 +72,28 @@ are omitted because election resolves them. The shared password is rendered
 masked with a reveal toggle; **Copy** copies the unmasked command via
 `navigator.clipboard` with an `execCommand` fallback. Every interpolated value
 is POSIX single-quoted by `packaging/Apkg/web/app.js::shellQuote`.
+
+## Trash (deleted files)
+
+`packaging/Apkg/web/trash.php` exposes the device-local trash of the shared
+folder (ADR-0056 in `hsync-common`, [decisions.md](../decisions.md) ADR 007). It
+is a thin wrapper: `list` decodes the client's `--json` listing, `restore` and
+`empty` relay its exit status, and nothing reads the store's layout or touches
+the state database. The service is never stopped, so a restore is propagated by
+the running cycle.
+
+Three helpers in `packaging/Apkg/web/env_lib.php` carry the environment:
+`::hsync_trash_override` (validated `HSYNC_TRASH_DIR`), `::hsync_trash_root` (the
+override, else `<state dir>/trash`) and `::hsync_same_volume` (compares `stat`
+devices, nearest existing ancestor for a store that does not exist yet).
+`::hsync_run` exports `HSYNC_TRASH_DIR` when set, so the maintenance verbs and
+the daemon address one store.
+
+`packaging/Apkg/web/app.js::renderTrashList` renders one row per entry with its
+date, size and a **Restore** button, and states it when `same_volume` is false;
+`::emptyTrash` asks for confirmation first. The restore passes the folder's
+`HSYNC_SYNC_DIRECTION`, so a download-only folder is refused by the client
+instead of creating a delete/recreate loop.
 
 ## Human docs
 

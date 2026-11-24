@@ -64,11 +64,52 @@ function hsync_data_path(): string {
     return rtrim($path, '/');
 }
 
-/** Run the packaged binary with the state directory the service uses. */
+/** Configured trash directory, or '' when the client's own default applies. */
+function hsync_trash_override(): string {
+    $env = hsync_parse_env(HSYNC_ENV_FILE);
+    $path = (string)($env['HSYNC_TRASH_DIR'] ?? '');
+    if ($path === '' || $path[0] !== '/' || str_contains($path, '..')) {
+        return '';
+    }
+    return rtrim($path, '/');
+}
+
+/** The trash root the daemon uses: the override, else ``<state dir>/trash``. */
+function hsync_trash_root(): string {
+    $override = hsync_trash_override();
+    return $override !== '' ? $override : HSYNC_STATE_DIR . '/trash';
+}
+
+/** Nearest existing ancestor of $path, so a not-yet-created store is comparable. */
+function hsync_existing_ancestor(string $path): string {
+    $dir = $path;
+    while ($dir !== '/' && $dir !== '' && $dir !== '.' && !is_dir($dir)) {
+        $dir = dirname($dir);
+    }
+    return $dir === '' ? '/' : $dir;
+}
+
+/** True when a file can be moved between the two paths with a rename. */
+function hsync_same_volume(string $a, string $b): bool {
+    $sa = @stat(hsync_existing_ancestor($a));
+    $sb = @stat(hsync_existing_ancestor($b));
+    if ($sa === false || $sb === false) {
+        // Unknown: report "different" so the UI warns instead of promising a
+        // rename that would silently copy the bytes.
+        return false;
+    }
+    return $sa['dev'] === $sb['dev'];
+}
+
+/** Run the packaged binary with the state and trash directories the service uses. */
 function hsync_run(array $args): array {
     $env = hsync_parse_env(HSYNC_ENV_FILE);
+    $trash = hsync_trash_override();
     $command = 'HSYNC_STATE_DIR=' . escapeshellarg(HSYNC_STATE_DIR)
         . ' HSYNC_P2P_PASSPHRASE=' . escapeshellarg((string)($env['HSYNC_P2P_PASSPHRASE'] ?? ''))
+        // A relocated store must be addressed by the maintenance verbs too, or
+        // a restore would look in the default location (ADR-0056).
+        . ($trash !== '' ? ' HSYNC_TRASH_DIR=' . escapeshellarg($trash) : '')
         . ' ' . escapeshellarg(HSYNC_BINARY);
     foreach ($args as $arg) {
         $command .= ' ' . escapeshellarg((string)$arg);

@@ -509,3 +509,186 @@ def test_config_set_enforces_the_password_floor(tmp_path: Path) -> None:
         written = dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
         assert written["HSYNC_P2P_PASSPHRASE"] == expected
         assert "HSYNC_P2P_KEY" not in written
+
+
+# ── the local trash (ADR-0056, ADR 007) ────────────────────────────────
+@requires_php
+def test_config_set_validates_the_trash_keys(tmp_path: Path) -> None:
+    """The store must stay outside the share and the window inside its range."""
+    env_file = tmp_path / "hsync.env"
+    prepend = tmp_path / "prepend.php"
+    prepend.write_text(
+        "<?php\n"
+        f"define('HSYNC_ENV', '{env_file}');\n"
+        f"define('HSYNC_CONFIG', '{tmp_path}');\n"
+        "$_SERVER['REQUEST_METHOD'] = 'POST';\n"
+        "$_SERVER['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';\n"
+        "$_POST = [\n"
+        "    'HSYNC_PATH' => '/mnt/HD/HD_a2/hsync/data',\n"
+        "    'HSYNC_TRASH_DIR' => '/mnt/HD/HD_a2/hsync/data/trash',\n"
+        "    'HSYNC_TRASH_RETENTION_DAYS' => '99999',\n"
+        "];\n",
+        encoding="utf-8",
+    )
+
+    def run() -> dict[str, str]:
+        subprocess.run(
+            [
+                "php",
+                "-d",
+                f"auto_prepend_file={prepend}",
+                "-d",
+                "display_errors=0",
+                str(WEB / "config_set.php"),
+            ],
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        return dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
+
+    written = run()
+    # A store inside the share would be synced to every device.
+    assert written["HSYNC_TRASH_DIR"] == ""
+    assert written["HSYNC_TRASH_RETENTION_DAYS"] == "3650"
+
+    # A sibling path on the same volume is where the default lives: kept.
+    prepend.write_text(
+        prepend.read_text().replace("/mnt/HD/HD_a2/hsync/data/trash", "/mnt/HD/HD_a2/hsync/trash"),
+        encoding="utf-8",
+    )
+    assert run()["HSYNC_TRASH_DIR"] == "/mnt/HD/HD_a2/hsync/trash"
+
+    # Traversal and an empty window fall back to the shipped defaults.
+    prepend.write_text(
+        prepend.read_text()
+        .replace("/mnt/HD/HD_a2/hsync/trash", "../../etc")
+        .replace("'99999'", "''"),
+        encoding="utf-8",
+    )
+    written = run()
+    assert written["HSYNC_TRASH_DIR"] == ""
+    assert written["HSYNC_TRASH_RETENTION_DAYS"] == "30"
+
+
+@requires_php
+def test_trash_endpoint_gates_every_request(tmp_path: Path) -> None:
+    """trash.php loads, refuses a GET and reports a missing share."""
+    prepend = tmp_path / "prepend.php"
+    prepend.write_text(
+        "<?php\n$_SERVER['REQUEST_METHOD'] = 'GET';\n",
+        encoding="utf-8",
+    )
+
+    def run() -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [
+                "php",
+                "-d",
+                f"auto_prepend_file={prepend}",
+                "-d",
+                "display_errors=0",
+                str(WEB / "trash.php"),
+            ],
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+
+    assert "method_not_allowed" in run().stdout
+
+    # A POST on a host without the share (this machine) hits the folder guard
+    # instead of running the client: the endpoint never guesses a path.
+    prepend.write_text(
+        "<?php\n"
+        "$_SERVER['REQUEST_METHOD'] = 'POST';\n"
+        "$_SERVER['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';\n"
+        "$_POST = ['action' => 'list'];\n",
+        encoding="utf-8",
+    )
+    result = run()
+    assert "missing_folder" in result.stdout
+    assert "Fatal error" not in result.stdout + result.stderr
+
+
+def test_trash_endpoint_is_a_thin_wrapper_over_the_client_verbs() -> None:
+    """trash.php relays `hsync trash` instead of parsing the store's layout."""
+    php = (WEB / "trash.php").read_text(encoding="utf-8")
+    assert "hsync_require_post(" in php
+    for action in ("list", "restore", "empty"):
+        assert f"case '{action}':" in php, action
+    for verb in ("'trash', 'list'", "'trash', 'restore'", "'trash', 'empty'"):
+        assert verb in php, verb
+    # The listing is the client's JSON contract; argv quoting belongs to hsync_run.
+    assert "--json" in php
+    assert "escapeshellarg" not in php
+    # The restore carries the folder's direction: a download-only folder must be
+    # refused by the client instead of looping delete/recreate.
+    assert "HSYNC_SYNC_DIRECTION" in php
+
+
+def test_trash_controls_are_wired_in_the_ui() -> None:
+    """The maintenance button, the dialog and its rows exist and are bound."""
+    html = INDEX_HTML.read_text(encoding="utf-8")
+    for element in (
+        "hsync-btn-trash",
+        "hsync-trash-modal",
+        "hsync-trash-list",
+        "hsync-trash-empty",
+        "hsync-trash-close",
+    ):
+        assert f'id="{element}"' in html, element
+
+    app = APP_JS.read_text(encoding="utf-8")
+    assert "trash.php" in app
+    for call in ("action: 'list'", "action: 'restore'", "action: 'empty'"):
+        assert call in app, call
+    assert "bind('hsync-btn-trash'" in app
+    # Emptying is destructive and must ask first.
+    assert "confirm.empty_trash" in app
+
+
+def test_trash_keys_are_translated_in_all_locales() -> None:
+    """The trash strings follow the same all-locales rule as the rest."""
+    import json
+
+    keys = {
+        "field.trash_retention",
+        "field.trash_dir",
+        "note.trash",
+        "action.trash",
+        "trash.title",
+        "trash.empty_all",
+        "trash.empty",
+        "trash.restore",
+        "trash.cross_volume",
+        "toast.trash_ok",
+        "toast.trash_error",
+        "confirm.empty_trash",
+    }
+    for locale in _supported_locales():
+        data = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))
+        missing = sorted(key for key in keys if not str(data.get(key, "")).strip())
+        assert not missing, (locale, missing)
+
+
+def test_trash_settings_reach_the_launcher() -> None:
+    """Both keys are whitelisted, editable and translated into the launch."""
+    for name in ("config_get.php", "config_set.php"):
+        keys = _php_keys(name)
+        assert {"HSYNC_TRASH_DIR", "HSYNC_TRASH_RETENTION_DAYS"} <= keys, name
+    assert {"HSYNC_TRASH_DIR", "HSYNC_TRASH_RETENTION_DAYS"} <= _form_names()
+
+    start = (PKG / "start.sh").read_text(encoding="utf-8")
+    assert 'is_uint "${HSYNC_TRASH_RETENTION_DAYS}"' in start
+    assert '--trash-retention "${HSYNC_TRASH_RETENTION_DAYS}"' in start
+    # Empty means "the client's default", never an empty assignment.
+    assert '[ -n "${HSYNC_TRASH_DIR}" ] && export HSYNC_TRASH_DIR' in start
+
+
+def test_trash_store_is_addressed_with_the_daemons_environment() -> None:
+    """The endpoint must not read a different store than the daemon writes."""
+    lib = (WEB / "env_lib.php").read_text(encoding="utf-8")
+    assert "function hsync_trash_root(" in lib
+    assert "function hsync_same_volume(" in lib
+    assert "HSYNC_TRASH_DIR=" in lib, "hsync_run must export the store location"

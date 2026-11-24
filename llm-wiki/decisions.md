@@ -88,3 +88,20 @@ on each Save; values are validated/clamped first.
 
 **Consequences.** Manual edits to whitelisted keys are overwritten by a Save
 from the UI, and a key with no form field falls back to its default.
+
+## ADR 007 — The trash UI runs the client's own verbs, without stopping the service
+
+**Context.** The device-local trash is owned by the client (`hsync trash`,
+ADR-0056 in `hsync-common`); re-implementing the store layout in PHP would fork a
+contract that lives in another repository, and stopping the daemon to read it
+would turn a read-only listing into an outage.
+
+**Decision.** `packaging/Apkg/web/trash.php` is a thin wrapper over
+`hsync trash list/restore/empty`, run through `packaging/Apkg/web/env_lib.php::hsync_run`
+with the same `HSYNC_STATE_DIR`/`HSYNC_TRASH_DIR` the launcher uses. The web UI
+never reads the store's layout; it consumes the client's JSON listing.
+
+**Consequences.** The service keeps running during a restore (the write is a
+plain local write that the next cycle propagates), and the NAS cannot drift from
+the client's store format. The trade-off is that the endpoint reports the
+client's English error text as a detail string next to a translated message.

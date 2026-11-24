@@ -59,6 +59,7 @@ const KEYS = [
     'HSYNC_P2P_PEER_READ_CAP', 'HSYNC_P2P_PEER_SOURCES_MAX',
     'HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES', 'HSYNC_P2P_ALLOW_UNAUTHENTICATED',
     'HSYNC_ALLOW_DELETIONS', 'HSYNC_PEER_RENDEZVOUS_TIMEOUT',
+    'HSYNC_TRASH_DIR', 'HSYNC_TRASH_RETENTION_DAYS',
     'HSYNC_RENDEZVOUS_SERVER_ENDPOINTS', 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS', 'HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS',
     'HSYNC_RENDEZVOUS_SERVER_TOFU', 'HSYNC_RENDEZVOUS_SERVER_TRUST', 'HSYNC_RENDEZVOUS_TRANSPORT', 'HSYNC_MAP_DATA_PORT',
     'HSYNC_MDNS',
@@ -230,6 +231,30 @@ foreach (KEYS as $key) {
             if ($val !== '' && !preg_match('/^[0-9]+(\.[0-9]+)?\s*(B|K|KB|KiB|M|MB|MiB|G|GB|GiB|T|TB|TiB)$/i', $val)) {
                 $val = '';
             }
+            break;
+        case 'HSYNC_TRASH_DIR':
+            // Absolute path for the trash store, or empty for the client's
+            // default (inside the state directory). Never inside the share:
+            // the store must not be synced, so a path under HSYNC_PATH is
+            // dropped like a traversal.
+            if ($val === '') {
+                break;
+            }
+            $share = (string)($post['HSYNC_PATH'] ?? '');
+            if ($share === '' || $share[0] !== '/' || str_contains($share, '..')) {
+                $share = HSYNC_DEFAULT_PATH;
+            }
+            $share = rtrim($share, '/');
+            if ($val[0] !== '/'
+                || str_contains($val, '..')
+                || str_contains(rtrim($val, '/') . '/', $share . '/')) {
+                $val = '';
+            }
+            break;
+        case 'HSYNC_TRASH_RETENTION_DAYS':
+            // How long a trashed file stays restorable; 0 keeps it until the
+            // size budget prunes it or the trash is emptied (ADR-0056).
+            $val = clamp_int($val, 0, 3650, 30);
             break;
         case 'HSYNC_PEER_RENDEZVOUS_TIMEOUT':
             $val = clamp_int($val, 5, 60, 10);

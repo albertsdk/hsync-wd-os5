@@ -95,6 +95,28 @@ For each kind the dialog lists the pinned fingerprints and lets you **Add**
 server** and **Test Connection** contact the configured endpoint and show its
 fingerprint, so you can pin it before the first connection.
 
+## Restore a deleted file
+
+The NAS never throws away a file it deletes on its own: the bytes move into a
+trash store on the NAS, outside the share, so no device ever sees it.
+
+**Restore deleted files…** (Maintenance) lists them with the date and size, and
+each row has a **Restore** button. **Empty trash** removes them for good, after a
+confirmation.
+
+A restore writes the file back into the share and the sync propagates it at the
+next cycle, so every device gets it again. Nothing is stopped: the dialog works
+while a sync runs. Two rows of *Sync Mode* control the store:
+
+- **Restore window (days)** — how long an entry stays restorable (`0` keeps it
+  until the size budget prunes it or you empty the trash);
+- **Trash folder** — where the store lives; empty keeps it inside the state
+  folder. A store on another volume than the share still works, but moving a
+  file into it or back copies the bytes, and the dialog says so.
+
+The trash is per device and is never synchronised: another device's deletions
+are restorable on that device only.
+
 ## Reset sync state
 
 **Reset sync state…** stops the service, quarantines the local sync state and
