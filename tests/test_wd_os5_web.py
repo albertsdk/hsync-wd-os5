@@ -512,6 +512,105 @@ def test_config_set_enforces_the_password_floor(tmp_path: Path) -> None:
 
 
 # ── the local trash (ADR-0056, ADR 007) ────────────────────────────────
+@requires_php
+def test_config_set_validates_the_trash_keys(tmp_path: Path) -> None:
+    """The store must stay outside the share and the window inside its range."""
+    env_file = tmp_path / "hsync.env"
+    prepend = tmp_path / "prepend.php"
+    prepend.write_text(
+        "<?php\n"
+        f"define('HSYNC_ENV', '{env_file}');\n"
+        f"define('HSYNC_CONFIG', '{tmp_path}');\n"
+        "$_SERVER['REQUEST_METHOD'] = 'POST';\n"
+        "$_SERVER['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';\n"
+        "$_POST = [\n"
+        "    'HSYNC_PATH' => '/mnt/HD/HD_a2/hsync/data',\n"
+        "    'HSYNC_TRASH_DIR' => '/mnt/HD/HD_a2/hsync/data/trash',\n"
+        "    'HSYNC_TRASH_RETENTION_DAYS' => '99999',\n"
+        "];\n",
+        encoding="utf-8",
+    )
+
+    def run() -> dict[str, str]:
+        subprocess.run(
+            [
+                "php",
+                "-d",
+                f"auto_prepend_file={prepend}",
+                "-d",
+                "display_errors=0",
+                str(WEB / "config_set.php"),
+            ],
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        return dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
+
+    written = run()
+    # A store inside the share would be synced to every device.
+    assert written["HSYNC_TRASH_DIR"] == ""
+    assert written["HSYNC_TRASH_RETENTION_DAYS"] == "3650"
+
+    # A sibling path on the same volume is where the default lives: kept.
+    prepend.write_text(
+        prepend.read_text().replace("/mnt/HD/HD_a2/hsync/data/trash", "/mnt/HD/HD_a2/hsync/trash"),
+        encoding="utf-8",
+    )
+    assert run()["HSYNC_TRASH_DIR"] == "/mnt/HD/HD_a2/hsync/trash"
+
+    # Traversal and an empty window fall back to the shipped defaults.
+    prepend.write_text(
+        prepend.read_text()
+        .replace("/mnt/HD/HD_a2/hsync/trash", "../../etc")
+        .replace("'99999'", "''"),
+        encoding="utf-8",
+    )
+    written = run()
+    assert written["HSYNC_TRASH_DIR"] == ""
+    assert written["HSYNC_TRASH_RETENTION_DAYS"] == "30"
+
+
+@requires_php
+def test_trash_endpoint_gates_every_request(tmp_path: Path) -> None:
+    """trash.php loads, refuses a GET and reports a missing share."""
+    prepend = tmp_path / "prepend.php"
+    prepend.write_text(
+        "<?php\n$_SERVER['REQUEST_METHOD'] = 'GET';\n",
+        encoding="utf-8",
+    )
+
+    def run() -> subprocess.CompletedProcess[str]:
+        return subprocess.run(
+            [
+                "php",
+                "-d",
+                f"auto_prepend_file={prepend}",
+                "-d",
+                "display_errors=0",
+                str(WEB / "trash.php"),
+            ],
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+
+    assert "method_not_allowed" in run().stdout
+
+    # A POST on a host without the share (this machine) hits the folder guard
+    # instead of running the client: the endpoint never guesses a path.
+    prepend.write_text(
+        "<?php\n"
+        "$_SERVER['REQUEST_METHOD'] = 'POST';\n"
+        "$_SERVER['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';\n"
+        "$_POST = ['action' => 'list'];\n",
+        encoding="utf-8",
+    )
+    result = run()
+    assert "missing_folder" in result.stdout
+    assert "Fatal error" not in result.stdout + result.stderr
+
+
 def test_trash_endpoint_is_a_thin_wrapper_over_the_client_verbs() -> None:
     """trash.php relays `hsync trash` instead of parsing the store's layout."""
     php = (WEB / "trash.php").read_text(encoding="utf-8")
