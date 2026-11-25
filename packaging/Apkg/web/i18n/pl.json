@@ -108,6 +108,8 @@
     "action.reset_state": "Zresetuj stan synchronizacji…",
     "field.trash_retention": "Okno przywracania (dni, 0 = przechowuj do opróżnienia)",
     "field.trash_dir": "Folder kosza (pusty = w folderze stanu)",
+    "field.trash_max_size": "Limit rozmiaru kosza (GB, 0 = część dysku)",
+    "tip.trash_max_size": "Ile miejsca może zająć kosz. 0 = część dysku, z minimum.",
     "note.trash": "NAS przechowuje usunięte przez siebie pliki na własnym dysku, dzięki czemu można je przywrócić. Kosz nigdy nie jest synchronizowany.",
     "action.trash": "Przywróć usunięte pliki…",
     "trash.title": "Usunięte pliki",

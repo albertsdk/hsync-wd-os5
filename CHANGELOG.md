@@ -20,8 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- The launcher passes `--trash-retention` and exports `HSYNC_TRASH_DIR`; the
-  config API whitelists and validates both keys, refusing a store inside the share.
+- The launcher passes `--trash-retention`, exports `HSYNC_TRASH_DIR` and
+  `HSYNC_TRASH_MAX_SIZE`; the config API whitelists and validates the three keys,
+  refusing a store inside the share.
+- The trash size limit (GB) is editable in the web UI like the restore window:
+  the form edits whole GB, the stored key is the client's byte count.
 - The launcher maps the three keys to the client flags, and the config
   API whitelists them.
 - The web UI identity checks default to **Automatic**: the shipped `hsync.env`

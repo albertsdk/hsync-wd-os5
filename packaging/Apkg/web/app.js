@@ -32,6 +32,10 @@
         pl: 'Polski',
         ja: '日本語',
     };
+    // Fields whose stored unit differs from the unit the form shows: the client
+    // reads HSYNC_TRASH_MAX_SIZE in bytes, while the form edits whole GB.
+    const BYTES_PER_GB = 1073741824;
+    const BYTES_PER_GB_FIELDS = ['HSYNC_TRASH_MAX_SIZE'];
     const CHECKBOX_KEYS = [
         'HSYNC_PREFER_MASTER',
         'HSYNC_NEVER_MASTER',
@@ -162,6 +166,11 @@
                 try { el.value = cfg[key] || ''; } catch (_) { /* ignore */ }
             }
         });
+        // Stored units that differ from the unit the form shows.
+        BYTES_PER_GB_FIELDS.forEach((key) => {
+            const el = document.getElementById(key);
+            if (el) el.value = String(Math.floor((Number(cfg[key]) || 0) / BYTES_PER_GB));
+        });
         if (cfg.__VERSION__) $('#hsync-app-version').textContent = cfg.__VERSION__;
         persistedDeletionPolicy = (cfg.HSYNC_DELETION_POLICY || 'keep');
         syncModeVisibility();
@@ -178,6 +187,10 @@
         });
         // Normalize booleans we know about (defensive).
         CHECKBOX_KEYS.forEach((k) => { if (!(k in out)) out[k] = 'false'; });
+        // The client reads these in bytes; the form edits whole GB.
+        BYTES_PER_GB_FIELDS.forEach((k) => {
+            if (k in out) out[k] = String((Number(out[k]) || 0) * BYTES_PER_GB);
+        });
         return out;
     }
 

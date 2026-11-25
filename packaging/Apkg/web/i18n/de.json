@@ -108,6 +108,8 @@
     "action.reset_state": "Sync-Status zurücksetzen…",
     "field.trash_retention": "Wiederherstellungsfenster (Tage, 0 = bis zur Leerung aufbewahren)",
     "field.trash_dir": "Papierkorb-Ordner (leer = im Statusordner)",
+    "field.trash_max_size": "Maximale Papierkorb-Größe (GB, 0 = Anteil des Datenträgers)",
+    "tip.trash_max_size": "Wie viel Speicher der Papierkorb nutzen darf. 0 = ein Anteil des Datenträgers mit Mindestwert.",
     "note.trash": "Das NAS bewahrt die von ihm gelöschten Dateien auf der eigenen Platte auf, sodass du sie wiederherstellen kannst. Der Papierkorb wird nie synchronisiert.",
     "action.trash": "Gelöschte Dateien wiederherstellen…",
     "trash.title": "Gelöschte Dateien",

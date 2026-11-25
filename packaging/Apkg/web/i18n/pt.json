@@ -108,6 +108,8 @@
     "action.reset_state": "Repor o estado de sincronização…",
     "field.trash_retention": "Janela de restauro (dias, 0 = guardar até esvaziar)",
     "field.trash_dir": "Pasta da lixeira (vazia = dentro da pasta de estado)",
+    "field.trash_max_size": "Limite de tamanho da lixeira (GB, 0 = parte do disco)",
+    "tip.trash_max_size": "Quanto disco a lixeira pode usar. 0 = uma parte do disco, com um mínimo.",
     "note.trash": "O NAS guarda no próprio disco os ficheiros que elimina, para que os possa restaurar. A lixeira nunca é sincronizada.",
     "action.trash": "Restaurar ficheiros eliminados…",
     "trash.title": "Ficheiros eliminados",

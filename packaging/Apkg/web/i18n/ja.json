@@ -108,6 +108,8 @@
     "action.reset_state": "同期状態をリセット…",
     "field.trash_retention": "復元期間（日，0 = ゴミ箱を空にするまで保持）",
     "field.trash_dir": "ゴミ箱フォルダ（空 = ステートフォルダ内）",
+    "field.trash_max_size": "ゴミ箱の上限サイズ (GB、0 = ディスクの一定割合)",
+    "tip.trash_max_size": "ゴミ箱が使用できるディスク容量。0 = ディスクの一定割合(下限あり)。",
     "note.trash": "NAS は自分が削除したファイルを自身のディスクに保持するので復元できます。ゴミ箱は同期されません。",
     "action.trash": "削除したファイルを復元…",
     "trash.title": "削除したファイル",

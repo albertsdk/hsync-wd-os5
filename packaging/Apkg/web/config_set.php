@@ -59,7 +59,7 @@ const KEYS = [
     'HSYNC_P2P_PEER_READ_CAP', 'HSYNC_P2P_PEER_SOURCES_MAX',
     'HSYNC_P2P_ALLOW_UNAUTHENTICATED_WRITES', 'HSYNC_P2P_ALLOW_UNAUTHENTICATED',
     'HSYNC_ALLOW_DELETIONS', 'HSYNC_PEER_RENDEZVOUS_TIMEOUT',
-    'HSYNC_TRASH_DIR', 'HSYNC_TRASH_RETENTION_DAYS',
+    'HSYNC_TRASH_DIR', 'HSYNC_TRASH_RETENTION_DAYS', 'HSYNC_TRASH_MAX_SIZE',
     'HSYNC_RENDEZVOUS_SERVER_ENDPOINTS', 'HSYNC_RENDEZVOUS_SERVER_EXTRA_PORTS', 'HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS',
     'HSYNC_RENDEZVOUS_SERVER_TOFU', 'HSYNC_RENDEZVOUS_SERVER_TRUST', 'HSYNC_RENDEZVOUS_TRANSPORT', 'HSYNC_MAP_DATA_PORT',
     'HSYNC_MDNS',
@@ -255,6 +255,13 @@ foreach (KEYS as $key) {
             // How long a trashed file stays restorable; 0 keeps it until the
             // size budget prunes it or the trash is emptied (ADR-0056).
             $val = clamp_int($val, 0, 3650, 30);
+            break;
+        case 'HSYNC_TRASH_MAX_SIZE':
+            // Byte budget of the whole trash store, the unit the client's
+            // HSYNC_TRASH_MAX_SIZE uses; the form edits whole GB and app.js
+            // converts. 0 = derive it from the filesystem that hosts the trash.
+            // 1 TiB is the ceiling the form offers.
+            $val = clamp_int($val, 0, 1099511627776, 0);
             break;
         case 'HSYNC_PEER_RENDEZVOUS_TIMEOUT':
             $val = clamp_int($val, 5, 60, 10);

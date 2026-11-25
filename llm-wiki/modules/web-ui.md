@@ -89,6 +89,10 @@ devices, nearest existing ancestor for a store that does not exist yet).
 `::hsync_run` exports `HSYNC_TRASH_DIR` when set, so the maintenance verbs and
 the daemon address one store.
 
+The trash budget (`HSYNC_TRASH_MAX_SIZE`) is the client's byte count: the form
+edits whole GB, and `packaging/Apkg/web/app.js::applyConfig` / `::collectConfig`
+are the only place that converts, so no other surface has to know the unit.
+
 `packaging/Apkg/web/app.js::renderTrashList` renders one row per entry with its
 date, size and a **Restore** button, and states it when `same_volume` is false;
 `::emptyTrash` asks for confirmation first. The restore passes the folder's

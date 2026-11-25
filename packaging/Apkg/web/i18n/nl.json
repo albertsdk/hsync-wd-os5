@@ -108,6 +108,8 @@
     "action.reset_state": "Synchronisatiestatus resetten…",
     "field.trash_retention": "Herstelvenster (dagen, 0 = bewaren tot leegmaken)",
     "field.trash_dir": "Prullenbakmap (leeg = in de statusmap)",
+    "field.trash_max_size": "Maximale prullenbakgrootte (GB, 0 = deel van de schijf)",
+    "tip.trash_max_size": "Hoeveel schijfruimte de prullenbak mag gebruiken. 0 = een deel van de schijf, met een minimum.",
     "note.trash": "De NAS bewaart de bestanden die hij verwijdert op zijn eigen schijf, zodat je ze kunt herstellen. De prullenbak wordt nooit gesynchroniseerd.",
     "action.trash": "Verwijderde bestanden herstellen…",
     "trash.title": "Verwijderde bestanden",

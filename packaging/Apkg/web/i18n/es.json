@@ -108,6 +108,8 @@
     "action.reset_state": "Restablecer el estado de sincronización…",
     "field.trash_retention": "Ventana de restauración (días, 0 = conservar hasta vaciar)",
     "field.trash_dir": "Carpeta de la papelera (vacía = dentro de la carpeta de estado)",
+    "field.trash_max_size": "Límite de tamaño de la papelera (GB, 0 = parte del disco)",
+    "tip.trash_max_size": "Cuánto disco puede usar la papelera. 0 = una parte del disco, con un mínimo.",
     "note.trash": "El NAS guarda en su propio disco los archivos que elimina, para que puedas restaurarlos. La papelera nunca se sincroniza.",
     "action.trash": "Restaurar archivos eliminados…",
     "trash.title": "Archivos eliminados",

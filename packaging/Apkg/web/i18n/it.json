@@ -108,6 +108,8 @@
     "action.reset_state": "Azzera lo stato di sincronizzazione…",
     "field.trash_retention": "Finestra di ripristino (giorni, 0 = conserva fino allo svuotamento)",
     "field.trash_dir": "Cartella del cestino (vuota = dentro la cartella di stato)",
+    "field.trash_max_size": "Dimensione massima del cestino (GB, 0 = quota del disco)",
+    "tip.trash_max_size": "Quanto disco può usare il cestino. 0 = una quota del disco, con un minimo.",
     "note.trash": "Il NAS conserva sul proprio disco i file che cancella, così puoi ripristinarli. Il cestino non viene mai sincronizzato.",
     "action.trash": "Ripristina file cancellati…",
     "trash.title": "File cancellati",

@@ -108,6 +108,8 @@
     "action.reset_state": "重置同步状态…",
     "field.trash_retention": "恢复期（天，0 = 保留至清空）",
     "field.trash_dir": "回收站目录（空 = 位于状态目录内）",
+    "field.trash_max_size": "回收站大小上限 (GB，0 = 磁盘的一定比例)",
+    "tip.trash_max_size": "回收站可占用的磁盘空间。0 = 按磁盘的一定比例分配（有下限）。",
     "note.trash": "NAS 会在本机磁盘保留它删除的文件，因此可以恢复。回收站不会被同步。",
     "action.trash": "恢复已删除的文件…",
     "trash.title": "已删除的文件",

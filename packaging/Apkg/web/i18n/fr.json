@@ -108,6 +108,8 @@
     "action.reset_state": "Réinitialiser l'état de synchronisation…",
     "field.trash_retention": "Fenêtre de restauration (jours, 0 = conserver jusqu’au vidage)",
     "field.trash_dir": "Dossier de la corbeille (vide = dans le dossier d’état)",
+    "field.trash_max_size": "Taille maximale de la corbeille (Go, 0 = part du disque)",
+    "tip.trash_max_size": "Espace disque que la corbeille peut utiliser. 0 = une part du disque, avec un minimum.",
     "note.trash": "Le NAS conserve sur son propre disque les fichiers qu’il supprime, afin que vous puissiez les restaurer. La corbeille n’est jamais synchronisée.",
     "action.trash": "Restaurer les fichiers supprimés…",
     "trash.title": "Fichiers supprimés",

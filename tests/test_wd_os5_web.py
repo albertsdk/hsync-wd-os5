@@ -572,6 +572,47 @@ def test_config_set_validates_the_trash_keys(tmp_path: Path) -> None:
 
 
 @requires_php
+def test_config_set_validates_the_trash_budget(tmp_path: Path) -> None:
+    """The budget is stored in bytes (the client's unit) and clamped."""
+    env_file = tmp_path / "hsync.env"
+    prepend = tmp_path / "prepend.php"
+
+    def run(value: str) -> str:
+        prepend.write_text(
+            "<?php\n"
+            f"define('HSYNC_ENV', '{env_file}');\n"
+            f"define('HSYNC_CONFIG', '{tmp_path}');\n"
+            "$_SERVER['REQUEST_METHOD'] = 'POST';\n"
+            "$_SERVER['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';\n"
+            "$_POST = [\n"
+            "    'HSYNC_PATH' => '/mnt/HD/HD_a2/hsync/data',\n"
+            f"    'HSYNC_TRASH_MAX_SIZE' => '{value}',\n"
+            "];\n",
+            encoding="utf-8",
+        )
+        subprocess.run(
+            [
+                "php",
+                "-d",
+                f"auto_prepend_file={prepend}",
+                "-d",
+                "display_errors=0",
+                str(WEB / "config_set.php"),
+            ],
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        written = dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
+        return written["HSYNC_TRASH_MAX_SIZE"]
+
+    assert run("2147483648") == "2147483648"  # 2 GiB, the unit the client reads
+    assert run("0") == "0"  # auto: the client derives it from the filesystem
+    assert run("not-a-number") == "0"  # dropped instead of aborting the startup
+    assert run("2199023255552") == "1099511627776"  # clamped to the form's 1 TiB
+
+
+@requires_php
 def test_trash_endpoint_gates_every_request(tmp_path: Path) -> None:
     """trash.php loads, refuses a GET and reports a missing share."""
     prepend = tmp_path / "prepend.php"
@@ -655,6 +696,8 @@ def test_trash_keys_are_translated_in_all_locales() -> None:
     keys = {
         "field.trash_retention",
         "field.trash_dir",
+        "field.trash_max_size",
+        "tip.trash_max_size",
         "note.trash",
         "action.trash",
         "trash.title",
@@ -673,17 +716,30 @@ def test_trash_keys_are_translated_in_all_locales() -> None:
 
 
 def test_trash_settings_reach_the_launcher() -> None:
-    """Both keys are whitelisted, editable and translated into the launch."""
+    """Every key is whitelisted, editable and translated into the launch."""
+    trash_keys = {"HSYNC_TRASH_DIR", "HSYNC_TRASH_RETENTION_DAYS", "HSYNC_TRASH_MAX_SIZE"}
     for name in ("config_get.php", "config_set.php"):
-        keys = _php_keys(name)
-        assert {"HSYNC_TRASH_DIR", "HSYNC_TRASH_RETENTION_DAYS"} <= keys, name
-    assert {"HSYNC_TRASH_DIR", "HSYNC_TRASH_RETENTION_DAYS"} <= _form_names()
+        assert trash_keys <= _php_keys(name), name
+    assert trash_keys <= _form_names()
 
     start = (PKG / "start.sh").read_text(encoding="utf-8")
     assert 'is_uint "${HSYNC_TRASH_RETENTION_DAYS}"' in start
     assert '--trash-retention "${HSYNC_TRASH_RETENTION_DAYS}"' in start
     # Empty means "the client's default", never an empty assignment.
     assert '[ -n "${HSYNC_TRASH_DIR}" ] && export HSYNC_TRASH_DIR' in start
+    # The budget is the client's key (bytes); 0/empty leaves it to the client.
+    assert 'is_uint "${HSYNC_TRASH_MAX_SIZE}"' in start
+    assert "export HSYNC_TRASH_MAX_SIZE" in start
+
+
+def test_trash_budget_is_edited_in_gb() -> None:
+    """The form edits whole GB; one conversion site maps it to the stored bytes."""
+    app = (WEB / "app.js").read_text(encoding="utf-8")
+    html = (WEB / "index.html").read_text(encoding="utf-8")
+    assert "const BYTES_PER_GB_FIELDS = ['HSYNC_TRASH_MAX_SIZE']" in app
+    assert app.count("BYTES_PER_GB_FIELDS.forEach") == 2, "apply and collect must both convert"
+    assert 'name="HSYNC_TRASH_MAX_SIZE"' in html
+    assert 'max="1024"' in html
 
 
 def test_trash_store_is_addressed_with_the_daemons_environment() -> None:

@@ -85,6 +85,7 @@ fi
 : "${HSYNC_ALLOW_DELETIONS:=false}"
 : "${HSYNC_TRASH_DIR:=}"
 : "${HSYNC_TRASH_RETENTION_DAYS:=30}"
+: "${HSYNC_TRASH_MAX_SIZE:=}"
 : "${HSYNC_PEER_RENDEZVOUS_TIMEOUT:=10}"
 : "${HSYNC_RENDEZVOUS_SERVER_ENDPOINTS:=}"
 : "${HSYNC_RENDEZVOUS_SERVER_FINGERPRINTS:=}"
@@ -316,6 +317,12 @@ export HSYNC_STATE_DIR
 # unset when empty so the client keeps its default (state dir/trash). The web
 # UI's trash.php reads the same key, so both address one store.
 [ -n "${HSYNC_TRASH_DIR}" ] && export HSYNC_TRASH_DIR
+# Byte budget of the trash store (ADR-0056). The client reads the same key in
+# bytes; a non-numeric hand edit is dropped so it derives the budget from the
+# filesystem, and 0 means exactly that.
+is_uint "${HSYNC_TRASH_MAX_SIZE}" || HSYNC_TRASH_MAX_SIZE=""
+[ -n "${HSYNC_TRASH_MAX_SIZE}" ] && [ "${HSYNC_TRASH_MAX_SIZE}" -gt 0 ] \
+    && export HSYNC_TRASH_MAX_SIZE
 
 cd "${APKG_PATH}"
 nohup "${HSYNC_BIN}" "$@" >> "${HSYNC_LOG_FILE}" 2>&1 &

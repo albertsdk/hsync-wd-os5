@@ -42,6 +42,9 @@ for the on-disk constants; user settings live in `HSYNC_ENV_FILE`.
 - `HSYNC_TRASH_RETENTION_DAYS` travels as `--trash-retention` behind
   `packaging/Apkg/start.sh::is_uint`; `HSYNC_TRASH_DIR` is exported (no flag) and
   left unset when empty, so the client derives `<state dir>/trash`.
+  `HSYNC_TRASH_MAX_SIZE` is exported too (the client's key, in bytes), after the
+  same `is_uint` guard, and only when greater than `0` — the form edits whole GB
+  and `packaging/Apkg/web/app.js::applyConfig` / `::collectConfig` convert it.
 
 ## Security invariants
 
