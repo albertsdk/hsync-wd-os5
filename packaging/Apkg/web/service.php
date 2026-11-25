@@ -11,39 +11,14 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
-define('APKG_PATH', '/shares/Volume_1/Nas_Prog/hsync');
-define('HSYNC_PID', '/mnt/HD/HD_a2/hsync/run/hsync.pid');
-define('HSYNC_BINARY', 'hsync');
-
-/**
- * Check whether the hsync daemon is currently running.
- *
- * Strategy (fastest-first, no external forks required):
- * 1. Read the PID file.  If the pid directory exists in /proc → running.
- * 2. Fallback: use `pidof` via shell_exec (available on OS5).
- */
-function isRunning(): bool {
-    // --- 1. PID file ---
-    if (is_readable(HSYNC_PID)) {
-        $pid = trim((string)@file_get_contents(HSYNC_PID));
-        if (ctype_digit($pid) && $pid !== '0') {
-            return is_dir('/proc/' . $pid);
-        }
-    }
-    // --- 2. pidof fallback ---
-    if (function_exists('shell_exec')) {
-        $out = @shell_exec('pidof ' . escapeshellarg(HSYNC_BINARY) . ' 2>/dev/null');
-        return ($out !== null && trim($out) !== '');
-    }
-    return false;
-}
+require __DIR__ . '/env_lib.php';
 
 /**
  * Run a lifecycle script.  Uses shell_exec when available, falls back to
  * proc_open/popen, so the page degrades gracefully on hardened php.ini.
  */
 function runScript(string $script, bool $background): void {
-    $cmd = escapeshellcmd($script) . ' ' . escapeshellarg(APKG_PATH) . ' >/dev/null 2>&1';
+    $cmd = escapeshellcmd($script) . ' ' . escapeshellarg(HSYNC_PKG_DIR) . ' >/dev/null 2>&1';
     if ($background) $cmd .= ' &';
     if (function_exists('shell_exec')) {
         @shell_exec($cmd);
@@ -61,16 +36,16 @@ $action = preg_replace('/[^a-z]/', '', $_GET['action'] ?? '');
 
 switch ($action) {
     case 'start':
-        if (!isRunning()) runScript(APKG_PATH . '/start.sh', true);
+        if (!hsync_service_running()) runScript(HSYNC_PKG_DIR . '/start.sh', true);
         break;
 
     case 'stop':
-        if (isRunning()) runScript(APKG_PATH . '/stop.sh', false);
+        if (hsync_service_running()) runScript(HSYNC_PKG_DIR . '/stop.sh', false);
         break;
 
     case 'restart':
-        runScript(APKG_PATH . '/stop.sh',  false);
-        runScript(APKG_PATH . '/start.sh', true);
+        runScript(HSYNC_PKG_DIR . '/stop.sh',  false);
+        runScript(HSYNC_PKG_DIR . '/start.sh', true);
         break;
 
     case 'status':
@@ -83,4 +58,4 @@ switch ($action) {
         exit;
 }
 
-echo json_encode(['ok' => true, 'action' => $action, 'running' => isRunning()]);
+echo json_encode(['ok' => true, 'action' => $action, 'running' => hsync_service_running()]);

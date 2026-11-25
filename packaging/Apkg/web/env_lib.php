@@ -101,6 +101,34 @@ function hsync_same_volume(string $a, string $b): bool {
     return $sa['dev'] === $sb['dev'];
 }
 
+/** Path of the daemon pid file (``HSYNC_PID`` overrides it for tests). */
+function hsync_pid_file(): string {
+    return defined('HSYNC_PID') ? HSYNC_PID : HSYNC_ROOT . '/run/hsync.pid';
+}
+
+/**
+ * True when the packaged daemon is running.
+ *
+ * Fastest-first, no external forks in the normal case: the pid file start.sh
+ * writes, then ``pidof`` as a fallback for a hardened php.ini or a stale file.
+ * Consumers: ``service.php`` (start/stop/status) and ``config_set.php`` (a
+ * setting the daemon reads only at startup needs a restart to reach it).
+ */
+function hsync_service_running(): bool {
+    $pid_file = hsync_pid_file();
+    if (is_readable($pid_file)) {
+        $pid = trim((string)@file_get_contents($pid_file));
+        if (ctype_digit($pid) && $pid !== '0') {
+            return is_dir('/proc/' . $pid);
+        }
+    }
+    if (function_exists('shell_exec')) {
+        $out = @shell_exec('pidof ' . escapeshellarg(basename(HSYNC_BINARY)) . ' 2>/dev/null');
+        return $out !== null && trim($out) !== '';
+    }
+    return false;
+}
+
 /** Run the packaged binary with the state and trash directories the service uses. */
 function hsync_run(array $args): array {
     $env = hsync_parse_env(HSYNC_ENV_FILE);

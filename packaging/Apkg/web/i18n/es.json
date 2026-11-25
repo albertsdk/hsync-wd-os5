@@ -124,6 +124,7 @@
     "status.stopped": "detenido",
     "status.unknown": "desconocido",
     "toast.saved": "Configuración guardada",
+    "toast.restart_required": "Guardado. Reinicia el servicio de sincronización para aplicar los cambios de la papelera.",
     "toast.save_error": "Error al guardar",
     "toast.load_error": "Error al cargar la configuración",
     "toast.started": "Servicio iniciado",

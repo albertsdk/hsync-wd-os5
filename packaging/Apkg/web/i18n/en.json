@@ -124,6 +124,7 @@
     "status.stopped": "stopped",
     "status.unknown": "unknown",
     "toast.saved": "Configuration saved",
+    "toast.restart_required": "Saved. Restart the sync service so the trash changes take effect.",
     "toast.save_error": "Failed to save",
     "toast.load_error": "Failed to load configuration",
     "toast.started": "Service started",

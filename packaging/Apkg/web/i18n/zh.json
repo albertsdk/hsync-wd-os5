@@ -124,6 +124,7 @@
     "status.stopped": "已停止",
     "status.unknown": "未知",
     "toast.saved": "配置已保存",
+    "toast.restart_required": "已保存。请重启同步服务以应用回收站更改。",
     "toast.save_error": "保存失败",
     "toast.load_error": "加载配置失败",
     "toast.started": "服务已启动",

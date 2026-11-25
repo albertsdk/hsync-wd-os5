@@ -124,6 +124,7 @@
     "status.stopped": "gestoppt",
     "status.unknown": "unbekannt",
     "toast.saved": "Konfiguration gespeichert",
+    "toast.restart_required": "Gespeichert. Starte den Sync-Dienst neu, damit die Papierkorb-Änderungen wirksam werden.",
     "toast.save_error": "Speichern fehlgeschlagen",
     "toast.load_error": "Konfiguration konnte nicht geladen werden",
     "toast.started": "Dienst gestartet",

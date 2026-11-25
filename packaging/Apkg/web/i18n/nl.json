@@ -124,6 +124,7 @@
     "status.stopped": "gestopt",
     "status.unknown": "onbekend",
     "toast.saved": "Configuratie opgeslagen",
+    "toast.restart_required": "Opgeslagen. Herstart de synchronisatiedienst om de prullenbakwijzigingen toe te passen.",
     "toast.save_error": "Opslaan mislukt",
     "toast.load_error": "Configuratie laden mislukt",
     "toast.started": "Dienst gestart",

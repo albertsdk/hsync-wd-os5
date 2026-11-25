@@ -124,6 +124,7 @@
     "status.stopped": "停止",
     "status.unknown": "不明",
     "toast.saved": "設定を保存しました",
+    "toast.restart_required": "保存しました。ゴミ箱の変更を反映するには同期サービスを再起動してください。",
     "toast.save_error": "保存に失敗しました",
     "toast.load_error": "設定の読み込みに失敗しました",
     "toast.started": "サービスを開始しました",

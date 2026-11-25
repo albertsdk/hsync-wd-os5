@@ -93,6 +93,15 @@ The trash budget (`HSYNC_TRASH_MAX_SIZE`) is the client's byte count: the form
 edits whole GB, and `packaging/Apkg/web/app.js::applyConfig` / `::collectConfig`
 are the only place that converts, so no other surface has to know the unit.
 
+`packaging/Apkg/web/config_set.php::STARTUP_ONLY_KEYS` lists the settings the
+daemon reads once at start (the three trash keys): when one of them changes and
+`packaging/Apkg/web/env_lib.php::hsync_service_running` says the daemon is up, the
+reply carries `restart_required` and the save handler shows
+`toast.restart_required` — otherwise the UI (which re-reads `hsync.env` on every
+call) and the running service would address different stores.
+`packaging/Apkg/web/service.php` reuses the same helper, so "running" has one
+definition.
+
 `packaging/Apkg/web/app.js::renderTrashList` renders one row per entry with its
 date, size and a **Restore** button, and states it when `same_volume` is false;
 `::emptyTrash` asks for confirmation first. The restore passes the folder's

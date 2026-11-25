@@ -754,8 +754,15 @@
                         'The shared password must be at least 12 characters.'), 'error');
                     return;
                 }
-                await saveConfig(cfg);
+                const saved = await saveConfig(cfg);
                 toast(t('toast.saved', 'Configuration saved'), 'ok');
+                // The daemon reads the trash settings once at start, while the
+                // maintenance verbs re-read hsync.env: without a restart the UI
+                // and the running service would address different stores.
+                if (saved && saved.restart_required) {
+                    toast(t('toast.restart_required',
+                        'Saved. Restart the sync service so the trash changes take effect.'), 'error');
+                }
                 // Re-sync the connect command with what config_set.php actually
                 // persisted: the backend normalizes values (bucket fallback,
                 // boolean true/false, empty invalid numerics), so rebuild the

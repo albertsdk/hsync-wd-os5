@@ -124,6 +124,7 @@
     "status.stopped": "zatrzymana",
     "status.unknown": "nieznany",
     "toast.saved": "Konfiguracja zapisana",
+    "toast.restart_required": "Zapisano. Uruchom ponownie usługę synchronizacji, aby zastosować zmiany kosza.",
     "toast.save_error": "Zapis nie powiódł się",
     "toast.load_error": "Nie udało się wczytać konfiguracji",
     "toast.started": "Usługa uruchomiona",

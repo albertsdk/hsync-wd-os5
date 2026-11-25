@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- The page warns when a trash setting changed while the service runs: those keys
+  are read at start, so the save shows "restart the service to apply" instead of
+  leaving the UI and the daemon on different stores.
+
 - **Restore deleted files…** in Maintenance: lists the files the NAS deleted,
   restores one into the share (the next cycle propagates it) and empties the store
   after a confirmation. The endpoint runs `hsync trash`, so it needs no restart and

@@ -124,6 +124,7 @@
     "status.stopped": "parado",
     "status.unknown": "desconhecido",
     "toast.saved": "Configuração guardada",
+    "toast.restart_required": "Guardado. Reinicie o serviço de sincronização para aplicar as alterações da lixeira.",
     "toast.save_error": "Falha ao guardar",
     "toast.load_error": "Falha ao carregar a configuração",
     "toast.started": "Serviço iniciado",

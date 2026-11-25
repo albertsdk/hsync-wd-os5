@@ -12,9 +12,20 @@
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
+require __DIR__ . '/env_lib.php';
+
 define('HSYNC_ENV',    '/mnt/HD/HD_a2/hsync/config/hsync.env');
 define('HSYNC_CONFIG', '/mnt/HD/HD_a2/hsync/config');
 define('HSYNC_DEFAULT_PATH', '/mnt/HD/HD_a2/hsync/data');
+
+// Settings the daemon reads once, when it starts: the maintenance verbs read
+// hsync.env on every call, so after a change the UI and the running service
+// would address different stores until the service restarts.
+const STARTUP_ONLY_KEYS = [
+    'HSYNC_TRASH_DIR',
+    'HSYNC_TRASH_RETENTION_DAYS',
+    'HSYNC_TRASH_MAX_SIZE',
+];
 
 // Method check.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -90,6 +101,11 @@ function clamp_int(string $value, int $min, int $max, int $fallback): string {
 }
 
 $lines = ['# HSYNC configuration — written by config_set.php on ' . gmdate('Y-m-d\TH:i:s\Z')];
+
+// Values already on disk: the reply tells the UI which startup-only setting it
+// just changed under a running daemon.
+$stored = hsync_parse_env(HSYNC_ENV);
+$written = [];
 
 // Shared endpoint grammar (validate-only: the client normalizes on load).
 // `host`, `host:port`, `[IPv6]`, `[IPv6]:port` — no scheme, no path.
@@ -363,6 +379,7 @@ foreach (KEYS as $key) {
     // POSIX single-quote escaping: embed '  as '\''
     $escaped = str_replace("'", "'\\''", $val);
     $lines[] = "{$key}='{$escaped}'";
+    $written[$key] = $val;
 }
 
 // Write atomically: temp file → rename. The config dir and the resulting
@@ -383,4 +400,15 @@ chmod($tmp, 0640);
 rename($tmp, HSYNC_ENV);
 chmod(HSYNC_ENV, 0640);
 
-echo '{"ok":true}';
+$changed = [];
+foreach (STARTUP_ONLY_KEYS as $key) {
+    if ((string)($stored[$key] ?? '') !== (string)($written[$key] ?? '')) {
+        $changed[] = $key;
+    }
+}
+
+echo json_encode([
+    'ok' => true,
+    'restart_required' => $changed !== [] && hsync_service_running(),
+    'restart_keys' => $changed,
+], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);

@@ -114,6 +114,11 @@ while a sync runs. Two rows of *Sync Mode* control the store:
   folder. A store on another volume than the share still works, but moving a
   file into it or back copies the bytes, and the dialog says so.
 
+The three trash settings (folder, restore window, size limit) are read by the
+service **when it starts**: after saving a change while it runs, the page warns
+you and the new value applies at the next restart (a stopped service picks it up
+on its next start).
+
 The trash is per device and is never synchronised: another device's deletions
 are restorable on that device only.
 

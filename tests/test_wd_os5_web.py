@@ -10,6 +10,8 @@ escaped the hyphen, ``fe37d97`` re-broke it).
 
 from __future__ import annotations
 
+import json
+import os
 import re
 import shutil
 import subprocess
@@ -740,6 +742,83 @@ def test_trash_budget_is_edited_in_gb() -> None:
     assert app.count("BYTES_PER_GB_FIELDS.forEach") == 2, "apply and collect must both convert"
     assert 'name="HSYNC_TRASH_MAX_SIZE"' in html
     assert 'max="1024"' in html
+
+
+@requires_php
+def test_config_set_reports_a_restart_for_startup_only_keys(tmp_path: Path) -> None:
+    """A trash change under a running daemon only reaches it after a restart."""
+    env_file = tmp_path / "hsync.env"
+    pid_file = tmp_path / "hsync.pid"
+    pid_file.write_text(str(os.getpid()), encoding="utf-8")  # a live pid
+    prepend = tmp_path / "prepend.php"
+
+    def run(**fields: str) -> dict:
+        body = "".join(f"    '{key}' => '{value}',\n" for key, value in fields.items())
+        prepend.write_text(
+            "<?php\n"
+            f"define('HSYNC_ENV', '{env_file}');\n"
+            f"define('HSYNC_CONFIG', '{tmp_path}');\n"
+            f"define('HSYNC_PID', '{pid_file}');\n"
+            "$_SERVER['REQUEST_METHOD'] = 'POST';\n"
+            "$_SERVER['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';\n"
+            "$_POST = [\n"
+            "    'HSYNC_PATH' => '/mnt/HD/HD_a2/hsync/data',\n"
+            f"{body}"
+            "];\n",
+            encoding="utf-8",
+        )
+        proc = subprocess.run(
+            [
+                "php",
+                "-d",
+                f"auto_prepend_file={prepend}",
+                "-d",
+                "display_errors=0",
+                str(WEB / "config_set.php"),
+            ],
+            text=True,
+            capture_output=True,
+            check=True,
+        )
+        return dict(json.loads(proc.stdout))
+
+    trash = "/mnt/HD/HD_a2/hsync/trash"
+    # Every startup-only key differs from the (empty) file on the first write.
+    first = run(HSYNC_TRASH_DIR=trash)
+    assert first["ok"] is True
+    assert first["restart_required"] is True
+    assert set(first["restart_keys"]) == {
+        "HSYNC_TRASH_DIR",
+        "HSYNC_TRASH_RETENTION_DAYS",
+        "HSYNC_TRASH_MAX_SIZE",
+    }
+
+    # Nothing changed: no restart to ask for.
+    assert run(HSYNC_TRASH_DIR=trash)["restart_required"] is False
+
+    # A setting the daemon reads on every call needs no restart.
+    assert run(HSYNC_TRASH_DIR=trash, HSYNC_BUCKET="other")["restart_keys"] == []
+
+    # A stopped service applies the file on its next start: no notice.
+    pid_file.unlink()
+    assert run(HSYNC_TRASH_DIR=trash + "2")["restart_required"] is False
+
+
+def test_the_restart_notice_is_wired() -> None:
+    """The endpoint reports it, the save handler shows it, every locale has the text."""
+    php = (WEB / "config_set.php").read_text(encoding="utf-8")
+    assert "const STARTUP_ONLY_KEYS = [" in php
+    assert "'HSYNC_TRASH_DIR'," in php
+    assert "'restart_required' => $changed !== [] && hsync_service_running()" in php
+    lib = (WEB / "env_lib.php").read_text(encoding="utf-8")
+    assert "function hsync_service_running()" in lib
+    service = (WEB / "service.php").read_text(encoding="utf-8")
+    assert "hsync_service_running()" in service
+    assert "function isRunning" not in service, "service.php must reuse the shared helper"
+    assert "saved.restart_required" in (WEB / "app.js").read_text(encoding="utf-8")
+    for locale in _supported_locales():
+        data = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))
+        assert str(data.get("toast.restart_required", "")).strip(), locale
 
 
 def test_trash_store_is_addressed_with_the_daemons_environment() -> None:

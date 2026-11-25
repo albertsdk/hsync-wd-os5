@@ -124,6 +124,7 @@
     "status.stopped": "arrêté",
     "status.unknown": "inconnu",
     "toast.saved": "Configuration enregistrée",
+    "toast.restart_required": "Enregistré. Redémarrez le service de synchronisation pour appliquer les changements de la corbeille.",
     "toast.save_error": "Échec de l'enregistrement",
     "toast.load_error": "Échec du chargement de la configuration",
     "toast.started": "Service démarré",

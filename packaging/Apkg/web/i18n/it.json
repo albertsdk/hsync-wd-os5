@@ -124,6 +124,7 @@
     "status.stopped": "fermo",
     "status.unknown": "sconosciuto",
     "toast.saved": "Configurazione salvata",
+    "toast.restart_required": "Salvato. Riavvia il servizio di sincronizzazione per applicare le modifiche al cestino.",
     "toast.save_error": "Salvataggio non riuscito",
     "toast.load_error": "Caricamento della configurazione non riuscito",
     "toast.started": "Servizio avviato",
