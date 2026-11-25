@@ -105,7 +105,11 @@ each row has a **Restore** button. Above the list the dialog states what the
 store holds against its size limit (*Store: 120 MB of 4 GB, 8 files*) — the limit
 is shared, so the figures cover every share. A row marked *no stored copy* is a
 record whose bytes are gone: it is listed so you know it existed, and it has no
-Restore button. **Empty trash** removes them for good, after a
+Restore button. **Restore all** puts every entry back in one go and says how many
+came back and how many stayed — a path that exists again, a folder set to
+*Receive only* (where the file would be deleted again), or a record whose bytes
+are unusable. Whatever stayed is still listed afterwards, so nothing disappears
+without an explanation. **Empty trash** removes them for good, after a
 confirmation.
 
 A restore writes the file back into the share and the sync propagates it at the

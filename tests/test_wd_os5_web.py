@@ -658,16 +658,23 @@ def test_trash_endpoint_is_a_thin_wrapper_over_the_client_verbs() -> None:
     """trash.php relays `hsync trash` instead of parsing the store's layout."""
     php = (WEB / "trash.php").read_text(encoding="utf-8")
     assert "hsync_require_post(" in php
-    for action in ("list", "restore", "empty"):
+    for action in ("list", "restore", "restore_all", "empty"):
         assert f"case '{action}':" in php, action
     for verb in ("'trash', 'list'", "'trash', 'restore'", "'trash', 'empty'"):
         assert verb in php, verb
     # The listing is the client's JSON contract; argv quoting belongs to hsync_run.
     assert "--json" in php
     assert "escapeshellarg" not in php
-    # The restore carries the folder's direction: a download-only folder must be
-    # refused by the client instead of looping delete/recreate.
-    assert "HSYNC_SYNC_DIRECTION" in php
+    # The single restore and the bulk one share the direction rule: a
+    # download-only folder must be refused by the client instead of looping
+    # delete/recreate.
+    helper = (WEB / "env_lib.php").read_text(encoding="utf-8")
+    assert "HSYNC_SYNC_DIRECTION" in helper
+    assert "'--direction', hsync_sync_direction()" in php
+    # The bulk action is one call, not one per row, and relays the counts.
+    assert "'--all'" in php
+    for key in ("'restored' =>", "'skipped' =>", "'failed' =>"):
+        assert key in php, key
 
 
 def test_trash_controls_are_wired_in_the_ui() -> None:
@@ -678,15 +685,17 @@ def test_trash_controls_are_wired_in_the_ui() -> None:
         "hsync-trash-modal",
         "hsync-trash-list",
         "hsync-trash-empty",
+        "hsync-trash-restore-all",
         "hsync-trash-close",
     ):
         assert f'id="{element}"' in html, element
 
     app = APP_JS.read_text(encoding="utf-8")
     assert "trash.php" in app
-    for call in ("action: 'list'", "action: 'restore'", "action: 'empty'"):
+    for call in ("action: 'list'", "action: 'restore'", "action: 'restore_all'", "action: 'empty'"):
         assert call in app, call
     assert "bind('hsync-btn-trash'" in app
+    assert "bind('hsync-trash-restore-all'" in app
     # Emptying is destructive and must ask first.
     assert "confirm.empty_trash" in app
 
@@ -706,11 +715,14 @@ def test_trash_keys_are_translated_in_all_locales() -> None:
         "trash.empty_all",
         "trash.empty",
         "trash.restore",
+        "trash.restore_all",
         "trash.cross_volume",
         "trash.usage",
         "trash.not_restorable",
         "toast.trash_ok",
         "toast.trash_error",
+        "toast.trash_restore_all_done",
+        "toast.trash_restore_all_partial",
         "confirm.empty_trash",
     }
     for locale in _supported_locales():

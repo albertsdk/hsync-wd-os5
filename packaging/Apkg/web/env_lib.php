@@ -80,6 +80,19 @@ function hsync_trash_root(): string {
     return $override !== '' ? $override : HSYNC_STATE_DIR . '/trash';
 }
 
+/**
+ * The daemon's sync direction, normalized: `hsync trash restore` refuses a
+ * `download-only` folder, because the mirror rule would delete the file again.
+ */
+function hsync_sync_direction(): string {
+    $env = hsync_parse_env(HSYNC_ENV_FILE);
+    $direction = (string)($env['HSYNC_SYNC_DIRECTION'] ?? 'bidirectional');
+    if (!in_array($direction, ['bidirectional', 'upload-only', 'download-only'], true)) {
+        return 'bidirectional';
+    }
+    return $direction;
+}
+
 /** Nearest existing ancestor of $path, so a not-yet-created store is comparable. */
 function hsync_existing_ancestor(string $path): string {
     $dir = $path;

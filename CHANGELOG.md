@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   so the figures cover every share.
 - A row whose stored copy is gone is marked (*no stored copy*) and has no Restore
   button, so the modal never offers a command that can only fail.
+- A **Restore all** button in the trash dialog: one client call puts every entry
+  back and reports how many returned and how many stayed.
 
 - The page warns when a trash setting changed while the service runs: those keys
   are read at start, so the save shows "restart the service to apply" instead of

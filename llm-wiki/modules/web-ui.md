@@ -19,7 +19,7 @@ handles with dialogs.
 | `packaging/Apkg/web/hsyncignore_get.php` / `_set.php` | read/replace `<HSYNC_PATH>/.hsyncignore` (hot-reloaded by the client) |
 | `packaging/Apkg/web/trust.php` | `hsync trust <kind> list\|add\|remove` for rendezvous/server/peer |
 | `packaging/Apkg/web/state_reset.php` | stop → `hsync state reset --folder … --quarantine --json` → start |
-| `packaging/Apkg/web/trash.php` | `hsync trash list\|restore\|empty` for the shared folder; reports whether the store shares the share's volume |
+| `packaging/Apkg/web/trash.php` | `hsync trash list\|restore\|restore --all\|empty` for the shared folder; reports whether the store shares the share's volume |
 | `packaging/Apkg/web/test.php` | reachability + fingerprint via `hsync trust <kind> fingerprint` |
 | `packaging/Apkg/web/ca_cert_upload.php` | stores a PEM as `config/ca.pem` (the `HSYNC_CA_CERT` path) |
 | `packaging/Apkg/web/service.php` | start/stop/restart/status of the daemon |
@@ -78,16 +78,19 @@ is POSIX single-quoted by `packaging/Apkg/web/app.js::shellQuote`.
 `packaging/Apkg/web/trash.php` exposes the device-local trash of the shared
 folder (ADR-0056 in `hsync-common`, [decisions.md](../decisions.md) ADR 007). It
 is a thin wrapper: `list` decodes the client's `--json` listing, `restore` and
-`empty` relay its exit status, and nothing reads the store's layout or touches
-the state database. The service is never stopped, so a restore is propagated by
-the running cycle.
+`empty` relay its exit status, `restore_all` relays the counts of
+`hsync trash restore --all --json`, and nothing reads the store's layout or
+touches the state database. The service is never stopped, so a restore is
+propagated by the running cycle.
 
-Three helpers in `packaging/Apkg/web/env_lib.php` carry the environment:
+The trash helpers in `packaging/Apkg/web/env_lib.php` carry the environment:
 `::hsync_trash_override` (validated `HSYNC_TRASH_DIR`), `::hsync_trash_root` (the
 override, else `<state dir>/trash`) and `::hsync_same_volume` (compares `stat`
 devices, nearest existing ancestor for a store that does not exist yet).
 `::hsync_run` exports `HSYNC_TRASH_DIR` when set, so the maintenance verbs and
-the daemon address one store.
+the daemon address one store. `::hsync_sync_direction` returns the folder's
+`HSYNC_SYNC_DIRECTION` (defaulting to `bidirectional` on a missing or unknown
+value) and both restore actions pass it as `--direction`.
 
 The trash budget (`HSYNC_TRASH_MAX_SIZE`) is the client's byte count: the form
 edits whole GB, and `packaging/Apkg/web/app.js::applyConfig` / `::collectConfig`
@@ -108,9 +111,9 @@ shows the store's usage line from the `stats` the endpoint returns (one
 `hsync trash stats --json` call; the budget is shared, so the figures cover every
 share). A row whose listing says `payload_present: false` is marked with
 `trash.not_restorable` and renders no Restore button, so the modal never offers a
-command that can only fail. `::emptyTrash` asks for confirmation first. The restore passes the folder's
-`HSYNC_SYNC_DIRECTION`, so a download-only folder is refused by the client
-instead of creating a delete/recreate loop.
+command that can only fail. `::restoreAllTrash` sends a single `restore_all`
+request and reports `restored` against the entries that stayed; `::emptyTrash`
+asks for confirmation first.
 
 ## Human docs
 

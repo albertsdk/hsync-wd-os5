@@ -684,6 +684,35 @@
         }
     }
 
+    async function restoreAllTrash() {
+        // One client call for the whole list (`hsync trash restore --all`): a
+        // bulk deletion can leave hundreds of entries in the store.
+        let j;
+        try {
+            j = await trashRequest({ action: 'restore_all' });
+        } catch (e) {
+            toast(t('toast.trash_error', 'The trash operation failed') + ': ' + e.message, 'error');
+            return;
+        }
+        // The entries that could not return are exactly the ones still listed
+        // after the refresh, so the message only counts them.
+        const restored = Number(j.restored) || 0;
+        const left = (Number(j.skipped) || 0) + (Number(j.failed) || 0);
+        if (left > 0) {
+            toast(fill(t('toast.trash_restore_all_partial',
+                'Restored {restored} files; {left} stay in the trash.'),
+                { restored: restored, left: left }), 'error');
+        } else if (restored > 0 || j.complete) {
+            toast(fill(t('toast.trash_restore_all_done', 'Restored {restored} files.'),
+                { restored: restored }), 'ok');
+        } else {
+            // Non-zero exit without a single accounted entry: the batch aborted
+            // before touching the store, so "0 restored" would be a lie.
+            toast(t('toast.trash_error', 'The trash operation failed'), 'error');
+        }
+        await renderTrashList();
+    }
+
     async function emptyTrash() {
         if (!window.confirm(t('confirm.empty_trash',
             'Delete the trashed files for good? This cannot be undone.'))) return;
@@ -826,6 +855,7 @@
             if (modal) modal.hidden = true;
         });
         bind('hsync-trash-empty', emptyTrash);
+        bind('hsync-trash-restore-all', restoreAllTrash);
         bind('hsync-btn-trust', async () => {
             const modal = $('#hsync-trust-modal');
             if (modal) modal.hidden = false;

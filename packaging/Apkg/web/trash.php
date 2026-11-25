@@ -60,18 +60,37 @@ switch ($action) {
         // The direction decides whether the restore is allowed at all: a
         // download-only folder would delete the file again, so the client
         // refuses it there instead of creating a loop.
-        $env = hsync_parse_env(HSYNC_ENV_FILE);
-        $direction = (string)($env['HSYNC_SYNC_DIRECTION'] ?? 'bidirectional');
-        if (!in_array($direction, ['bidirectional', 'upload-only', 'download-only'], true)) {
-            $direction = 'bidirectional';
-        }
         [$ok, $out, $err] = hsync_run([
-            'trash', 'restore', $relpath, '--folder', $folder, '--direction', $direction,
+            'trash', 'restore', $relpath, '--folder', $folder, '--direction', hsync_sync_direction(),
         ]);
         if (!$ok) {
             hsync_reply(['ok' => false, 'error' => 'restore_failed', 'detail' => trim($err)], 502);
         }
         hsync_reply(['ok' => true, 'message' => trim($out)]);
+        break;
+
+    case 'restore_all':
+        // One client call for the whole list, which is what a bulk deletion
+        // needs. The JSON report carries the counts even when the client exits
+        // non-zero (an entry whose stored copy is unusable), so it is parsed
+        // and relayed instead of being treated as a hard failure.
+        [$ok, $out, $err] = hsync_run([
+            'trash', 'restore', '--folder', $folder, '--all',
+            '--direction', hsync_sync_direction(), '--json',
+        ]);
+        $report = json_decode($out, true);
+        if (!is_array($report)) {
+            hsync_reply(['ok' => false, 'error' => 'restore_failed', 'detail' => trim($err)], 502);
+        }
+        hsync_reply([
+            'ok' => true,
+            'restored' => (int)($report['restored'] ?? 0),
+            'skipped' => (int)($report['skipped'] ?? 0),
+            'failed' => (int)($report['failed'] ?? 0),
+            // ok=false only means an entry's copy was unusable; the counts say
+            // what actually came back, so the UI keeps its message truthful.
+            'complete' => $ok,
+        ]);
         break;
 
     case 'empty':
