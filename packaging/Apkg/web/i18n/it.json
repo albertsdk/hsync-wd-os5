@@ -118,6 +118,7 @@
     "trash.restore": "Ripristina",
     "trash.cross_volume": "Il cestino è su un volume diverso dalla condivisione: spostare un file dentro o fuori copia i byte.",
     "trash.usage": "Cestino: {used} di {budget} ({count} file)",
+    "trash.not_restorable": "copia non disponibile",
     "toast.trash_ok": "Fatto",
     "toast.trash_error": "Operazione sul cestino non riuscita",
     "confirm.empty_trash": "Eliminare definitivamente i file nel cestino? L’operazione non si può annullare.",

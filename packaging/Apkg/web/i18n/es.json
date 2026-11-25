@@ -118,6 +118,7 @@
     "trash.restore": "Restaurar",
     "trash.cross_volume": "La papelera está en un volumen distinto del recurso compartido: mover un archivo copia los datos.",
     "trash.usage": "Papelera: {used} de {budget} ({count} archivos)",
+    "trash.not_restorable": "sin copia guardada",
     "toast.trash_ok": "Hecho",
     "toast.trash_error": "La operación de la papelera falló",
     "confirm.empty_trash": "¿Eliminar definitivamente los archivos de la papelera? No se puede deshacer.",

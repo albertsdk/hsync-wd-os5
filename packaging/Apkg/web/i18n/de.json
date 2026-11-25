@@ -118,6 +118,7 @@
     "trash.restore": "Wiederherstellen",
     "trash.cross_volume": "Der Papierkorb liegt auf einem anderen Volume als die Freigabe: Verschieben kopiert die Daten.",
     "trash.usage": "Papierkorb: {used} von {budget} ({count} Dateien)",
+    "trash.not_restorable": "keine Kopie mehr",
     "toast.trash_ok": "Erledigt",
     "toast.trash_error": "Papierkorb-Aktion fehlgeschlagen",
     "confirm.empty_trash": "Die Dateien im Papierkorb endgültig löschen? Das ist nicht rückgängig zu machen.",

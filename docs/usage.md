@@ -103,7 +103,9 @@ trash store on the NAS, outside the share, so no device ever sees it.
 **Restore deleted files…** (Maintenance) lists them with the date and size, and
 each row has a **Restore** button. Above the list the dialog states what the
 store holds against its size limit (*Store: 120 MB of 4 GB, 8 files*) — the limit
-is shared, so the figures cover every share. **Empty trash** removes them for good, after a
+is shared, so the figures cover every share. A row marked *no stored copy* is a
+record whose bytes are gone: it is listed so you know it existed, and it has no
+Restore button. **Empty trash** removes them for good, after a
 confirmation.
 
 A restore writes the file back into the share and the sync propagates it at the

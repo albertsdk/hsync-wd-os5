@@ -118,6 +118,7 @@
     "trash.restore": "Herstellen",
     "trash.cross_volume": "De prullenbak staat op een ander volume dan de share: verplaatsen kopieert de gegevens.",
     "trash.usage": "Prullenbak: {used} van {budget} ({count} bestanden)",
+    "trash.not_restorable": "geen bewaarde kopie",
     "toast.trash_ok": "Klaar",
     "toast.trash_error": "De prullenbakbewerking is mislukt",
     "confirm.empty_trash": "De bestanden in de prullenbak definitief verwijderen? Dit kan niet ongedaan worden gemaakt.",

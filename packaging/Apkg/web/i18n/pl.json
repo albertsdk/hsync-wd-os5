@@ -118,6 +118,7 @@
     "trash.restore": "Przywróć",
     "trash.cross_volume": "Kosz jest na innym wolumenie niż udział: przenoszenie pliku kopiuje dane.",
     "trash.usage": "Kosz: {used} z {budget} ({count} plików)",
+    "trash.not_restorable": "brak zapisanej kopii",
     "toast.trash_ok": "Gotowe",
     "toast.trash_error": "Operacja na koszu nie powiodła się",
     "confirm.empty_trash": "Usunąć trwale pliki z kosza? Tej operacji nie można cofnąć.",

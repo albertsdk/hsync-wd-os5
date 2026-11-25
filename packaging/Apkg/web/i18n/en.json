@@ -118,6 +118,7 @@
     "trash.restore": "Restore",
     "trash.cross_volume": "The trash is on another volume than the share: moving a file into it or back copies the bytes.",
     "trash.usage": "Store: {used} of {budget} ({count} files)",
+    "trash.not_restorable": "no stored copy",
     "toast.trash_ok": "Done",
     "toast.trash_error": "The trash operation failed",
     "confirm.empty_trash": "Delete the trashed files for good? This cannot be undone.",

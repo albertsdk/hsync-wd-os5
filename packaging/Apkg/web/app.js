@@ -655,15 +655,21 @@
         entries.forEach((entry) => {
             const row = document.createElement('div');
             const when = new Date((Number(entry.deleted_at) || 0) * 1000).toLocaleString();
+            // A record whose bytes are gone cannot be restored: say so on the row
+            // and offer no button that can only fail (ADR-0056).
+            const restorable = entry.payload_present !== false;
+            const note = restorable ? '' : '  (' + t('trash.not_restorable', 'no stored copy') + ')';
             const label = document.createElement('span');
-            label.textContent = when + '  ' + formatBytes(entry.size) + '  ' + (entry.path || '');
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            btn.className = 'hsync-btn';
-            btn.textContent = t('trash.restore', 'Restore');
-            btn.addEventListener('click', () => restoreTrashEntry(entry.path));
+            label.textContent = when + '  ' + formatBytes(entry.size) + '  ' + (entry.path || '') + note;
             row.appendChild(label);
-            row.appendChild(btn);
+            if (restorable) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'hsync-btn';
+                btn.textContent = t('trash.restore', 'Restore');
+                btn.addEventListener('click', () => restoreTrashEntry(entry.path));
+                row.appendChild(btn);
+            }
             list.appendChild(row);
         });
     }

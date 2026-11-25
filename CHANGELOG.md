@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The trash dialog states what the store holds against its size limit (*Store: 120
   MB of 4 GB, 8 files*), from one `hsync trash stats` call; the limit is shared,
   so the figures cover every share.
+- A row whose stored copy is gone is marked (*no stored copy*) and has no Restore
+  button, so the modal never offers a command that can only fail.
 
 - The page warns when a trash setting changed while the service runs: those keys
   are read at start, so the save shows "restart the service to apply" instead of

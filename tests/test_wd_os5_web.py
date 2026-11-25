@@ -708,6 +708,7 @@ def test_trash_keys_are_translated_in_all_locales() -> None:
         "trash.restore",
         "trash.cross_volume",
         "trash.usage",
+        "trash.not_restorable",
         "toast.trash_ok",
         "toast.trash_error",
         "confirm.empty_trash",
@@ -832,6 +833,16 @@ def test_the_trash_usage_line_is_wired() -> None:
     assert "t('trash.usage'" in app
     # The line is built from a translated string with {braced} tokens.
     assert "function fill(text, values)" in app
+
+
+def test_a_row_without_a_stored_copy_is_marked_and_not_restorable() -> None:
+    """The modal never offers a Restore that can only fail (ADR-0056)."""
+    app = (WEB / "app.js").read_text(encoding="utf-8")
+    assert "entry.payload_present !== false" in app
+    assert "t('trash.not_restorable'" in app
+    # The button is inside the restorable branch, not appended unconditionally.
+    restore_block = app.split("const restorable = entry.payload_present !== false", 1)[1]
+    assert "if (restorable) {" in restore_block.split("list.appendChild(row)", 1)[0]
 
 
 def test_trash_store_is_addressed_with_the_daemons_environment() -> None:
