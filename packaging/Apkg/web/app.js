@@ -128,6 +128,13 @@
         return dict[key] || fallback || key;
     }
 
+    // {braced} tokens, so a translated string owns the word order.
+    function fill(text, values) {
+        return text.replace(/\{(\w+)\}/g, (match, name) => (
+            Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : match
+        ));
+    }
+
     function applyDict() {
         $$('[data-i18n]').forEach((el) => {
             const key = el.getAttribute('data-i18n');
@@ -622,6 +629,18 @@
         } catch (e) {
             list.appendChild(trashRow(t('toast.trash_error', 'The trash operation failed') + ': ' + e.message));
             return;
+        }
+        // The store's usage: the budget is shared by every share, so this line
+        // speaks for the whole store, not for the folder being listed.
+        if (j.stats && Number(j.stats.budget) > 0) {
+            list.appendChild(trashRow(fill(
+                t('trash.usage', 'Store: {used} of {budget} ({count} files)'),
+                {
+                    used: formatBytes(j.stats.bytes),
+                    budget: formatBytes(j.stats.budget),
+                    count: Number(j.stats.entries) || 0,
+                },
+            )));
         }
         // The store may sit on another volume: a move then copies the bytes.
         if (j.same_volume === false) {

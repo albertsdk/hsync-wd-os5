@@ -103,8 +103,10 @@ call) and the running service would address different stores.
 definition.
 
 `packaging/Apkg/web/app.js::renderTrashList` renders one row per entry with its
-date, size and a **Restore** button, and states it when `same_volume` is false;
-`::emptyTrash` asks for confirmation first. The restore passes the folder's
+date, size and a **Restore** button, states it when `same_volume` is false, and
+shows the store's usage line from the `stats` the endpoint returns (one
+`hsync trash stats --json` call; the budget is shared, so the figures cover every
+share). `::emptyTrash` asks for confirmation first. The restore passes the folder's
 `HSYNC_SYNC_DIRECTION`, so a download-only folder is refused by the client
 instead of creating a delete/recreate loop.
 

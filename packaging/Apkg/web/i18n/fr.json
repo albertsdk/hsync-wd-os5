@@ -117,6 +117,7 @@
     "trash.empty": "Aucun fichier supprimé.",
     "trash.restore": "Restaurer",
     "trash.cross_volume": "La corbeille est sur un autre volume que le partage : déplacer un fichier copie les données.",
+    "trash.usage": "Corbeille : {used} sur {budget} ({count} fichiers)",
     "toast.trash_ok": "Terminé",
     "toast.trash_error": "L’opération sur la corbeille a échoué",
     "confirm.empty_trash": "Supprimer définitivement les fichiers de la corbeille ? Cette action est irréversible.",

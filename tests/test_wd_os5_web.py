@@ -707,6 +707,7 @@ def test_trash_keys_are_translated_in_all_locales() -> None:
         "trash.empty",
         "trash.restore",
         "trash.cross_volume",
+        "trash.usage",
         "toast.trash_ok",
         "toast.trash_error",
         "confirm.empty_trash",
@@ -819,6 +820,18 @@ def test_the_restart_notice_is_wired() -> None:
     for locale in _supported_locales():
         data = json.loads((I18N / f"{locale}.json").read_text(encoding="utf-8"))
         assert str(data.get("toast.restart_required", "")).strip(), locale
+
+
+def test_the_trash_usage_line_is_wired() -> None:
+    """The modal states what the store holds, from one `trash stats` call."""
+    php = (WEB / "trash.php").read_text(encoding="utf-8")
+    assert "['trash', 'stats', '--json']" in php, "the list must ask the client for the totals"
+    assert "'stats' => is_array($stats) ? $stats : null" in php
+    app = (WEB / "app.js").read_text(encoding="utf-8")
+    assert "j.stats" in app
+    assert "t('trash.usage'" in app
+    # The line is built from a translated string with {braced} tokens.
+    assert "function fill(text, values)" in app
 
 
 def test_trash_store_is_addressed_with_the_daemons_environment() -> None:

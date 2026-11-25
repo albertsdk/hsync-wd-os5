@@ -117,6 +117,7 @@
     "trash.empty": "Sem ficheiros eliminados.",
     "trash.restore": "Restaurar",
     "trash.cross_volume": "A lixeira está num volume diferente da partilha: mover um ficheiro copia os dados.",
+    "trash.usage": "Lixeira: {used} de {budget} ({count} arquivos)",
     "toast.trash_ok": "Concluído",
     "toast.trash_error": "A operação na lixeira falhou",
     "confirm.empty_trash": "Eliminar definitivamente os ficheiros da lixeira? Não é possível anular.",

@@ -101,7 +101,9 @@ The NAS never throws away a file it deletes on its own: the bytes move into a
 trash store on the NAS, outside the share, so no device ever sees it.
 
 **Restore deleted files…** (Maintenance) lists them with the date and size, and
-each row has a **Restore** button. **Empty trash** removes them for good, after a
+each row has a **Restore** button. Above the list the dialog states what the
+store holds against its size limit (*Store: 120 MB of 4 GB, 8 files*) — the limit
+is shared, so the figures cover every share. **Empty trash** removes them for good, after a
 confirmation.
 
 A restore writes the file back into the share and the sync propagates it at the

@@ -117,6 +117,7 @@
     "trash.empty": "没有已删除的文件。",
     "trash.restore": "恢复",
     "trash.cross_volume": "回收站与共享位于不同卷：移动文件会复制数据。",
+    "trash.usage": "回收站：{used} / {budget}（{count} 个文件）",
     "toast.trash_ok": "完成",
     "toast.trash_error": "回收站操作失败",
     "confirm.empty_trash": "彻底删除回收站中的文件？此操作无法撤销。",

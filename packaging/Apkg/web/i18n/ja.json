@@ -117,6 +117,7 @@
     "trash.empty": "削除したファイルはありません。",
     "trash.restore": "復元",
     "trash.cross_volume": "ゴミ箱は共有フォルダとは別のボリュームにあります。移動はデータをコピーします。",
+    "trash.usage": "ゴミ箱: {budget} 中 {used} ({count} 件)",
     "toast.trash_ok": "完了",
     "toast.trash_error": "ゴミ箱の操作に失敗しました",
     "confirm.empty_trash": "ゴミ箱のファイルを完全に削除しますか？この操作は取り消せません。",

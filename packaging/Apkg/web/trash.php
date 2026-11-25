@@ -32,6 +32,10 @@ switch ($action) {
             // deleted files": that would look like the trash is empty.
             hsync_reply(['ok' => false, 'error' => 'list_failed', 'detail' => 'unparsable listing'], 502);
         }
+        // One stats call answers "X of Y": the size budget is shared by every
+        // share, so the figures are the store's, not this folder's.
+        [$statsOk, $statsOut] = hsync_run(['trash', 'stats', '--json']);
+        $stats = $statsOk ? json_decode($statsOut, true) : null;
         hsync_reply([
             'ok' => true,
             'entries' => is_array($entries) ? $entries : [],
@@ -39,6 +43,7 @@ switch ($action) {
             // A store on another volume than the share copies the bytes on both
             // moves; the UI states it instead of implying an instant rename.
             'same_volume' => hsync_same_volume(hsync_trash_root(), $folder),
+            'stats' => is_array($stats) ? $stats : null,
         ]);
         break;
 
