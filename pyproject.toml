@@ -58,4 +58,4 @@ ignore = [
 [tool.ruff.lint.mccabe]
 # A pragmatic ceiling that the current code meets; lower it as functions are
 # refactored.
-max-complexity = 25
+max-complexity = 15
