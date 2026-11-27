@@ -32,6 +32,7 @@ select = [
     "FURB", "RUF",       # refurb, ruff-specific (noqa / __all__ hygiene)
     "PGH", "LOG", "G",   # pygrep-hooks, logging
     "PL", "T10", "ERA",  # pylint, debugger, commented-out code
+    "C90",               # mccabe complexity (threshold below)
 ]
 ignore = [
     # pre-existing
@@ -53,3 +54,8 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 # A test keeps otherwise-unused fixture parameters and lambdas.
 "tests/**" = ["ARG001", "ARG002", "ARG005", "RUF059"]
+
+[tool.ruff.lint.mccabe]
+# A pragmatic ceiling that the current code meets; lower it as functions are
+# refactored.
+max-complexity = 25
