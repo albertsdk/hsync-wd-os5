@@ -421,7 +421,9 @@ def test_config_set_clamps_ranges(tmp_path: Path) -> None:
         capture_output=True,
         check=True,
     )
-    written = dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
+    written = dict(
+        re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.MULTILINE)
+    )
     assert written["HSYNC_BUCKET"] == "my-bucket"
     assert written["HSYNC_HTTP_TIMEOUT"] == "30"
     assert written["HSYNC_PEER_RENDEZVOUS_TIMEOUT"] == "60"
@@ -508,7 +510,9 @@ def test_config_set_enforces_the_password_floor(tmp_path: Path) -> None:
             capture_output=True,
             check=True,
         )
-        written = dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
+        written = dict(
+            re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.MULTILINE)
+        )
         assert written["HSYNC_P2P_PASSPHRASE"] == expected
         assert "HSYNC_P2P_KEY" not in written
 
@@ -547,7 +551,9 @@ def test_config_set_validates_the_trash_keys(tmp_path: Path) -> None:
             capture_output=True,
             check=True,
         )
-        return dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
+        return dict(
+            re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.MULTILINE)
+        )
 
     written = run()
     # A store inside the share would be synced to every device.
@@ -605,7 +611,9 @@ def test_config_set_validates_the_trash_budget(tmp_path: Path) -> None:
             capture_output=True,
             check=True,
         )
-        written = dict(re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.M))
+        written = dict(
+            re.findall(r"^(HSYNC_[A-Z0-9_]+)='([^']*)'$", env_file.read_text(), re.MULTILINE)
+        )
         return written["HSYNC_TRASH_MAX_SIZE"]
 
     assert run("2147483648") == "2147483648"  # 2 GiB, the unit the client reads

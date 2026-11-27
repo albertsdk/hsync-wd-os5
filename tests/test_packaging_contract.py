@@ -223,10 +223,12 @@ def test_mksapkg_tool_stdout_carries_only_the_cache_path(tmp_path: Path) -> None
         [
             "bash",
             "-c",
-            'source "$1"; '
-            "curl() { printf '%s\\n' '#!/bin/sh' > \"$WDOS5_MKSAPKG\"; "
-            'chmod 0755 "$WDOS5_MKSAPKG"; }; '
-            'out="$(_mksapkg_tool)"; printf \'%s\' "$out"',
+            (
+                'source "$1"; '
+                "curl() { printf '%s\\n' '#!/bin/sh' > \"$WDOS5_MKSAPKG\"; "
+                'chmod 0755 "$WDOS5_MKSAPKG"; }; '
+                'out="$(_mksapkg_tool)"; printf \'%s\' "$out"'
+            ),
             "_",
             str(COMPILE),
         ],

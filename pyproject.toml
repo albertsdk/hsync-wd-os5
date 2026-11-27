@@ -16,5 +16,40 @@ line-length = 100
 target-version = "py313"
 
 [tool.ruff.lint]
-select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM"]
-ignore = ["E501", "E402", "B904", "SIM115", "SIM117", "SIM102", "SIM105"]
+# Curated best-practice set shared across the hsync Python projects (see
+# hsync-common/pyproject.toml for the rationale). ``ignore`` keeps the
+# opinionated/noisy rules out; ``per-file-ignores`` relaxes the tests.
+select = [
+    "E", "F", "W",       # pycodestyle, pyflakes, warnings
+    "I",                 # isort
+    "N",                 # pep8-naming
+    "UP",                # pyupgrade
+    "B", "A", "C4",      # bugbear, builtin shadowing, comprehensions
+    "ISC", "ICN",        # implicit string concat, import conventions
+    "PIE", "RET", "RSE", # misc lints, return, raise
+    "SIM", "TID",        # simplify, tidy-imports
+    "ARG", "PERF",       # unused arguments, performance
+    "FURB", "RUF",       # refurb, ruff-specific (noqa / __all__ hygiene)
+    "PGH", "LOG", "G",   # pygrep-hooks, logging
+    "PL", "T10", "ERA",  # pylint, debugger, commented-out code
+]
+ignore = [
+    # pre-existing
+    "E501", "E402", "B904", "SIM115", "SIM117", "SIM102", "SIM105",
+    # deliberate patterns / opinionated rules
+    "ARG002",                     # unused method args: interface/override conformance
+    "EM101", "EM102", "TRY003",   # exception-message style (opinionated)
+    "N818",                       # exception naming: public API already shipped
+    "PLC0415",                    # import-outside-top-level: lazy imports are deliberate
+    "PLW0603",                    # global-statement: module singletons are deliberate
+    "PLR2004",                    # magic values: domain thresholds, noise > signal
+    "PLR0911", "PLR0912", "PLR0913", "PLR0915", "PLR0917",  # function-shape metrics
+    "PTH",                        # pathlib migration deliberately out of scope here
+    "DTZ005",                     # datetime.now without tz (single, audited site)
+    "ERA001",                     # commented-out code: false positives on doc examples
+    "RUF002", "RUF003",           # ambiguous unicode: intentional math notation
+]
+
+[tool.ruff.lint.per-file-ignores]
+# A test keeps otherwise-unused fixture parameters and lambdas.
+"tests/**" = ["ARG001", "ARG002", "ARG005", "RUF059"]
